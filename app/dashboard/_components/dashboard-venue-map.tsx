@@ -29,7 +29,7 @@ export function DashboardVenueMap() {
   const snapshots = useMemo(() => deriveZoneSnapshots(events, now), [events, now]);
 
   return (
-    <section id="venue-map" className="bry-box overflow-hidden p-5 sm:p-6">
+    <section id="venue-map" className="bry-box bry-row-enter overflow-hidden p-5 sm:p-7">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold">Venue map</h2>
@@ -54,7 +54,7 @@ export function DashboardVenueMap() {
           ))}
         </div>
       </div>
-      <div className="bry-inner overflow-hidden">
+      <div className="bry-inner bry-glass overflow-hidden">
         <VenueLeafletMap />
       </div>
     </section>

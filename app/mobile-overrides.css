@@ -1,0 +1,68 @@
+/* Mobile-only overrides — applies below Tailwind `sm` (640px). Tablet/desktop unchanged. */
+
+@media (max-width: 639px) {
+  .bry-page-shell {
+    padding-inline: 0.75rem;
+    padding-block: 1rem;
+  }
+
+  .bry-page-content {
+    padding-inline: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .bry-shell--page {
+    padding: 1rem;
+  }
+
+  .bry-app-header {
+    gap: 0.625rem 0.75rem;
+  }
+
+  .bry-header-nav {
+    width: fit-content;
+    justify-self: center;
+  }
+
+  .bry-kpi-hero {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .bry-kpi-hero-icon {
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+
+  .bry-kpi-gauge {
+    padding: 1rem;
+  }
+
+  .bry-search-whisper {
+    margin-bottom: 1.25rem;
+    max-width: none;
+    padding: 0.75rem 1rem;
+  }
+
+  .bry-venue-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bry-zone-activity-section {
+    padding: 1rem;
+  }
+
+  .bry-incident-row {
+    gap: 0.625rem;
+    padding: 0.75rem 0.875rem;
+  }
+
+  .bry-incident-row .bry-incident-metric {
+    min-width: 4.5rem;
+  }
+
+  .bry-zone-health-card {
+    padding: 0.875rem;
+  }
+}

@@ -30,8 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — keep .env.example in git
+.env
+.env.local
+.env.*.local
+!.env.example
 
 # vercel
 .vercel
@@ -45,9 +48,6 @@ next-env.d.ts
 
 # editor / IDE
 .cursor/
-
-# Nested copy (mistake folder—do not publish)
-/live-event-radar/
 
 # Flowbite CLI cache (plugin regenerates via prebuild/predev script)
 .flowbite-react/class-list.json

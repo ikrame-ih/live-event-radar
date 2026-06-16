@@ -22,10 +22,8 @@ function markerColor(stock: number): string {
 export function VenueLeafletMap() {
   const events = useTelemetryStore((s) => s.events);
   const [now, setNow] = useState(() => Date.now());
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const id = window.setInterval(() => setNow(Date.now()), 2000);
     return () => window.clearInterval(id);
   }, []);
@@ -35,17 +33,6 @@ export function VenueLeafletMap() {
     () => new Map(snapshots.map((s) => [s.zone, s])),
     [snapshots],
   );
-
-  if (!mounted) {
-    return (
-      <div
-        className="flex min-h-[360px] items-center justify-center text-sm text-[var(--text-muted)]"
-        data-venue-leaflet-map
-      >
-        Loading map…
-      </div>
-    );
-  }
 
   return (
     <div

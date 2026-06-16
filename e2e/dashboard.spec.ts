@@ -6,16 +6,23 @@ const evidenceDir = path.resolve(process.cwd(), "../docs/assets");
 test.describe("LiveEvent Radar — Command Center (root)", () => {
   test("root page renders command center with incidents", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "Live operations" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Live operations" })
+    ).toBeVisible();
     await expect(page.getByText("Simulator")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Venue map" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Venue map" })
+    ).toBeVisible();
   });
 
   test("incident sidebar populates after stream runs", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByText("Waiting for stream events…")).toBeVisible();
     await page.waitForTimeout(3500);
-    await expect(page.getByText(/evt\/30s/)).toBeVisible();
+    const zoneActivity = page.locator("section", {
+      has: page.getByRole("heading", { name: "Zone activity" }),
+    });
+    await expect(zoneActivity.getByText(/evt\/30s/).first()).toBeVisible();
   });
 });
 
@@ -23,12 +30,16 @@ test.describe("LiveEvent Radar — /dashboard (event stream)", () => {
   test("shows title and event stream section", async ({ page }, testInfo) => {
     await page.goto("/dashboard");
     await expect(
-      page.getByRole("heading", { name: "LiveEvent Radar", level: 1 }),
+      page.getByRole("heading", { name: "LiveEvent Radar", level: 1 })
     ).toBeVisible();
     await expect(page.getByRole("status")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Venue map", level: 2 })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Venue map", level: 2 })
+    ).toBeVisible();
     await expect(page.locator("[data-venue-leaflet-map]")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Event stream", level: 2 })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Event stream", level: 2 })
+    ).toBeVisible();
     await expect(page.getByText("Buffered rows")).toBeVisible();
     await expect(page.getByPlaceholder("Search zone or item…")).toBeVisible();
 
@@ -52,7 +63,7 @@ test.describe("LiveEvent Radar — /dashboard (event stream)", () => {
   test("worker echo returns from background thread", async ({ page }) => {
     await page.goto("/dashboard");
     await expect(
-      page.locator('[data-worker-echo="live-event-radar"]'),
+      page.locator('[data-worker-echo="live-event-radar"]')
     ).toBeAttached();
   });
 
@@ -60,6 +71,8 @@ test.describe("LiveEvent Radar — /dashboard (event stream)", () => {
     await page.goto("/dashboard");
     await page.waitForTimeout(3500);
     await expect(page.getByText("View details").first()).toBeVisible();
-    await expect(page.getByText("Spike").or(page.getByText("Consumed")).first()).toBeVisible();
+    await expect(
+      page.getByText("Spike").or(page.getByText("Consumed")).first()
+    ).toBeVisible();
   });
 });
