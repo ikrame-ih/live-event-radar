@@ -17,7 +17,7 @@ type EventStreamFiltersProps = {
 export function EventStreamFilters({ filters, onChange }: EventStreamFiltersProps) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="bry-inset flex items-center gap-3 px-5 py-3.5">
+      <div className="bry-search-whisper flex items-center gap-3 px-5 py-3.5">
         <Search size={18} strokeWidth={1.5} className="shrink-0 text-[var(--text-muted)]" />
         <input
           type="search"
@@ -78,10 +78,10 @@ function FilterPill({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide transition-colors ${
+      className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-200 ease-[var(--ease-premium)] ${
         active
-          ? "bg-[var(--text-primary)] text-white"
-          : "bry-inset text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          ? "bg-[var(--text-primary)] text-white shadow-[var(--shadow-row)]"
+          : "bry-inset text-[var(--text-secondary)] hover:-translate-y-px hover:text-[var(--text-primary)]"
       }`}
     >
       {label}

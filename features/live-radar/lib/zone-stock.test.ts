@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { StockEvent } from "../types";
-import { deriveZoneSnapshots, stockHeat, zoneStatusCaption } from "./zone-stock";
+import {
+  deriveZoneSnapshots,
+  stockHeat,
+  STOCK_TIER_HEALTHY_MIN,
+  STOCK_TIER_WATCH_MIN,
+  zoneStatusCaption,
+} from "./zone-stock";
 
 describe("deriveZoneSnapshots", () => {
   const now = 1_700_000_000_000;
@@ -20,7 +26,7 @@ describe("deriveZoneSnapshots", () => {
     const sg = drained.find((s) => s.zone === "South Gate")!;
     expect(sg.stock).toBeLessThan(100);
 
-    const recovered = deriveZoneSnapshots(events, now + 20_000);
+    const recovered = deriveZoneSnapshots(events, now + 45_000);
     expect(recovered.find((s) => s.zone === "South Gate")!.stock).toBeGreaterThan(sg.stock);
   });
 
@@ -31,6 +37,22 @@ describe("deriveZoneSnapshots", () => {
     ];
     const snap = deriveZoneSnapshots(events, now).find((s) => s.zone === "Sampling Court")!;
     expect(snap.stock).toBeGreaterThan(90);
+  });
+
+  it("sustained consumption reaches watch and low stock bands", () => {
+    const events: StockEvent[] = [];
+    for (let i = 0; i < 30; i++) {
+      events.push({
+        zone: "South Gate",
+        item: "Soda",
+        quantity: i % 6 === 0 ? -5 : -2,
+        timestamp: now - (30 - i) * 2000,
+      });
+    }
+    const snap = deriveZoneSnapshots(events, now).find((s) => s.zone === "South Gate")!;
+    expect(snap.stock).toBeLessThan(STOCK_TIER_HEALTHY_MIN);
+    expect(stockHeat(snap.stock)).toMatch(/mid|hot/);
+    expect(snap.stock).toBeLessThan(STOCK_TIER_WATCH_MIN + 15);
   });
 });
 

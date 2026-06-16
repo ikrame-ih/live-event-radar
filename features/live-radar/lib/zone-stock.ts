@@ -2,10 +2,13 @@ import type { StockEvent } from "../types";
 import { ZONE_NAMES, countByZone } from "./derive-incidents";
 
 export const STOCK_MAX = 100;
-export const REPLENISH_INTERVAL_MS = 45_000;
+export const REPLENISH_INTERVAL_MS = 60_000;
+/** Match map legend + stockHeat bands */
+export const STOCK_TIER_HEALTHY_MIN = 65;
+export const STOCK_TIER_WATCH_MIN = 35;
 const STOCK_WINDOW_MS = 120_000;
-const IDLE_RECOVERY_MS = 10_000;
-const RECOVERY_PER_SEC = 5;
+const IDLE_RECOVERY_MS = 40_000;
+const RECOVERY_PER_SEC = 1;
 
 export type ZoneStatus = "healthy" | "watch" | "critical";
 
@@ -98,10 +101,12 @@ export function deriveZoneSnapshots(
 }
 
 export function stockHeat(stock: number): "cool" | "mid" | "hot" {
-  if (stock >= 65) return "cool";
-  if (stock >= 35) return "mid";
+  if (stock >= STOCK_TIER_HEALTHY_MIN) return "cool";
+  if (stock >= STOCK_TIER_WATCH_MIN) return "mid";
   return "hot";
 }
+
+export type StockHeat = ReturnType<typeof stockHeat>;
 
 /** Human-readable zone status — separates stock vs demand signals. */
 export function zoneStatusCaption(snap: ZoneSnapshot): string {

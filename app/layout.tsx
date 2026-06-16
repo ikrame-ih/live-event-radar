@@ -1,6 +1,18 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Montserrat, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+});
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -8,16 +20,16 @@ const jakarta = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
-
 export const metadata: Metadata = {
   title: "LiveEvent Radar",
   description:
-    "Digital Command Center — live event operations telemetry and incident tracking.",
+    "Digital Command Center — live event operations telemetry, zone stock, and incident tracking.",
+  openGraph: {
+    title: "LiveEvent Radar",
+    description:
+      "Live operations dashboard for brand activations — stock telemetry, venue map, and event stream.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -29,7 +41,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${jakarta.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${montserrat.variable} ${jakarta.variable} h-full antialiased`}
     >
       <body className="h-full">{children}</body>
     </html>

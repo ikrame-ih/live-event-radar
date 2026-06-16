@@ -39,7 +39,7 @@ export function DashboardLive() {
     <>
       <AppHeader roleLabel="Telemetry" />
 
-      <div className="bry-shell mx-auto max-w-[var(--content-max)] p-5 sm:p-8 lg:p-10">
+      <div className="bry-shell bry-shell-enter mx-auto max-w-[var(--content-max)] p-6 sm:p-8 lg:p-12">
         <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
@@ -49,7 +49,10 @@ export function DashboardLive() {
               Brand Activation Demo &middot; live telemetry stream
             </p>
           </div>
-          <LiveStatusBadge simulatorOnly={simulatorOnly} wsConnected={wsConnected} />
+          <LiveStatusBadge
+            simulatorOnly={simulatorOnly}
+            wsConnected={wsConnected}
+          />
         </div>
 
         <EventStreamFilters filters={filters} onChange={setFilters} />
@@ -60,15 +63,19 @@ export function DashboardLive() {
 
         <div className="mt-8 flex flex-wrap items-end justify-between gap-4">
           <h2 className="text-lg font-bold">Event stream</h2>
-          <div className="bry-box px-5 py-3 text-right">
-            <p className="text-xs font-medium text-[var(--text-muted)]">Buffered rows</p>
+          <div className="bry-box bry-row-enter px-5 py-3 text-right">
+            <p className="text-xs font-medium text-[var(--text-muted)]">
+              Buffered rows
+            </p>
             <p
-              className="font-mono text-2xl font-extrabold tabular-nums"
+              className="font-mono text-2xl font-extrabold tabular-nums sm:text-3xl"
               data-kpi-buffer-count
             >
               {events.length}
             </p>
-            <p className="text-xs text-[var(--text-muted)]">cap {maxLabel} · FIFO</p>
+            <p className="text-xs text-[var(--text-muted)]">
+              cap {maxLabel} · FIFO
+            </p>
           </div>
         </div>
 

@@ -11,20 +11,29 @@ export function StreamGauge({ value, max = 3 }: StreamGaugeProps) {
   const offset = circumference * (1 - pct);
 
   return (
-    <div className="relative mx-auto flex h-[120px] w-[120px] items-center justify-center">
+    <div className="bry-gauge-glow relative mx-auto flex h-[132px] w-[132px] items-center justify-center">
+      <div className="bry-glass absolute inset-3 rounded-full" />
       <svg className="absolute inset-0 -rotate-90" viewBox="0 0 88 88" aria-hidden>
-        <circle cx="44" cy="44" r="38" fill="none" stroke="var(--gauge-track)" strokeWidth="5" />
+        <circle cx="44" cy="44" r="38" fill="none" stroke="var(--gauge-track)" strokeWidth="7" />
+        <circle
+          cx="44"
+          cy="44"
+          r="30"
+          fill="none"
+          stroke="rgb(255 255 255 / 0.62)"
+          strokeWidth="1.5"
+        />
         <circle
           cx="44"
           cy="44"
           r="38"
           fill="none"
           stroke="url(#gaugeGrad)"
-          strokeWidth="5"
+          strokeWidth="7"
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          className="transition-all duration-700"
+          className="transition-all duration-[900ms] ease-[var(--ease-out-soft)]"
         />
         <defs>
           <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -33,7 +42,7 @@ export function StreamGauge({ value, max = 3 }: StreamGaugeProps) {
           </linearGradient>
         </defs>
       </svg>
-      <span className="bry-gauge-value font-mono">{value}</span>
+      <span className="bry-gauge-value relative font-mono">{value}</span>
     </div>
   );
 }

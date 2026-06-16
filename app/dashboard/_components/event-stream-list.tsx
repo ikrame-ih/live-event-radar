@@ -52,7 +52,7 @@ export function EventStreamList({ events, filters }: EventStreamListProps) {
 
   if (rows.length === 0) {
     return (
-      <div className="bry-inner px-4 py-16 text-center text-sm text-[var(--text-muted)]">
+      <div className="bry-inner bry-glass px-4 py-16 text-center text-sm text-[var(--text-muted)]">
         {events.length === 0
           ? "Events will appear here as the stream runs."
           : "No events match the current filters."}
@@ -61,11 +61,11 @@ export function EventStreamList({ events, filters }: EventStreamListProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {rows.map((e, i) => (
         <article
           key={`${e.timestamp}-${i}`}
-          className="bry-box flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-5"
+          className="bry-row-capsule bry-row-enter flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-5"
         >
           <EventBadge event={e} />
 

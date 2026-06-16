@@ -6,9 +6,10 @@ import {
   mockStockEvent,
 } from "../mock/mock-event-generator";
 import { REPLENISH_INTERVAL_MS } from "../lib/zone-stock";
+import { SIMULATOR_TICK_MS } from "../constants";
 import { useTelemetryStore } from "../state/telemetry-store";
 
-/** Mock ~1 evt/s plus periodic restock pulse when WebSocket is off. */
+/** Mock stream plus periodic restock pulse when WebSocket is off. */
 export function useSimulatorStream() {
   const appendEvent = useTelemetryStore((s) => s.appendEvent);
   const wsUrl = process.env.NEXT_PUBLIC_WS_URL?.trim();
@@ -18,7 +19,7 @@ export function useSimulatorStream() {
     const useNetwork = wsUrl && !simulatorOnly;
     if (useNetwork) return;
 
-    const tick = window.setInterval(() => appendEvent(mockStockEvent()), 1000);
+    const tick = window.setInterval(() => appendEvent(mockStockEvent()), SIMULATOR_TICK_MS);
     const restock = window.setInterval(() => {
       for (const event of mockRestockPulse()) appendEvent(event);
     }, REPLENISH_INTERVAL_MS);
