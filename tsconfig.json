@@ -19,7 +19,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"] // This is a shortcut for the path "@/features/live-radar/..." instead of difficult relative paths like "../../../features/...".
     }
   },
   "include": [
