@@ -1,45 +1,35 @@
 import { expect, test } from "@playwright/test";
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { PNG } from "pngjs";
-import { GIFEncoder, quantize, applyPalette } from "gifenc";
+// @ts-expect-error — no bundled types
+import ffmpegPath from "ffmpeg-static";
 
 const showcaseDir = path.resolve(process.cwd(), "docs/assets/readme");
-const framesDir = path.join(showcaseDir, "frames");
+const demoWebm = path.join(showcaseDir, "demo.webm");
 const demoGif = path.join(showcaseDir, "demo.gif");
 
 test.describe.configure({ mode: "serial" });
 
 test.use({
   viewport: { width: 1280, height: 800 },
+  video: {
+    mode: "on",
+    size: { width: 1280, height: 800 },
+  },
 });
 
 test.beforeAll(() => {
-  fs.rmSync(framesDir, { recursive: true, force: true });
-  fs.mkdirSync(framesDir, { recursive: true });
+  fs.mkdirSync(showcaseDir, { recursive: true });
 });
 
-async function captureFrame(page: import("@playwright/test").Page, index: number) {
-  const file = path.join(framesDir, `frame-${String(index).padStart(3, "0")}.png`);
-  await page.screenshot({ path: file, type: "png" });
-  return file;
-}
-
-test("capture hero PNG and ~8s demo GIF", async ({ page }) => {
-  const frames: string[] = [];
-  let frameIndex = 0;
-
+test("capture hero PNG and smooth ~8s demo GIF", async ({ page }) => {
   await page.goto("/");
   await expect(
     page.getByRole("heading", { name: "Live operations" })
   ).toBeVisible();
 
-  await page.waitForTimeout(2000);
-  frames.push(await captureFrame(page, frameIndex++));
-
-  await page.waitForTimeout(1500);
-  frames.push(await captureFrame(page, frameIndex++));
-
+  await page.waitForTimeout(2200);
   await page.screenshot({
     path: path.join(showcaseDir, "hero-command-center.png"),
     fullPage: false,
@@ -47,54 +37,60 @@ test("capture hero PNG and ~8s demo GIF", async ({ page }) => {
 
   const venueMap = page.locator("#venue-map");
   await venueMap.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(1200);
-  frames.push(await captureFrame(page, frameIndex++));
+  await page.waitForTimeout(1400);
 
   await page.screenshot({
     path: path.join(showcaseDir, "hero-venue-map-heat.png"),
     fullPage: false,
   });
 
-  await page.waitForTimeout(800);
-  frames.push(await captureFrame(page, frameIndex++));
+  await page.waitForTimeout(900);
 
   await page.getByRole("link", { name: "Event stream" }).click();
   await expect(
     page.getByRole("heading", { name: "LiveEvent Radar", level: 1 })
   ).toBeVisible();
-  frames.push(await captureFrame(page, frameIndex++));
 
-  await page.waitForTimeout(1200);
-  frames.push(await captureFrame(page, frameIndex++));
+  await page.waitForTimeout(1800);
 
   await expect(page.locator(".bry-row-capsule").first()).toBeVisible({
     timeout: 8000,
   });
 
-  await page.waitForTimeout(1000);
-  frames.push(await captureFrame(page, frameIndex++));
-
-  await page.waitForTimeout(1000);
-  frames.push(await captureFrame(page, frameIndex++));
-
-  encodeGif(frames, demoGif);
+  await page.waitForTimeout(2200);
 });
 
-function encodeGif(framePaths: string[], outputPath: string) {
-  const gif = GIFEncoder();
+test.afterEach(async ({ page }) => {
+  const videoPath = await page.video()?.path();
+  if (!videoPath) return;
 
-  for (const framePath of framePaths) {
-    const png = PNG.sync.read(fs.readFileSync(framePath));
-    const { width, height, data } = png;
-    const palette = quantize(data, 256);
-    const index = applyPalette(data, palette);
+  fs.copyFileSync(videoPath, demoWebm);
+  convertWebmToGif(demoWebm, demoGif);
+});
 
-    gif.writeFrame(index, width, height, {
-      palette,
-      delay: 1000,
-    });
-  }
+function convertWebmToGif(source: string, target: string) {
+  if (!ffmpegPath || !fs.existsSync(source)) return;
 
-  gif.finish();
-  fs.writeFileSync(outputPath, Buffer.from(gif.bytes()));
+  spawnSync(
+    ffmpegPath,
+    [
+      "-y",
+      "-i",
+      source,
+      "-t",
+      "8",
+      "-vf",
+      [
+        "fps=15",
+        "scale=960:-1:flags=lanczos",
+        "split[s0][s1]",
+        "[s0]palettegen=stats_mode=diff:max_colors=128[p]",
+        "[s1][p]paletteuse=dither=bayer:bayer_scale=4",
+      ].join(","),
+      "-loop",
+      "0",
+      target,
+    ],
+    { stdio: "ignore" }
+  );
 }
