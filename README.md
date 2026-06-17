@@ -21,11 +21,14 @@ Front-end prototype for monitoring live telemetry during brand activations — z
 </p>
 
 <p align="center">
-  <img
-    src="./docs/assets/readme/demo.gif?v=2"
-    alt="KPI and stock heat map, navigation to dashboard, route transition, and event stream"
+  <video
+    src="./docs/assets/readme/demo.mp4"
     width="900"
-  />
+    autoplay
+    loop
+    muted
+    playsinline
+  ></video>
 </p>
 
 <p align="center">
@@ -57,9 +60,9 @@ Front-end prototype for monitoring live telemetry during brand activations — z
 
 ## Screens
 
-| Route | Role |
-| ----- | ---- |
-| **`/`** | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed |
+| Route            | Role                                                                                                      |
+| ---------------- | --------------------------------------------------------------------------------------------------------- |
+| **`/`**          | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed                 |
 | **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped event stream, buffer KPI, Web Worker echo |
 
 Both routes share one **Zustand** store (`telemetry-store`). Mock stream runs at ~0.5 events/s with spike bursts and single-zone crew restock every 60s. Optional **WebSocket** via env vars.
@@ -83,17 +86,17 @@ No environment variables are required for the mock demo.
 
 ## Scripts
 
-| Command | Purpose |
-| ------- | ------- |
-| `npm run dev` | Development server |
-| `npm run build` | Production build |
-| `npm run start` | Serve production build locally |
-| `npm run lint` | ESLint |
-| `npm run test` | Vitest (watch) |
-| `npm run test:run` | Vitest single run |
-| `npm run test:e2e` | Playwright E2E — both routes, 3 viewports |
-| `npm run test:e2e:install` | Install Chromium for Playwright |
-| `npm run capture:readme` | Regenerate README hero, GIF demo, and screenshots |
+| Command                    | Purpose                                           |
+| -------------------------- | ------------------------------------------------- |
+| `npm run dev`              | Development server                                |
+| `npm run build`            | Production build                                  |
+| `npm run start`            | Serve production build locally                    |
+| `npm run lint`             | ESLint                                            |
+| `npm run test`             | Vitest (watch)                                    |
+| `npm run test:run`         | Vitest single run                                 |
+| `npm run test:e2e`         | Playwright E2E — both routes, 3 viewports         |
+| `npm run test:e2e:install` | Install Chromium for Playwright                   |
+| `npm run capture:readme`   | Regenerate README hero PNGs + demo MP4 |
 
 ## Pre-deploy checklist
 
@@ -109,7 +112,7 @@ Last verified: **20** Vitest tests · **18** Playwright runs (6 specs × desktop
 ## Deploy on Vercel
 
 1. Import [github.com/ikrame-ih/live-event-radar](https://github.com/ikrame-ih/live-event-radar) in Vercel.
-2. **Framework preset:** Next.js — no custom root directory (this repo *is* the app).
+2. **Framework preset:** Next.js — no custom root directory (this repo _is_ the app).
 3. **Build command:** `npm run build` (default).
 4. **Environment variables:** none required for the mock demo. Optional:
    - `NEXT_PUBLIC_SIMULATOR_ONLY=true` (default behaviour)
@@ -120,9 +123,9 @@ Last verified: **20** Vitest tests · **18** Playwright runs (6 specs × desktop
 
 Copy `.env.example` to `.env.local` and restart `npm run dev` after changes.
 
-| Variable | Purpose |
-| -------- | ------- |
-| `NEXT_PUBLIC_WS_URL` | WebSocket endpoint; leave empty for mock-only |
+| Variable                     | Purpose                                          |
+| ---------------------------- | ------------------------------------------------ |
+| `NEXT_PUBLIC_WS_URL`         | WebSocket endpoint; leave empty for mock-only    |
 | `NEXT_PUBLIC_SIMULATOR_ONLY` | `true` = mock timer; `false` + URL = live socket |
 
 `NEXT_PUBLIC_*` values are visible in the browser — never put secrets here.
@@ -139,7 +142,7 @@ app/
   _components/
     app-shell.tsx          # Persistent chrome across routes
 components/                # Shared UI (header, maps, sidebar, gauge, TransitionLink)
-docs/assets/readme/        # README showcase (hero PNG, demo GIF, screenshots)
+docs/assets/readme/        # README showcase (hero PNG, demo MP4, screenshots)
 features/live-radar/
   hooks/                   # Simulator, WebSocket, worker, Command Center sync
   lib/                     # Zone stock, incidents, geo, labels

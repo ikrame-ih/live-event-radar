@@ -47,6 +47,7 @@ next-env.d.ts
 /test-results/
 /docs/assets/readme/frames/
 /docs/assets/readme/demo.webm
+/docs/assets/readme/demo.gif
 
 # editor / IDE
 .cursor/
