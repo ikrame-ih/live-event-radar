@@ -9,27 +9,6 @@ Working promotions as a brand hostess, the pain point was **information arriving
 
 **Case study & technical notes:** [ikrame-ih.github.io/live-event-radar](https://ikrame-ih.github.io/live-event-radar/) — [Business](https://ikrame-ih.github.io/live-event-radar/business) · [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture) · [Pipeline](https://ikrame-ih.github.io/live-event-radar/pipeline)
 
-<p align="center">
-  <img
-    src="./docs/assets/readme/hero-command-center.png"
-    alt="LiveEvent Radar — Command Center glass UI with live KPIs and gauge"
-    width="900"
-  />
-</p>
-
-<p align="center">
-  <img
-    src="./docs/assets/readme/hero-venue-map-heat.png"
-    alt="SVG venue map with stock heat tiers"
-    width="900"
-  />
-</p>
-
-<p align="center">
-  <strong><a href="https://live-event-radar.vercel.app">▶ Try the live demo</a></strong>
-  — Command Center → Telemetry transition, live stream, and stock heat in the browser (no download)
-</p>
-
 ## Preview
 
 <table>
@@ -81,19 +60,19 @@ No environment variables are required for the mock demo.
 
 ## Scripts
 
-| Command                    | Purpose                                           |
-| -------------------------- | ------------------------------------------------- |
-| `npm run dev`              | Development server                                |
-| `npm run build`            | Production build                                  |
-| `npm run start`            | Serve production build locally                    |
-| `npm run lint`             | ESLint                                            |
-| `npm run test`             | Vitest (watch)                                    |
-| `npm run test:run`         | Vitest single run                                 |
-| `npm run test:e2e`         | Playwright E2E — both routes, 3 viewports         |
-| `npm run test:e2e:install` | Install Chromium for Playwright                   |
-| `npm run capture:readme`   | Regenerate README hero PNGs |
-| `npm run docs:dev`         | VitePress docs site (local) |
-| `npm run docs:build`       | Build docs for GitHub Pages |
+| Command                    | Purpose                                   |
+| -------------------------- | ----------------------------------------- |
+| `npm run dev`              | Development server                        |
+| `npm run build`            | Production build                          |
+| `npm run start`            | Serve production build locally            |
+| `npm run lint`             | ESLint                                    |
+| `npm run test`             | Vitest (watch)                            |
+| `npm run test:run`         | Vitest single run                         |
+| `npm run test:e2e`         | Playwright E2E — both routes, 3 viewports |
+| `npm run test:e2e:install` | Install Chromium for Playwright           |
+| `npm run capture:readme`   | Regenerate README hero PNGs               |
+| `npm run docs:dev`         | VitePress docs site (local)               |
+| `npm run docs:build`       | Build docs for GitHub Pages               |
 
 ## Pre-deploy checklist
 
