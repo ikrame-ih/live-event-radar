@@ -39,27 +39,35 @@ A browser-based **Digital Command Center** that feels like real ops telemetry:
 
 ## Screens
 
-| Route | Role |
-| ----- | ---- |
-| **`/`** | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed |
+| Route            | Role                                                                                                     |
+| ---------------- | -------------------------------------------------------------------------------------------------------- |
+| **`/`**          | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed                |
 | **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped FIFO stream, buffer KPI, Web Worker echo |
 
 Both routes share one **Zustand** store (`telemetry-store`). Navigation uses a persistent `AppShell` and **View Transitions** via `TransitionLink`.
 
 ## Preview
 
-<p align="center">
-  <img src="./assets/readme/hero-command-center.png" alt="Command Center — KPIs, gauge, zone inventory" width="720" />
-</p>
-
-<p align="center">
-  <img src="./assets/readme/hero-venue-map-heat.png" alt="SVG venue map with stock heat tiers" width="720" />
-</p>
-
-<p align="center">
-  <strong><a href="https://live-event-radar.vercel.app">▶ Try the live demo</a></strong>
-  — Command Center → Telemetry transition, live stream, and stock heat in the browser
-</p>
+<table>
+  <tr>
+    <td width="50%">
+      <img
+        src="./assets/readme/command-center-activity.png"
+        alt="Zone inventory and activity feed"
+      />
+      <br />
+      <sub><b>Command Center</b> — zone stock tiers, SVG map, synced activity rows</sub>
+    </td>
+    <td width="50%">
+      <img
+        src="./assets/readme/telemetry-dashboard.png"
+        alt="Telemetry dashboard with Leaflet map and event stream"
+      />
+      <br />
+      <sub><b>Telemetry</b> — Leaflet map (Teatinos), filters, capped FIFO stream</sub>
+    </td>
+  </tr>
+</table>
 
 ## Stack
 
@@ -69,11 +77,11 @@ Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · Zustand · Flowbite R
 
 Three deep dives for recruiters who want architecture detail (~5 min total):
 
-| Note | Topic |
-| ---- | ----- |
-| [Business](/business) | Operational problem and ROI framing |
-| [Architecture](/architecture) | Data path, stack, project evolution |
-| [Pipeline](/pipeline) | Hooks, store, worker, derivation layer |
+| Note                          | Topic                                  |
+| ----------------------------- | -------------------------------------- |
+| [Business](/business)         | Operational problem and ROI framing    |
+| [Architecture](/architecture) | Data path, stack, project evolution    |
+| [Pipeline](/pipeline)         | Hooks, store, worker, derivation layer |
 
 Further reading: [Current state](/current-state) · [Visual system](/visual-system)
 
