@@ -1,8 +1,11 @@
 # LiveEvent Radar
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://live-event-radar.vercel.app)
+[![Docs](https://img.shields.io/badge/Architecture-docs-6366f1?style=for-the-badge)](https://ikrame-ih.github.io/live-event-radar/)
 
 Front-end prototype for monitoring live telemetry during brand activations — zone stock, SKU movement, and event streams in the browser.
+
+**Case study & architecture notes:** [ikrame-ih.github.io/live-event-radar](https://ikrame-ih.github.io/live-event-radar/)
 
 <p align="center">
   <img
@@ -97,6 +100,8 @@ No environment variables are required for the mock demo.
 | `npm run test:e2e`         | Playwright E2E — both routes, 3 viewports         |
 | `npm run test:e2e:install` | Install Chromium for Playwright                   |
 | `npm run capture:readme`   | Regenerate README hero PNGs + demo MP4 |
+| `npm run docs:dev`         | VitePress docs site (local) |
+| `npm run docs:build`       | Build docs for GitHub Pages |
 
 ## Pre-deploy checklist
 
@@ -142,7 +147,7 @@ app/
   _components/
     app-shell.tsx          # Persistent chrome across routes
 components/                # Shared UI (header, maps, sidebar, gauge, TransitionLink)
-docs/assets/readme/        # README showcase (hero PNG, demo MP4, screenshots)
+docs/                      # Public docs (VitePress) + README showcase assets
 features/live-radar/
   hooks/                   # Simulator, WebSocket, worker, Command Center sync
   lib/                     # Zone stock, incidents, geo, labels

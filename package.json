@@ -15,7 +15,10 @@
     "test:run": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install chromium",
-    "capture:readme": "playwright test e2e/readme-showcase.spec.ts --project=desktop"
+    "capture:readme": "playwright test e2e/readme-showcase.spec.ts --project=desktop",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.44.0",
@@ -42,6 +45,7 @@
     "prettier": "^3.8.3",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "vitepress": "^1.6.4",
     "vitest": "^4.1.9"
   }
 }
