@@ -22,7 +22,7 @@ Front-end prototype for monitoring live telemetry during brand activations — z
 
 <p align="center">
   <img
-    src="./docs/assets/readme/demo.gif"
+    src="./docs/assets/readme/demo.gif?v=2"
     alt="KPI and stock heat map, navigation to dashboard, route transition, and event stream"
     width="900"
   />
