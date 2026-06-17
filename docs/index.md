@@ -3,7 +3,7 @@ layout: home
 hero:
   name: LiveEvent Radar
   text: Live operations telemetry for brand activations
-  tagline: Zone stock, venue heat maps, and a capped event stream — built in Next.js with a glass UI shell and two coordinated routes.
+  tagline: Zone stock, venue heat maps, and a capped event stream — a glass UI Command Center with two coordinated routes in Next.js.
   actions:
     - theme: brand
       text: Live demo
@@ -12,7 +12,7 @@ hero:
       text: View on GitHub
       link: https://github.com/ikrame-ih/live-event-radar
     - theme: alt
-      text: Architecture notes
+      text: Architecture
       link: /architecture
 features:
   - title: Command Center
@@ -20,7 +20,7 @@ features:
   - title: Telemetry depth
     details: Secondary screen at /dashboard — Leaflet map (Teatinos, Málaga), filters, FIFO event stream, and Web Worker echo.
   - title: Stable under load
-    details: Zustand buffer capped at 10,000 events, derived zone snapshots, optional WebSocket, Vitest + Playwright coverage.
+    details: Zustand buffer capped at 10,000 events, derived zone snapshots, optional WebSocket. 20 Vitest tests · 18 Playwright runs.
 ---
 
 ## The problem
@@ -35,42 +35,48 @@ A browser-based **Digital Command Center** that feels like real ops telemetry:
 - **Stock model** with Healthy / Watch / Low tiers (65% / 35% thresholds) driving map colour
 - **Two maps** — schematic SVG on `/`, geographic Leaflet on `/dashboard`
 - **Shared state** — one `telemetry-store`, incidents derived into `useEventStore` for the Command Center
-- **Glass UI** — lavender shell, frosted panels, macOS-style active states, View Transitions between routes
+- **Glass UI** — lavender shell, frosted panels, macOS-style active states, View Transitions (~180ms) between routes
+
+## Screens
+
+| Route | Role |
+| ----- | ---- |
+| **`/`** | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed |
+| **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped FIFO stream, buffer KPI, Web Worker echo |
+
+Both routes share one **Zustand** store (`telemetry-store`). Navigation uses a persistent `AppShell` and **View Transitions** via `TransitionLink`.
 
 ## Preview
 
 <p align="center">
-  <img src="./assets/readme/hero-command-center.png" alt="Command Center" width="720" />
+  <img src="./assets/readme/hero-command-center.png" alt="Command Center — KPIs, gauge, zone inventory" width="720" />
+</p>
+
+<p align="center">
+  <img src="./assets/readme/hero-venue-map-heat.png" alt="SVG venue map with stock heat tiers" width="720" />
 </p>
 
 <p align="center">
   <video src="./assets/readme/demo.mp4" width="720" autoplay loop muted playsinline></video>
 </p>
 
+<p align="center"><sub>~8s — Command Center → <code>/dashboard</code> transition → live event stream</sub></p>
+
 ## Stack
 
-Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · Zustand · Leaflet · Vitest · Playwright
+Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · Zustand · Flowbite React · Lucide · Leaflet · Vitest · Playwright
 
-## How the app evolved
+## Technical notes
 
-| Phase | Milestone |
-| ----- | --------- |
-| MVP | Single `/dashboard`, four panels, Canvas heatmap |
-| Command Center | `/` as primary screen, SVG map, incident sidebar |
-| UI redesign | Glass design system, Leaflet telemetry, stock tiers |
-| Polish | Shared `AppShell`, View Transitions, README MP4 showcase |
-
-Full evolution → [Architecture](/architecture#project-evolution)
-
-## Deep dive notes
+Three deep dives for recruiters who want architecture detail (~5 min total):
 
 | Note | Topic |
 | ---- | ----- |
 | [Business](/business) | Operational problem and ROI framing |
-| [Architecture](/architecture) | Data path, stack, evolution |
-| [Pipeline](/pipeline) | Hooks, store, worker, event shape |
-| [Current state](/current-state) | Routes, components, tests (Jun 2026) |
-| [Visual system](/visual-system) | Tokens, glass, motion catalogue |
+| [Architecture](/architecture) | Data path, stack, project evolution |
+| [Pipeline](/pipeline) | Hooks, store, worker, derivation layer |
+
+Further reading: [Current state](/current-state) · [Visual system](/visual-system)
 
 ## Author
 

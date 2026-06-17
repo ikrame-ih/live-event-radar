@@ -3,9 +3,11 @@
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://live-event-radar.vercel.app)
 [![Docs](https://img.shields.io/badge/Architecture-docs-6366f1?style=for-the-badge)](https://ikrame-ih.github.io/live-event-radar/)
 
-Front-end prototype for monitoring live telemetry during brand activations — zone stock, SKU movement, and event streams in the browser.
+Live operations telemetry for brand activations — zone stock, venue heat maps, and a capped event stream in the browser.
 
-**Case study & architecture notes:** [ikrame-ih.github.io/live-event-radar](https://ikrame-ih.github.io/live-event-radar/)
+Working promotions as a brand hostess, the pain point was **information arriving too late** — stock-outs discovered through WhatsApp, not a live venue picture. This prototype is a **Digital Command Center** that feels like real ops telemetry.
+
+**Case study & technical notes:** [ikrame-ih.github.io/live-event-radar](https://ikrame-ih.github.io/live-event-radar/) — [Business](https://ikrame-ih.github.io/live-event-radar/business) · [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture) · [Pipeline](https://ikrame-ih.github.io/live-event-radar/pipeline)
 
 <p align="center">
   <img
