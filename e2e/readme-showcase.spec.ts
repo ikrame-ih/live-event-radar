@@ -7,7 +7,7 @@ import ffmpegPath from "ffmpeg-static";
 
 const showcaseDir = path.resolve(process.cwd(), "docs/assets/readme");
 const demoWebm = path.join(showcaseDir, "demo.webm");
-const demoGif = path.join(showcaseDir, "demo.gif");
+const demoMp4 = path.join(showcaseDir, "demo.mp4");
 
 test.describe.configure({ mode: "serial" });
 
@@ -23,7 +23,7 @@ test.beforeAll(() => {
   fs.mkdirSync(showcaseDir, { recursive: true });
 });
 
-test("capture hero PNG and smooth ~8s demo GIF", async ({ page }) => {
+test("capture hero PNG and smooth demo MP4", async ({ page }) => {
   await page.goto("/");
   await expect(
     page.getByRole("heading", { name: "Live operations" })
@@ -65,10 +65,10 @@ test.afterEach(async ({ page }) => {
   if (!videoPath) return;
 
   fs.copyFileSync(videoPath, demoWebm);
-  convertWebmToGif(demoWebm, demoGif);
+  convertWebmToMp4(demoWebm, demoMp4);
 });
 
-function convertWebmToGif(source: string, target: string) {
+function convertWebmToMp4(source: string, target: string) {
   if (!ffmpegPath || !fs.existsSync(source)) return;
 
   spawnSync(
@@ -79,16 +79,15 @@ function convertWebmToGif(source: string, target: string) {
       source,
       "-t",
       "8",
+      "-an",
+      "-c:v",
+      "libx264",
+      "-pix_fmt",
+      "yuv420p",
+      "-movflags",
+      "+faststart",
       "-vf",
-      [
-        "fps=15",
-        "scale=960:-1:flags=lanczos",
-        "split[s0][s1]",
-        "[s0]palettegen=stats_mode=diff:max_colors=128[p]",
-        "[s1][p]paletteuse=dither=bayer:bayer_scale=4",
-      ].join(","),
-      "-loop",
-      "0",
+      "scale=960:-2:flags=lanczos",
       target,
     ],
     { stdio: "ignore" }
