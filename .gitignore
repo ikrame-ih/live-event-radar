@@ -45,6 +45,7 @@ next-env.d.ts
 
 # test / tooling artifacts
 /test-results/
+/docs/assets/readme/frames/
 
 # editor / IDE
 .cursor/

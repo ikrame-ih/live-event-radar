@@ -1,80 +1,100 @@
 import { expect, test } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
+import { PNG } from "pngjs";
+import { GIFEncoder, quantize, applyPalette } from "gifenc";
 
 const showcaseDir = path.resolve(process.cwd(), "docs/assets/readme");
+const framesDir = path.join(showcaseDir, "frames");
+const demoGif = path.join(showcaseDir, "demo.gif");
 
 test.describe.configure({ mode: "serial" });
 
 test.use({
   viewport: { width: 1280, height: 800 },
-  video: {
-    mode: "on",
-    size: { width: 1280, height: 800 },
-  },
 });
 
 test.beforeAll(() => {
-  fs.mkdirSync(showcaseDir, { recursive: true });
+  fs.rmSync(framesDir, { recursive: true, force: true });
+  fs.mkdirSync(framesDir, { recursive: true });
 });
 
-test("capture hero, screens, and route transition clip", async ({ page }) => {
+async function captureFrame(page: import("@playwright/test").Page, index: number) {
+  const file = path.join(framesDir, `frame-${String(index).padStart(3, "0")}.png`);
+  await page.screenshot({ path: file, type: "png" });
+  return file;
+}
+
+test("capture hero PNG and ~8s demo GIF", async ({ page }) => {
+  const frames: string[] = [];
+  let frameIndex = 0;
+
   await page.goto("/");
   await expect(
     page.getByRole("heading", { name: "Live operations" })
   ).toBeVisible();
 
-  // Let the simulator populate KPIs, zone inventory, and activity rows.
-  await page.waitForTimeout(4500);
+  await page.waitForTimeout(2000);
+  frames.push(await captureFrame(page, frameIndex++));
+
+  await page.waitForTimeout(1500);
+  frames.push(await captureFrame(page, frameIndex++));
 
   await page.screenshot({
     path: path.join(showcaseDir, "hero-command-center.png"),
     fullPage: false,
   });
 
-  await page.screenshot({
-    path: path.join(showcaseDir, "command-center-full.png"),
-    fullPage: true,
-  });
-
-  const zoneActivity = page.locator("section", {
-    has: page.getByRole("heading", { name: "Zone activity" }),
-  });
-  await expect(zoneActivity.getByText(/evt\/30s/).first()).toBeVisible({
-    timeout: 8000,
-  });
+  const venueMap = page.locator("#venue-map");
+  await venueMap.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(1200);
+  frames.push(await captureFrame(page, frameIndex++));
 
   await page.screenshot({
-    path: path.join(showcaseDir, "command-center-activity.png"),
+    path: path.join(showcaseDir, "hero-venue-map-heat.png"),
     fullPage: false,
   });
+
+  await page.waitForTimeout(800);
+  frames.push(await captureFrame(page, frameIndex++));
 
   await page.getByRole("link", { name: "Event stream" }).click();
   await expect(
     page.getByRole("heading", { name: "LiveEvent Radar", level: 1 })
   ).toBeVisible();
-  await page.waitForTimeout(2500);
+  frames.push(await captureFrame(page, frameIndex++));
 
-  await page.screenshot({
-    path: path.join(showcaseDir, "telemetry-dashboard.png"),
-    fullPage: false,
-  });
-
-  await page.screenshot({
-    path: path.join(showcaseDir, "telemetry-dashboard-full.png"),
-    fullPage: true,
-  });
-
-  await page.getByRole("link", { name: "Command Center" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Live operations" })
-  ).toBeVisible();
   await page.waitForTimeout(1200);
+  frames.push(await captureFrame(page, frameIndex++));
+
+  await expect(page.locator(".bry-row-capsule").first()).toBeVisible({
+    timeout: 8000,
+  });
+
+  await page.waitForTimeout(1000);
+  frames.push(await captureFrame(page, frameIndex++));
+
+  await page.waitForTimeout(1000);
+  frames.push(await captureFrame(page, frameIndex++));
+
+  encodeGif(frames, demoGif);
 });
 
-test.afterEach(async ({ page }) => {
-  const videoPath = await page.video()?.path();
-  if (!videoPath) return;
+function encodeGif(framePaths: string[], outputPath: string) {
+  const gif = GIFEncoder();
 
-  fs.copyFileSync(videoPath, path.join(showcaseDir, "route-transition.webm"));
-});
+  for (const framePath of framePaths) {
+    const png = PNG.sync.read(fs.readFileSync(framePath));
+    const { width, height, data } = png;
+    const palette = quantize(data, 256);
+    const index = applyPalette(data, palette);
+
+    gif.writeFrame(index, width, height, {
+      palette,
+      delay: 1000,
+    });
+  }
+
+  gif.finish();
+  fs.writeFileSync(outputPath, Buffer.from(gif.bytes()));
+}
