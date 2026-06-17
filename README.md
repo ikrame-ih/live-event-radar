@@ -1,17 +1,35 @@
 # LiveEvent Radar
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://live-event-radar.vercel.app)
+
 Front-end prototype for monitoring live telemetry during brand activations — zone stock, SKU movement, and event streams in the browser.
 
 <p align="center">
   <img
     src="./docs/assets/readme/hero-command-center.png"
-    alt="LiveEvent Radar — Command Center with glass UI, KPI gauge, and venue map"
+    alt="LiveEvent Radar — Command Center glass UI with live KPIs and gauge"
     width="900"
   />
 </p>
 
 <p align="center">
-  <em>Command Center at <code>/</code> — live KPIs, zone stock heat map, and activity feed.</em>
+  <img
+    src="./docs/assets/readme/hero-venue-map-heat.png"
+    alt="SVG venue map with stock heat tiers"
+    width="900"
+  />
+</p>
+
+<p align="center">
+  <img
+    src="./docs/assets/readme/demo.gif"
+    alt="KPI and stock heat map, navigation to dashboard, route transition, and event stream"
+    width="900"
+  />
+</p>
+
+<p align="center">
+  <sub>~8s — Command Center KPIs + stock heat → <code>/dashboard</code> transition → live event stream</sub>
 </p>
 
 ## Preview
@@ -36,21 +54,6 @@ Front-end prototype for monitoring live telemetry during brand activations — z
     </td>
   </tr>
 </table>
-
-<p align="center">
-  <video
-    src="./docs/assets/readme/route-transition.webm"
-    width="900"
-    autoplay
-    loop
-    muted
-    playsinline
-  ></video>
-</p>
-
-<p align="center">
-  <sub>Route transition <code>/</code> ↔ <code>/dashboard</code> — persistent shell + View Transitions crossfade</sub>
-</p>
 
 ## Screens
 
@@ -90,11 +93,9 @@ No environment variables are required for the mock demo.
 | `npm run test:run` | Vitest single run |
 | `npm run test:e2e` | Playwright E2E — both routes, 3 viewports |
 | `npm run test:e2e:install` | Install Chromium for Playwright |
-| `npm run capture:readme` | Regenerate README screenshots + route clip |
+| `npm run capture:readme` | Regenerate README hero, GIF demo, and screenshots |
 
 ## Pre-deploy checklist
-
-Run from the repo root before pushing or deploying:
 
 ```bash
 npm run lint
@@ -113,7 +114,7 @@ Last verified: **20** Vitest tests · **18** Playwright runs (6 specs × desktop
 4. **Environment variables:** none required for the mock demo. Optional:
    - `NEXT_PUBLIC_SIMULATOR_ONLY=true` (default behaviour)
    - `NEXT_PUBLIC_WS_URL=wss://…` when a live feed exists
-5. After deploy, smoke-test `/` and `/dashboard` on desktop and a narrow viewport.
+5. Smoke-test `/` and `/dashboard` on desktop and a narrow viewport after deploy.
 
 ## Environment (optional)
 
@@ -138,7 +139,7 @@ app/
   _components/
     app-shell.tsx          # Persistent chrome across routes
 components/                # Shared UI (header, maps, sidebar, gauge, TransitionLink)
-docs/assets/readme/        # README showcase captures (Playwright)
+docs/assets/readme/        # README showcase (hero PNG, demo GIF, screenshots)
 features/live-radar/
   hooks/                   # Simulator, WebSocket, worker, Command Center sync
   lib/                     # Zone stock, incidents, geo, labels
