@@ -24,18 +24,18 @@ Front-end prototype for monitoring live telemetry during brand activations — z
 </p>
 
 <p align="center">
-  <video
-    src="./docs/assets/readme/demo.mp4"
-    width="900"
-    autoplay
-    loop
-    muted
-    playsinline
-  ></video>
+  <a href="https://github.com/ikrame-ih/live-event-radar/blob/main/docs/assets/readme/demo.mp4">
+    <img
+      src="./docs/assets/readme/hero-command-center.png"
+      alt="▶ Play demo — Command Center KPIs, stock heat, and route transition"
+      width="900"
+    />
+  </a>
 </p>
 
 <p align="center">
-  <sub>~8s — Command Center KPIs + stock heat → <code>/dashboard</code> transition → live event stream</sub>
+  <strong><a href="https://github.com/ikrame-ih/live-event-radar/blob/main/docs/assets/readme/demo.mp4">▶ Watch demo (MP4)</a></strong>
+  — ~8s: Command Center KPIs + stock heat → <code>/dashboard</code> transition → live event stream
 </p>
 
 ## Preview
