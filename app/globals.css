@@ -7,7 +7,7 @@
   color-scheme: light;
 
   /* Shell UI — lavender page + frosted glass surfaces */
-  --page-bg: #e6e2ee;
+  --page-bg: #e9e6f0;
   --glass-blur-sm: 14px;
   --glass-blur: 22px;
   --glass-blur-lg: 36px;
@@ -35,6 +35,8 @@
   --gradient-cta: linear-gradient(135deg, #ff8a4c 0%, #f472b6 100%);
   --gradient-start: #ff8a4c;
   --gradient-end: #f472b6;
+  --accent-macos: #0a84ff;
+  --accent-macos-soft: rgb(10 132 255 / 0.2);
 
   --accent-neon: #c8f542;
   --accent-neon-text: #2d3a00;
@@ -60,11 +62,11 @@
   --shadow-inset: inset 0 2px 6px rgb(80 70 110 / 0.12);
 
   --text-display: clamp(2.5rem, 5vw, 3.5rem);
-  --ease-premium: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out-soft: cubic-bezier(0.33, 1, 0.68, 1);
-  --dur-fast: 0.22s;
-  --dur-med: 0.4s;
-  --dur-slow: 0.85s;
+  --ease-premium: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 0.18s;
+  --dur-med: 0.32s;
+  --dur-slow: 0.6s;
 
   --gauge-track: rgb(255 255 255 / 0.28);
   --gauge-glow: 0 0 48px rgb(180 140 255 / 0.35);
@@ -241,10 +243,17 @@ h3 {
   background: var(--shell-bg);
   background-image: var(--glass-shine);
   border-radius: var(--radius-shell);
-  border: var(--shell-border);
-  box-shadow: var(--shadow-shell);
+  border: 1px solid rgb(255 255 255 / 0.76);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.88),
+    0 28px 80px rgb(56 41 92 / 0.12),
+    0 8px 24px rgb(56 41 92 / 0.08);
   backdrop-filter: blur(var(--shell-blur)) var(--glass-saturate);
   -webkit-backdrop-filter: blur(var(--shell-blur)) var(--glass-saturate);
+  transition:
+    transform var(--dur-med) var(--ease-out-soft),
+    box-shadow var(--dur-med) var(--ease-out-soft),
+    background-color var(--dur-med) var(--ease-out-soft);
 }
 
 .bry-box {
@@ -252,11 +261,15 @@ h3 {
   overflow: hidden;
   background: var(--box-bg);
   background-image: var(--glass-shine);
-  border: 1px solid rgb(255 255 255 / 0.52);
+  border: 1px solid rgb(255 255 255 / 0.6);
   border-radius: var(--radius-box);
   box-shadow: var(--box-highlight), var(--shadow-box);
   backdrop-filter: blur(var(--glass-blur)) var(--glass-saturate);
   -webkit-backdrop-filter: blur(var(--glass-blur)) var(--glass-saturate);
+  transition:
+    transform var(--dur-med) var(--ease-out-soft),
+    box-shadow var(--dur-med) var(--ease-out-soft),
+    background-color var(--dur-med) var(--ease-out-soft);
 }
 
 .bry-box-soft {
@@ -365,6 +378,29 @@ h3 {
 
 .bry-shell-enter {
   animation: shell-rise var(--dur-med) var(--ease-out-soft) both;
+}
+
+.bry-page-content-area {
+  view-transition-name: page-content;
+}
+
+::view-transition-group(page-content) {
+  animation-duration: 0ms;
+}
+
+::view-transition-old(page-content),
+::view-transition-new(page-content) {
+  animation-duration: 180ms;
+  animation-timing-function: var(--ease-out-soft);
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(page-content) {
+  animation-name: vt-content-out;
+}
+
+::view-transition-new(page-content) {
+  animation-name: vt-content-in;
 }
 
 .bry-row-capsule {
@@ -491,8 +527,19 @@ h3 {
 }
 
 .bry-nav-icon-active {
-  background: var(--text-primary);
-  color: #fff;
+  background: rgb(255 255 255 / 0.72);
+  color: var(--accent-macos);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.88),
+    0 8px 20px var(--accent-macos-soft);
+}
+
+.bry-filter-pill-active {
+  background: rgb(255 255 255 / 0.72);
+  color: var(--accent-macos);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.88),
+    0 6px 16px var(--accent-macos-soft);
 }
 
 .bry-role-pill {
@@ -518,6 +565,9 @@ h3 {
     var(--box-highlight),
     0 14px 44px rgb(80 60 120 / 0.11),
     0 4px 12px rgb(60 50 90 / 0.06);
+  transition:
+    transform var(--dur-med) var(--ease-out-soft),
+    box-shadow var(--dur-med) var(--ease-out-soft);
 }
 
 .bry-btn-primary {
@@ -562,8 +612,10 @@ h3 {
   gap: 6px;
   padding: 10px 20px;
   border-radius: var(--radius-pill);
-  background: var(--box-inset);
-  box-shadow: var(--shadow-inset);
+  background: rgb(255 255 255 / 0.44);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.82),
+    0 3px 10px rgb(60 50 90 / 0.08);
   color: var(--text-secondary);
   font-family: var(--font-label);
   font-size: 10px;
@@ -580,14 +632,19 @@ h3 {
 }
 
 .bry-btn-secondary:hover {
-  background: rgb(255 255 255 / 0.72);
-  color: var(--text-primary);
+  background: rgb(255 255 255 / 0.78);
+  color: var(--accent-macos);
   transform: translateY(-1px);
-  box-shadow: var(--box-highlight), var(--shadow-row);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    0 8px 20px var(--accent-macos-soft);
 }
 
 .bry-btn-secondary:active {
   transform: translateY(0) scale(0.98);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.86),
+    0 3px 10px rgb(60 50 90 / 0.08);
 }
 
 .bry-caps {
@@ -643,22 +700,40 @@ h3 {
   text-transform: uppercase;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: transform var(--dur-fast) var(--ease-premium);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.34);
+  transition:
+    transform var(--dur-fast) var(--ease-premium),
+    box-shadow var(--dur-fast) var(--ease-premium),
+    filter var(--dur-fast) var(--ease-premium);
 }
 
 .bry-status-badge-alert {
   background: linear-gradient(135deg, #ff8a4c 0%, #f472b6 100%);
   color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.28),
+    0 6px 16px rgb(244 114 182 / 0.22);
 }
 
 .bry-status-badge-live {
-  background: var(--accent-neon);
-  color: var(--accent-neon-text);
+  background: linear-gradient(135deg, rgb(255 255 255 / 0.86) 0%, #e8f2ff 100%);
+  color: var(--accent-macos);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.95),
+    0 6px 16px var(--accent-macos-soft);
 }
 
 .bry-status-badge-warn {
-  background: var(--semantic-amber-soft);
-  color: var(--semantic-amber);
+  background: linear-gradient(135deg, #fff7e8 0%, #fde4c8 100%);
+  color: #9a6217;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.85),
+    0 5px 14px rgb(217 119 6 / 0.15);
+}
+
+.bry-status-badge:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.04);
 }
 
 .bry-gauge-value {
@@ -889,22 +964,32 @@ h3 {
 
 @keyframes shell-rise {
   from {
-    opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes vt-content-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.998);
+  }
+}
+
+@keyframes vt-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.998);
   }
 }
 
 @keyframes row-enter {
   from {
-    opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
   }
 }
@@ -947,6 +1032,11 @@ h3 {
   .bry-btn-secondary:hover,
   .bry-nav-icon:hover {
     transform: none;
+  }
+
+  ::view-transition-old(page-content),
+  ::view-transition-new(page-content) {
+    animation: none;
   }
 
   .bry-map-zone-glow-selected,

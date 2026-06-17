@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Radio, Search } from "lucide-react";
-import { AppHeader } from "@/components/AppHeader";
 import { InteractiveMap } from "@/components/InteractiveMap";
 import { IncidentSidebar } from "@/components/IncidentSidebar";
 import { ZoneHealthOverview } from "@/components/ZoneHealthOverview";
@@ -47,10 +46,7 @@ export default function CommandCenter() {
   useSimulatorStream();
 
   return (
-    <div className="min-h-screen bry-page-shell px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
-      <AppHeader criticalCount={criticalCount} roleLabel="Coordinator" />
-
-      <main className="bry-shell bry-shell--page bry-shell-enter mx-auto max-w-[var(--content-max)] p-6 sm:p-8 lg:p-12">
+    <main className="bry-shell bry-shell--page mx-auto max-w-[var(--content-max)] p-6 sm:p-8 lg:p-12">
         <div className="bry-search-whisper mb-8 flex max-w-sm items-center gap-3 px-5 py-3.5 text-sm text-[var(--text-muted)]">
           <Search size={18} strokeWidth={1.5} />
           <span>Search zones&hellip;</span>
@@ -150,7 +146,6 @@ export default function CommandCenter() {
             <IncidentSidebar />
           </section>
         </div>
-      </main>
-    </div>
+    </main>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { AppHeader } from "@/components/AppHeader";
 import { useAnalyticsWorker } from "@/features/live-radar/hooks/use-analytics-worker";
 import { useSimulatorStream } from "@/features/live-radar/hooks/use-simulator-stream";
 import { useStockWebSocket } from "@/features/live-radar/hooks/use-stock-websocket";
@@ -36,10 +35,7 @@ export function DashboardLive() {
   const maxLabel = Intl.NumberFormat("en-US").format(MAX_EVENTS);
 
   return (
-    <>
-      <AppHeader roleLabel="Telemetry" />
-
-      <div className="bry-shell bry-shell-enter mx-auto max-w-[var(--content-max)] p-6 sm:p-8 lg:p-12">
+    <div className="bry-shell mx-auto max-w-[var(--content-max)] p-6 sm:p-8 lg:p-12">
         <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
@@ -88,7 +84,6 @@ export function DashboardLive() {
             {workerEcho}
           </span>
         )}
-      </div>
-    </>
+    </div>
   );
 }
