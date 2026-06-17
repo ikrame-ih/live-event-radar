@@ -80,7 +80,7 @@ function FilterPill({
       onClick={onClick}
       className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-200 ease-[var(--ease-premium)] ${
         active
-          ? "bg-[var(--text-primary)] text-white shadow-[var(--shadow-row)]"
+          ? "bry-filter-pill-active"
           : "bry-inset text-[var(--text-secondary)] hover:-translate-y-px hover:text-[var(--text-primary)]"
       }`}
     >

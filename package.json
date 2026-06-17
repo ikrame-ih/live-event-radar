@@ -14,7 +14,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:e2e": "playwright test",
-    "test:e2e:install": "playwright install chromium"
+    "test:e2e:install": "playwright install chromium",
+    "capture:readme": "playwright test e2e/readme-showcase.spec.ts --project=desktop"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.44.0",

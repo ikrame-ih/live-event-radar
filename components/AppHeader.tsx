@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { TransitionLink } from "@/components/TransitionLink";
 import { usePathname } from "next/navigation";
 import { Bell, Home, LayoutGrid, MapPin, Settings } from "lucide-react";
 import { AppLogo } from "@/components/AppLogo";
@@ -22,13 +22,13 @@ export function AppHeader({
   return (
     <header className="bry-app-header bry-page-content mb-7 grid grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_auto] items-center gap-x-4 gap-y-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:grid-rows-1">
       <div className="col-start-1 row-start-1 flex min-w-0 items-center gap-3 sm:col-start-1">
-        <Link
+        <TransitionLink
           href="/"
           className="flex min-w-0 items-center gap-2.5 text-base font-extrabold tracking-tight"
         >
           <AppLogo size={28} className="shrink-0" />
           <span className="truncate">LiveEvent Radar</span>
-        </Link>
+        </TransitionLink>
         <span className="bry-role-pill hidden shrink-0 sm:inline">
           {roleLabel}
         </span>
@@ -68,25 +68,25 @@ export function AppHeader({
         className="bry-header-nav bry-box bry-glass col-span-2 row-start-2 flex items-center justify-center gap-1 self-center px-2 py-1.5 sm:col-span-1 sm:col-start-2 sm:row-start-1"
         aria-label="Main"
       >
-        <Link
+        <TransitionLink
           href="/"
           className={`bry-nav-icon ${onHome ? "bry-nav-icon-active" : ""}`}
           aria-label="Command Center"
           aria-current={onHome ? "page" : undefined}
         >
           <Home size={20} strokeWidth={1.5} />
-        </Link>
-        <Link
+        </TransitionLink>
+        <TransitionLink
           href="/dashboard"
           className={`bry-nav-icon ${onDashboard ? "bry-nav-icon-active" : ""}`}
           aria-label="Event stream"
           aria-current={onDashboard ? "page" : undefined}
         >
           <LayoutGrid size={20} strokeWidth={1.5} />
-        </Link>
-        <Link href={mapHref} className="bry-nav-icon" aria-label="Venue map">
+        </TransitionLink>
+        <TransitionLink href={mapHref} className="bry-nav-icon" aria-label="Venue map">
           <MapPin size={20} strokeWidth={1.5} />
-        </Link>
+        </TransitionLink>
       </nav>
     </header>
   );

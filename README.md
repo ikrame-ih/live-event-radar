@@ -2,6 +2,56 @@
 
 Front-end prototype for monitoring live telemetry during brand activations — zone stock, SKU movement, and event streams in the browser.
 
+<p align="center">
+  <img
+    src="./docs/assets/readme/hero-command-center.png"
+    alt="LiveEvent Radar — Command Center with glass UI, KPI gauge, and venue map"
+    width="900"
+  />
+</p>
+
+<p align="center">
+  <em>Command Center at <code>/</code> — live KPIs, zone stock heat map, and activity feed.</em>
+</p>
+
+## Preview
+
+<table>
+  <tr>
+    <td width="50%">
+      <img
+        src="./docs/assets/readme/command-center-activity.png"
+        alt="Zone inventory and activity feed"
+      />
+      <br />
+      <sub><b>Command Center</b> — zone stock tiers, SVG map, synced activity rows</sub>
+    </td>
+    <td width="50%">
+      <img
+        src="./docs/assets/readme/telemetry-dashboard.png"
+        alt="Telemetry dashboard with Leaflet map and event stream"
+      />
+      <br />
+      <sub><b>Telemetry</b> — Leaflet map (Teatinos), filters, capped FIFO stream</sub>
+    </td>
+  </tr>
+</table>
+
+<p align="center">
+  <video
+    src="./docs/assets/readme/route-transition.webm"
+    width="900"
+    autoplay
+    loop
+    muted
+    playsinline
+  ></video>
+</p>
+
+<p align="center">
+  <sub>Route transition <code>/</code> ↔ <code>/dashboard</code> — persistent shell + View Transitions crossfade</sub>
+</p>
+
 ## Screens
 
 | Route | Role |
@@ -10,6 +60,8 @@ Front-end prototype for monitoring live telemetry during brand activations — z
 | **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped event stream, buffer KPI, Web Worker echo |
 
 Both routes share one **Zustand** store (`telemetry-store`). Mock stream runs at ~0.5 events/s with spike bursts and single-zone crew restock every 60s. Optional **WebSocket** via env vars.
+
+Navigation between routes uses a persistent shell (`AppShell`) and **View Transitions** crossfade (~180ms) via `TransitionLink`.
 
 ## Stack
 
@@ -38,6 +90,7 @@ No environment variables are required for the mock demo.
 | `npm run test:run` | Vitest single run |
 | `npm run test:e2e` | Playwright E2E — both routes, 3 viewports |
 | `npm run test:e2e:install` | Install Chromium for Playwright |
+| `npm run capture:readme` | Regenerate README screenshots + route clip |
 
 ## Pre-deploy checklist
 
@@ -77,9 +130,15 @@ Copy `.env.example` to `.env.local` and restart `npm run dev` after changes.
 
 ```
 app/
-  page.tsx                 # Command Center (/)
-  dashboard/               # Telemetry route + shell components
-components/                # Shared UI (header, maps, sidebar, gauge)
+  layout.tsx               # Root layout (fonts, globals)
+  (main)/
+    layout.tsx             # Shared AppShell (header + background)
+    page.tsx               # Command Center (/)
+    dashboard/             # Telemetry route + components
+  _components/
+    app-shell.tsx          # Persistent chrome across routes
+components/                # Shared UI (header, maps, sidebar, gauge, TransitionLink)
+docs/assets/readme/        # README showcase captures (Playwright)
 features/live-radar/
   hooks/                   # Simulator, WebSocket, worker, Command Center sync
   lib/                     # Zone stock, incidents, geo, labels
@@ -88,7 +147,7 @@ features/live-radar/
   workers/                 # analytics.worker.ts
 store/
   useEventStore.ts         # Incident + map selection state (/)
-e2e/                       # Playwright specs
+e2e/                       # Playwright specs + readme-showcase capture
 ```
 
 ## Data model (short)
