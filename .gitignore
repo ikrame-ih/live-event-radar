@@ -48,9 +48,6 @@ next-env.d.ts
 /docs/.vitepress/cache/
 /docs/.vitepress/dist/
 /docs/assets/readme/frames/
-/docs/assets/readme/demo.webm
-/docs/assets/readme/demo-source.webm
-/docs/assets/readme/demo.gif
 
 # editor / IDE
 .cursor/
