@@ -26,18 +26,8 @@ Working promotions as a brand hostess, the pain point was **information arriving
 </p>
 
 <p align="center">
-  <a href="https://github.com/ikrame-ih/live-event-radar/blob/main/docs/assets/readme/demo.mp4">
-    <img
-      src="./docs/assets/readme/hero-command-center.png"
-      alt="▶ Play demo — Command Center KPIs, stock heat, and route transition"
-      width="900"
-    />
-  </a>
-</p>
-
-<p align="center">
-  <strong><a href="https://github.com/ikrame-ih/live-event-radar/blob/main/docs/assets/readme/demo.mp4">▶ Watch demo (MP4)</a></strong>
-  — ~8s: Command Center KPIs + stock heat → <code>/dashboard</code> transition → live event stream
+  <strong><a href="https://live-event-radar.vercel.app">▶ Try the live demo</a></strong>
+  — Command Center → Telemetry transition, live stream, and stock heat in the browser (no download)
 </p>
 
 ## Preview
@@ -101,7 +91,7 @@ No environment variables are required for the mock demo.
 | `npm run test:run`         | Vitest single run                                 |
 | `npm run test:e2e`         | Playwright E2E — both routes, 3 viewports         |
 | `npm run test:e2e:install` | Install Chromium for Playwright                   |
-| `npm run capture:readme`   | Regenerate README hero PNGs + demo MP4 |
+| `npm run capture:readme`   | Regenerate README hero PNGs |
 | `npm run docs:dev`         | VitePress docs site (local) |
 | `npm run docs:build`       | Build docs for GitHub Pages |
 

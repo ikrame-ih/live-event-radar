@@ -98,7 +98,7 @@ Glass design system, Leaflet on `/dashboard`, `deriveZoneSnapshots` stock model,
 
 ### Phase F — Public docs (Jun 2026)
 
-Portfolio case study + curated architecture notes published via GitHub Pages (this site). README MP4 showcase.
+Portfolio case study + curated architecture notes published via GitHub Pages (this site). README hero PNG showcase.
 
 ## Which route to demo
 

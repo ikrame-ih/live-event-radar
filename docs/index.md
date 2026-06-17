@@ -57,10 +57,9 @@ Both routes share one **Zustand** store (`telemetry-store`). Navigation uses a p
 </p>
 
 <p align="center">
-  <video src="./assets/readme/demo.mp4" width="720" autoplay loop muted playsinline></video>
+  <strong><a href="https://live-event-radar.vercel.app">▶ Try the live demo</a></strong>
+  — Command Center → Telemetry transition, live stream, and stock heat in the browser
 </p>
-
-<p align="center"><sub>~8s — Command Center → <code>/dashboard</code> transition → live event stream</sub></p>
 
 ## Stack
 

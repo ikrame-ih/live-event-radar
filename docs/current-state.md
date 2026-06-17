@@ -2,7 +2,7 @@
 
 Single source of truth for routes, components, stock model, maps, tests, and deploy status.
 
-**Status:** App complete. Public docs on GitHub Pages. Live demo on Vercel. README showcase uses MP4 (not GIF).
+**Status:** App complete. Public docs on GitHub Pages. Live demo on Vercel. README showcase uses hero PNGs.
 
 ## Routes
 
@@ -80,7 +80,7 @@ ENTRY at south connector (`▲ ENTRY`). EXIT at avenue end (`EXIT ▶`).
 | ----- | ------- | -------- |
 | Unit | `npm test` | store, mocks, zone-stock, parsers |
 | E2E | `npm run test:e2e` | both routes, 3 viewports |
-| Showcase | `npm run capture:readme` | hero PNG + demo MP4 |
+| Showcase | `npm run capture:readme` | hero PNGs |
 
 Last verified: **20** Vitest · Playwright on `/` and `/dashboard`.
 

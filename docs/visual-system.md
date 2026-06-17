@@ -82,6 +82,6 @@ Aligned across `InteractiveMap.tsx`, `zone-stock.ts`, and Zone inventory cards.
 5. Filters, badges, map chrome
 6. Mobile overrides
 7. QA (build, Vitest, Playwright)
-8. macOS polish + route transitions + README MP4 showcase
+8. macOS polish + route transitions + README hero showcase
 
 Related: [Current state](/current-state) · [Architecture](/architecture)
