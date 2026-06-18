@@ -9,9 +9,9 @@ type ConnectionStatusBadgeProps = {
   wsStatus: WsConnectionStatus;
 };
 
-// Maps the current feed state to human-readable copy and a colour tone.
-// Returns "Simulator" when no WebSocket URL is configured or the app is in
-// mock-only mode — the badge looks identical regardless of the source.
+// Picks the badge label, subtitle, and dot colour from the current feed state.
+// e.g. socket status "open" → title "Live", tone "live".
+// Returns "Simulator" when no WebSocket URL is set or mock-only mode is on.
 function resolveFeedLabel(
   simulatorOnly: boolean,
   wsUrl: string | undefined,
@@ -70,7 +70,7 @@ export function ConnectionStatusBadge({
         />
       </span>
       <span className="font-semibold">{title}</span>
-      <span className="text-[var(--text-muted)]">· {detail}</span>
+      <span className="text-(--text-muted)">· {detail}</span>
     </div>
   );
 }
