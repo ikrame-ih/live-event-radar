@@ -7,7 +7,7 @@ Live operations telemetry for brand activations — zone stock, venue heat maps,
 
 Working promotions as a brand hostess, the pain point was **information arriving too late** — stock-outs discovered through WhatsApp, not a live venue picture. This prototype is a **Digital Command Center** that feels like real ops telemetry.
 
-**Case study & technical notes:** [ikrame-ih.github.io/live-event-radar](https://ikrame-ih.github.io/live-event-radar/) — [Technical decisions](https://ikrame-ih.github.io/live-event-radar/technical-decisions) · [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture) · [Pipeline](https://ikrame-ih.github.io/live-event-radar/pipeline)
+**Deep dives** (via the Architecture badge above): [Technical decisions](https://ikrame-ih.github.io/live-event-radar/technical-decisions) · [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture) · [Pipeline](https://ikrame-ih.github.io/live-event-radar/pipeline)
 
 ## Preview
 
@@ -42,8 +42,6 @@ Working promotions as a brand hostess, the pain point was **information arriving
 Both routes share one **Zustand** store (`telemetry-store`). The mock stream runs at ~0.5 events/s with spike bursts and a single-zone crew restock every 60s. An optional **WebSocket** feed can be enabled via env vars.
 
 Navigation between routes uses a persistent shell (`AppShell`) and a **View Transitions** crossfade (~180ms) via `TransitionLink` — the header and background never flash.
-
-**Technical decisions** (stack rationale, challenges, accessibility): [technical-decisions](https://ikrame-ih.github.io/live-event-radar/technical-decisions)
 
 **With a real backend** I would wire an authenticated WebSocket or SSE feed, server-side rollups for multi-venue campaigns, and persistent incident export — the client already uses typed events, a capped FIFO buffer, and connection state in the UI.
 
