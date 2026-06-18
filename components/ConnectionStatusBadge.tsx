@@ -9,6 +9,9 @@ type ConnectionStatusBadgeProps = {
   wsStatus: WsConnectionStatus;
 };
 
+// Maps the current feed state to human-readable copy and a colour tone.
+// Returns "Simulator" when no WebSocket URL is configured or the app is in
+// mock-only mode — the badge looks identical regardless of the source.
 function resolveFeedLabel(
   simulatorOnly: boolean,
   wsUrl: string | undefined,
@@ -48,11 +51,14 @@ export function ConnectionStatusBadge({
   const { title, detail, tone } = resolveFeedLabel(simulatorOnly, wsUrl, wsStatus);
 
   return (
+    // role="status" + aria-live so screen readers announce feed state changes
+    // without interrupting the user mid-task.
     <div
       role="status"
       aria-live="polite"
       className="bry-inset bry-glass inline-flex items-center gap-2.5 px-4 py-2 text-sm"
     >
+      {/* Animated ping dot — the outer span pulses, the inner stays solid. */}
       <span className="relative flex h-2.5 w-2.5" aria-hidden>
         <span
           className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-25"

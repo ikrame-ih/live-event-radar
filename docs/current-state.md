@@ -1,33 +1,35 @@
 # Current project state (Jun 2026)
 
-Single source of truth for routes, components, stock model, maps, tests, and deploy status.
+A snapshot of everything shipped: routes, components, stock model, maps, tests, and deploy.
 
-**Status:** App complete. Public docs on GitHub Pages. Live demo on Vercel. README preview PNGs. Recruiter polish: technical decisions page, connection badge, animated buffer KPI, a11y pass.
+**Status:** App complete. Public docs on GitHub Pages. Live demo on Vercel. README preview screenshots. Recruiter polish: technical decisions page, WebSocket connection badge, animated buffer KPI, accessibility pass.
 
 ## Routes
 
 | Route | Name | Purpose |
 | ----- | ---- | ------- |
-| `/` | Command Center | KPIs, Zone inventory, SVG venue map (stock heat), Zone activity |
-| `/dashboard` | Telemetry | Leaflet Teatinos, filters, event stream, buffer KPI, worker echo |
+| `/` | Command Center | KPIs, zone inventory, SVG venue map (stock heat), zone activity feed |
+| `/dashboard` | Telemetry | Leaflet map of Teatinos, filters, event stream, buffer KPI, Web Worker echo |
 
 Both routes share `telemetry-store`. Neither redirects to the other.
 
-**Layout:** `app/(main)/` route group — shared `AppShell` (header + background persist). URLs unchanged.
+**Layout:** `app/(main)/` route group — a shared `AppShell` keeps the header and background mounted. URLs are unchanged.
 
 ## Visual system (summary)
 
 | Token / class | Role |
 | ------------- | ---- |
-| `.bry-shell` / `.bry-glass` | Frosted glass container |
-| `.bry-box` | Nested panels |
-| `.bry-row-capsule` | Floating rows |
-| `--accent-macos` | Active nav + filter accent |
-| `TransitionLink` | View Transitions crossfade ~180ms |
+| `.bry-shell` / `.bry-glass` | Frosted glass container (backdrop blur) |
+| `.bry-box` | Nested panel cards |
+| `.bry-row-capsule` | Floating list rows |
+| `--accent-macos` | Blue active state on nav and filter pills |
+| `TransitionLink` | View Transitions crossfade (~180ms between routes) |
 
-Detail → [Visual system](/visual-system)
+Full detail → [Visual system](/visual-system)
 
 ## Stock tiers
+
+Zones change colour in real time as the stock percentage moves across thresholds:
 
 | Band | Range | Map fill |
 | ---- | ----- | -------- |
@@ -47,7 +49,7 @@ Zones: `South Gate` · `Sampling Court` · `Main Stage Walkway`
 | Header | `components/AppHeader.tsx` |
 | Route transitions | `components/TransitionLink.tsx` |
 | Connection badge | `components/ConnectionStatusBadge.tsx` |
-| Animated buffer KPI | `components/AnimatedBufferCount.tsx` (rAF, Command Center) |
+| Animated buffer KPI | `components/AnimatedBufferCount.tsx` (uses `requestAnimationFrame` for smooth count-up) |
 
 ### Command Center (`/`)
 
@@ -57,7 +59,7 @@ Zones: `South Gate` · `Sampling Court` · `Main Stage Walkway`
 | Zone inventory | `components/ZoneHealthOverview.tsx` |
 | SVG map | `components/InteractiveMap.tsx` |
 | Activity feed | `components/IncidentSidebar.tsx` |
-| Gauge | `components/StreamGauge.tsx` |
+| Stream gauge | `components/StreamGauge.tsx` |
 
 ### Telemetry (`/dashboard`)
 
@@ -67,26 +69,26 @@ Zones: `South Gate` · `Sampling Court` · `Main Stage Walkway`
 | Leaflet map | `components/VenueLeafletMap.tsx` |
 | Filters / stream | `event-stream-filters.tsx`, `event-stream-list.tsx` |
 
-`useStockWebSocket` exposes `idle | connecting | open | closed | error` for the feed badge on both routes.
+`useStockWebSocket` returns one of `idle | connecting | open | closed | error`, which the connection badge uses to show the current feed state on both routes.
 
 ## Maps
 
 | Surface | Route | Tech |
 | ------- | ----- | ---- |
-| Schematic | `/` | React SVG — fill by `stockHeat` |
-| Geographic | `/dashboard` | Leaflet + OpenStreetMap |
+| Schematic | `/` | React SVG — zone fills driven by `stockHeat` |
+| Geographic | `/dashboard` | Leaflet + OpenStreetMap tiles |
 
-ENTRY at south connector (`▲ ENTRY`). EXIT at avenue end (`EXIT ▶`).
+Entry at the south connector (`▲ ENTRY`). Exit at the avenue end (`EXIT ▶`).
 
 ## Testing
 
 | Layer | Command | Coverage |
 | ----- | ------- | -------- |
-| Unit | `npm test` | store, mocks, zone-stock, parsers |
-| E2E | `npm run test:e2e` | both routes, 3 viewports |
-| Showcase | `npm run capture:readme` | hero PNGs |
+| Unit | `npm test` | Store, mocks, zone-stock math, parsers |
+| E2E | `npm run test:e2e` | Both routes, 3 viewports |
+| Showcase | `npm run capture:readme` | Regenerates hero PNGs for README |
 
-Last verified: **20** Vitest · Playwright on `/` and `/dashboard`.
+Last verified: **20** Vitest tests · Playwright on `/` and `/dashboard`.
 
 ## Publishing
 
@@ -96,12 +98,12 @@ Last verified: **20** Vitest · Playwright on `/` and `/dashboard`.
 | Source | [github.com/ikrame-ih/live-event-radar](https://github.com/ikrame-ih/live-event-radar) |
 | Architecture docs | GitHub Pages (this site) |
 | Technical decisions | [technical-decisions](/technical-decisions) on this site |
-| Private study vault | Obsidian — full build journal + error log |
+| Private study vault | Obsidian — full build journal and error log |
 
 ## Repo layout
 
 | Path | Contents |
 | ---- | -------- |
-| `live-event-radar/` | Next.js app (GitHub repo) |
-| `live-event-radar/docs/` | Public docs + README assets |
+| `live-event-radar/` | Next.js app (GitHub repo root) |
+| `live-event-radar/docs/` | Public docs and README assets |
 | `docs/` (Obsidian vault) | Private study notes — superset of published docs |
