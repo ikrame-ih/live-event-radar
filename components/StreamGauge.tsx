@@ -12,6 +12,7 @@ export function StreamGauge({ value, max = 3 }: StreamGaugeProps) {
 
   return (
     <div className="bry-gauge-glow relative mx-auto flex h-[132px] w-[132px] items-center justify-center">
+      <span className="bry-gauge-scanline" aria-hidden />
       <div className="bry-glass absolute inset-3 rounded-full" />
       <svg className="absolute inset-0 -rotate-90" viewBox="0 0 88 88" aria-hidden>
         <circle cx="44" cy="44" r="38" fill="none" stroke="var(--gauge-track)" strokeWidth="7" />

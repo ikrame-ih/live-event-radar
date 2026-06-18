@@ -7,26 +7,29 @@ The browser receives mock (or optional WebSocket) stock events, stores them in a
 ## Current data path
 
 ```mermaid
-flowchart LR
-  mock["useSimulatorStream"]
+flowchart TB
+  mock["useSimulatorStream ~0.5 evt/s + restock 60s"]
   ws["useStockWebSocket optional"]
+  parse["parseStockEvent"]
   telemetry["telemetry-store MAX_EVENTS=10000"]
-  derive["deriveIncidents"]
-  stock["deriveZoneSnapshots"]
+  incidents["deriveIncidents 30s window"]
+  stock["deriveZoneSnapshots + idle recovery"]
   eventStore["useEventStore"]
+  worker["analytics.worker echo"]
   cmd["/ Command Center"]
   dash["/dashboard"]
 
-  mock --> telemetry
-  ws --> telemetry
-  telemetry --> derive --> eventStore --> cmd
+  mock --> parse --> telemetry
+  ws --> parse
+  telemetry --> incidents --> eventStore --> cmd
   telemetry --> stock
   stock --> cmd
-  stock --> dash
   telemetry --> dash
+  stock --> dash
+  telemetry --> worker --> dash
 ```
 
-**Scope:** two routes, one shared store. No auth. WebSocket optional.
+**Scope:** two routes, one shared store. No auth. WebSocket optional with connection badge in the UI.
 
 ## Event shape
 
@@ -100,6 +103,10 @@ Glass design system, Leaflet on `/dashboard`, `deriveZoneSnapshots` stock model,
 
 Portfolio case study + curated architecture notes published via GitHub Pages (this site). README hero PNG showcase.
 
+### Phase G — Recruiter polish (Jun 2026)
+
+Technical decisions page, WebSocket connection badge, animated buffer KPI (rAF), gauge scan accent, a11y pass on stream and filters.
+
 ## Which route to demo
 
 | Screen | Purpose |
@@ -109,4 +116,4 @@ Portfolio case study + curated architecture notes published via GitHub Pages (th
 
 Both share `telemetry-store` and the same mock stream.
 
-Related: [Current state](/current-state) · [Pipeline](/pipeline)
+Related: [Technical decisions](/technical-decisions) · [Current state](/current-state) · [Pipeline](/pipeline)

@@ -37,6 +37,8 @@ A browser-based **Digital Command Center** that feels like real ops telemetry:
 - **Shared state** — one `telemetry-store`, incidents derived into `useEventStore` for the Command Center
 - **Glass UI** — lavender shell, frosted panels, macOS-style active states, View Transitions (~180ms) between routes
 
+My background mixes frontend with hardware description (VHDL), Python, and deep learning. That pushed me toward **stable, measurable UI** — tabular metrics, capped buffers, and maps that encode state instead of decorative charts.
+
 ## Screens
 
 | Route            | Role                                                                                                     |
@@ -77,11 +79,12 @@ Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · Zustand · Flowbite R
 
 Three deep dives for recruiters who want architecture detail (~5 min total):
 
-| Note                          | Topic                                  |
-| ----------------------------- | -------------------------------------- |
-| [Business](/business)         | Operational problem and ROI framing    |
-| [Architecture](/architecture) | Data path, stack, project evolution    |
-| [Pipeline](/pipeline)         | Hooks, store, worker, derivation layer |
+| Note | Topic |
+| ---- | ----- |
+| [Technical decisions](/technical-decisions) | Stack rationale, challenges solved, a11y, next steps with a backend |
+| [Business](/business) | Operational problem and ROI framing |
+| [Architecture](/architecture) | Data path, stack, project evolution |
+| [Pipeline](/pipeline) | Hooks, store, worker, derivation layer |
 
 Further reading: [Current state](/current-state) · [Visual system](/visual-system)
 

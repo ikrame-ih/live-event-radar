@@ -493,6 +493,37 @@ h3 {
   pointer-events: none;
 }
 
+.bry-gauge-glow {
+  overflow: hidden;
+}
+
+.bry-gauge-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 45%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.28;
+  background: linear-gradient(
+    0deg,
+    transparent 0%,
+    rgb(16 185 129 / 0.18) 45%,
+    transparent 100%
+  );
+  animation: bry-gauge-scan 12s linear infinite;
+}
+
+@keyframes bry-gauge-scan {
+  0%,
+  72% {
+    top: -55%;
+  }
+  100% {
+    top: 105%;
+  }
+}
+
 .bry-nav-icon {
   display: flex;
   align-items: center;
@@ -521,7 +552,8 @@ h3 {
 .bry-nav-icon:focus-visible,
 .bry-btn-primary:focus-visible,
 .bry-btn-secondary:focus-visible,
-.bry-row-capsule:focus-visible {
+.bry-row-capsule:focus-visible,
+.bry-filter-pill:focus-visible {
   outline: 3px solid rgb(244 114 182 / 0.28);
   outline-offset: 3px;
 }

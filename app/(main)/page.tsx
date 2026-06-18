@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Radio, Search } from "lucide-react";
+import { AnimatedBufferCount } from "@/components/AnimatedBufferCount";
+import { ConnectionStatusBadge } from "@/components/ConnectionStatusBadge";
 import { InteractiveMap } from "@/components/InteractiveMap";
 import { IncidentSidebar } from "@/components/IncidentSidebar";
 import { ZoneHealthOverview } from "@/components/ZoneHealthOverview";
@@ -36,12 +38,11 @@ export default function CommandCenter() {
 
   const wsUrl = process.env.NEXT_PUBLIC_WS_URL?.trim();
   const simulatorOnly = process.env.NEXT_PUBLIC_SIMULATOR_ONLY === "true";
-  const live = Boolean(wsUrl && !simulatorOnly);
-  const streamRateLabel = live
+  const streamRateLabel = !simulatorOnly && wsUrl
     ? "~live"
     : `~${(1000 / SIMULATOR_TICK_MS).toFixed(1)}/s`;
 
-  useStockWebSocket(simulatorOnly || !wsUrl ? undefined : wsUrl);
+  const wsStatus = useStockWebSocket(simulatorOnly || !wsUrl ? undefined : wsUrl);
   useCommandCenterSync();
   useSimulatorStream();
 
@@ -69,19 +70,19 @@ export default function CommandCenter() {
             </div>
             <div className="min-w-0 flex-1">
               <h1 className="bry-caps mb-2">Live operations</h1>
-              <p
+              <AnimatedBufferCount
+                value={eventCount}
                 className="bry-stat-big bry-kpi-display font-mono"
-                data-kpi-buffer-count
-              >
-                {eventCount.toLocaleString()}
-              </p>
+              />
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
                 Events buffered
               </p>
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                <span className="bry-inset inline-flex h-9 items-center px-4 text-xs font-bold uppercase tracking-wide">
-                  {live ? "Live" : "Simulator"}
-                </span>
+                <ConnectionStatusBadge
+                  simulatorOnly={simulatorOnly}
+                  wsUrl={wsUrl}
+                  wsStatus={wsStatus}
+                />
                 {criticalCount > 0 && (
                   <span className="bry-tag-neon inline-flex h-9 items-center px-4">
                     {alertCountLabel(criticalCount)}

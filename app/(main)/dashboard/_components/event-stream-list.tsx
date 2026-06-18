@@ -10,6 +10,12 @@ type EventStreamListProps = {
   filters: StreamFilters;
 };
 
+function latestEventLabel(events: StockEvent[]): string {
+  if (events.length === 0) return "";
+  const latest = events[events.length - 1];
+  return `${latest.zone}, ${latest.item}, quantity ${latest.quantity}`;
+}
+
 function matchesFilters(e: StockEvent, filters: StreamFilters): boolean {
   if (filters.zone !== "all" && e.zone !== filters.zone) return false;
   if (filters.status === "spike" && e.quantity > -2) return false;
@@ -50,6 +56,8 @@ export function EventStreamList({ events, filters }: EventStreamListProps) {
     return [...events].reverse().filter((e) => matchesFilters(e, filters)).slice(0, 50);
   }, [events, filters]);
 
+  const liveLabel = latestEventLabel(events);
+
   if (rows.length === 0) {
     return (
       <div className="bry-inner bry-glass px-4 py-16 text-center text-sm text-[var(--text-muted)]">
@@ -62,6 +70,9 @@ export function EventStreamList({ events, filters }: EventStreamListProps) {
 
   return (
     <div className="flex flex-col gap-4">
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {liveLabel ? `Latest event: ${liveLabel}` : ""}
+      </p>
       {rows.map((e, i) => (
         <article
           key={`${e.timestamp}-${i}`}
