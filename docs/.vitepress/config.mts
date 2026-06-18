@@ -49,13 +49,19 @@ export default withMermaid(
       ],
       socialLinks: [
         {
+          icon: "linkedin",
+          link: "https://www.linkedin.com/in/ikrame-ih/",
+        },
+        {
           icon: "github",
-          link: "https://github.com/ikrame-ih/live-event-radar",
+          link: "https://github.com/ikrame-ih",
         },
       ],
       footer: {
-        message: "Ikrame Ibn Hayoun — LiveEvent Radar",
-        copyright: "Copyright © 2026",
+        message:
+          'Built by <a href="https://ikrame-ih.vercel.app/" target="_blank" rel="noopener">Ikrame Ibn Hayoun</a>',
+        copyright:
+          '<a href="https://github.com/ikrame-ih" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/ikrame-ih/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://ikrame-ih.vercel.app/" target="_blank" rel="noopener">Portfolio</a>',
       },
     },
   }),

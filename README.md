@@ -27,7 +27,7 @@ Working promotions as a brand hostess, the pain point was **information arriving
         alt="Telemetry dashboard with Leaflet map and event stream"
       />
       <br />
-      <sub><b>Telemetry</b> — Leaflet map (Teatinos), filters, capped FIFO stream</sub>
+      <sub><b>Telemetry</b> — Leaflet map (Teatinos), filters, capped event stream</sub>
     </td>
   </tr>
 </table>
@@ -39,13 +39,13 @@ Working promotions as a brand hostess, the pain point was **information arriving
 | **`/`**          | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed                 |
 | **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped event stream, buffer KPI, Web Worker echo |
 
-Both routes share one **Zustand** store (`telemetry-store`). Mock stream runs at ~0.5 events/s with spike bursts and single-zone crew restock every 60s. Optional **WebSocket** via env vars.
+Both routes share one **Zustand** store (`telemetry-store`). The mock stream runs at ~0.5 events/s with spike bursts and a single-zone crew restock every 60s. An optional **WebSocket** feed can be enabled via env vars.
 
-Navigation between routes uses a persistent shell (`AppShell`) and **View Transitions** crossfade (~180ms) via `TransitionLink`.
+Navigation between routes uses a persistent shell (`AppShell`) and a **View Transitions** crossfade (~180ms) via `TransitionLink` — the header and background never flash.
 
-**Technical decisions** (stack rationale, challenges, a11y): [technical-decisions](https://ikrame-ih.github.io/live-event-radar/technical-decisions)
+**Technical decisions** (stack rationale, challenges, accessibility): [technical-decisions](https://ikrame-ih.github.io/live-event-radar/technical-decisions)
 
-**With a real backend** I would wire authenticated WebSocket/SSE, server-side rollups for multi-venue campaigns, and persistent incident export — the client already uses typed events, a capped FIFO buffer, and connection state in the UI.
+**With a real backend** I would wire an authenticated WebSocket or SSE feed, server-side rollups for multi-venue campaigns, and persistent incident export — the client already uses typed events, a capped FIFO buffer, and connection state in the UI.
 
 ## Stack
 
@@ -137,14 +137,10 @@ e2e/                       # Playwright specs + readme-showcase capture
 ## Data model (short)
 
 - **Zones:** South Gate · Sampling Court · Main Stage Walkway
-- **Buffer:** FIFO cap at 10,000 events in `telemetry-store`
+- **Buffer:** FIFO cap at 10,000 events in `telemetry-store` — oldest events drop first when the limit is reached
 - **Stock tiers:** Healthy ≥ 65% · Watch 35–64% · Low under 35%
 - **Maps:** SVG schematic on `/` · Leaflet + OpenStreetMap on `/dashboard`
 
 ## Author
 
-Ikrame Ibn Hayoun
-
-## Repository
-
-https://github.com/ikrame-ih/live-event-radar
+**Ikrame Ibn Hayoun** — [Portfolio](https://ikrame-ih.vercel.app/) · [GitHub](https://github.com/ikrame-ih) · [LinkedIn](https://www.linkedin.com/in/ikrame-ih/)

@@ -18,35 +18,35 @@ features:
   - title: Command Center
     details: Primary screen at / — KPIs, zone inventory, SVG venue map with stock heat tiers, and a synced activity feed.
   - title: Telemetry depth
-    details: Secondary screen at /dashboard — Leaflet map (Teatinos, Málaga), filters, FIFO event stream, and Web Worker echo.
+    details: Secondary screen at /dashboard — Leaflet map (Teatinos, Málaga), filters, a capped event stream, and a Web Worker running in the background.
   - title: Stable under load
-    details: Zustand buffer capped at 10,000 events, derived zone snapshots, optional WebSocket. 20 Vitest tests · 18 Playwright runs.
+    details: Zustand buffer capped at 10,000 events, derived zone snapshots, optional WebSocket feed. 20 Vitest tests · 18 Playwright runs.
 ---
 
 ## The problem
 
-Working big promotions as a brand hostess, the pain point was always the same: **information arriving too late**. A stand runs out of drinks mid-afternoon; central coordination only hears about it hours later through WhatsApp or manual counts. There is no single live picture of which zones are draining stock fastest.
+Working big promotions as a brand hostess, the pain point was always the same: **information arriving too late**. A stand runs out of drinks mid-afternoon; the coordinator only hears about it hours later through WhatsApp or a manual count. There is no single live picture of which zones are draining stock fastest.
 
 ## What I built
 
 A browser-based **Digital Command Center** that feels like real ops telemetry:
 
-- **Mock stream** at ~0.5 events/s with spike bursts and single-zone crew restock every 60s
-- **Stock model** with Healthy / Watch / Low tiers (65% / 35% thresholds) driving map colour
-- **Two maps** — schematic SVG on `/`, geographic Leaflet on `/dashboard`
-- **Shared state** — one `telemetry-store`, incidents derived into `useEventStore` for the Command Center
-- **Glass UI** — lavender shell, frosted panels, macOS-style active states, View Transitions (~180ms) between routes
+- **Mock stream** at ~0.5 events/s with spike bursts and a single-zone crew restock every 60s
+- **Stock model** with Healthy / Watch / Low tiers (65% / 35% thresholds) driving map colour in real time
+- **Two maps** — a schematic SVG on `/`, a geographic Leaflet map on `/dashboard`
+- **Shared state** — one Zustand store (`telemetry-store`) feeds both routes; incidents are derived into `useEventStore` for the Command Center
+- **Glass UI** — lavender shell, frosted panels, macOS-style active states, and a View Transitions crossfade (~180ms) between routes
 
-My background mixes frontend with hardware description (VHDL), Python, and deep learning. That pushed me toward **stable, measurable UI** — tabular metrics, capped buffers, and maps that encode state instead of decorative charts.
+My background mixes frontend with hardware description (VHDL), Python, and deep learning. That pushed me toward **stable, measurable UI** — tabular metrics that don't shift, capped buffers that don't grow forever, and maps that encode state instead of decorative charts.
 
 ## Screens
 
 | Route            | Role                                                                                                     |
 | ---------------- | -------------------------------------------------------------------------------------------------------- |
 | **`/`**          | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed                |
-| **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped FIFO stream, buffer KPI, Web Worker echo |
+| **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped event stream, buffer KPI, Web Worker     |
 
-Both routes share one **Zustand** store (`telemetry-store`). Navigation uses a persistent `AppShell` and **View Transitions** via `TransitionLink`.
+Both routes share one **Zustand** store. Navigation uses a persistent `AppShell` and **View Transitions** via `TransitionLink` so the header and background never flash.
 
 ## Preview
 
@@ -66,7 +66,7 @@ Both routes share one **Zustand** store (`telemetry-store`). Navigation uses a p
         alt="Telemetry dashboard with Leaflet map and event stream"
       />
       <br />
-      <sub><b>Telemetry</b> — Leaflet map (Teatinos), filters, capped FIFO stream</sub>
+      <sub><b>Telemetry</b> — Leaflet map (Teatinos), filters, capped event stream</sub>
     </td>
   </tr>
 </table>
@@ -77,17 +77,17 @@ Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · Zustand · Flowbite R
 
 ## Technical notes
 
-Three deep dives for recruiters who want architecture detail (~5 min total):
+Three focused deep dives for anyone who wants the architecture detail (~5 min total):
 
 | Note | Topic |
 | ---- | ----- |
-| [Technical decisions](/technical-decisions) | Stack rationale, challenges solved, a11y, next steps with a backend |
+| [Technical decisions](/technical-decisions) | Stack rationale, challenges solved, accessibility, and next steps with a real backend |
 | [Business](/business) | Operational problem and ROI framing |
-| [Architecture](/architecture) | Data path, stack, project evolution |
-| [Pipeline](/pipeline) | Hooks, store, worker, derivation layer |
+| [Architecture](/architecture) | Data path, technology roster, and project evolution |
+| [Pipeline](/pipeline) | Hooks, store, Web Worker, and derivation layer |
 
 Further reading: [Current state](/current-state) · [Visual system](/visual-system)
 
 ## Author
 
-**Ikrame Ibn Hayoun** — front-end portfolio project, Jun 2026.
+**Ikrame Ibn Hayoun** — [Portfolio](https://ikrame-ih.vercel.app/) · [GitHub](https://github.com/ikrame-ih) · [LinkedIn](https://www.linkedin.com/in/ikrame-ih/)
