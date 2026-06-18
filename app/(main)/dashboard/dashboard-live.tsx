@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ConnectionStatusBadge } from "@/components/ConnectionStatusBadge";
 import { useAnalyticsWorker } from "@/features/live-radar/hooks/use-analytics-worker";
 import { useSimulatorStream } from "@/features/live-radar/hooks/use-simulator-stream";
 import { useStockWebSocket } from "@/features/live-radar/hooks/use-stock-websocket";
@@ -12,7 +13,6 @@ import {
 } from "./_components/event-stream-filters";
 import { EventStreamList } from "./_components/event-stream-list";
 import { DashboardVenueMap } from "./_components/dashboard-venue-map";
-import { LiveStatusBadge } from "./_components/live-status-badge";
 
 const defaultFilters: StreamFilters = {
   search: "",
@@ -26,9 +26,8 @@ export function DashboardLive() {
 
   const wsUrl = process.env.NEXT_PUBLIC_WS_URL?.trim();
   const simulatorOnly = process.env.NEXT_PUBLIC_SIMULATOR_ONLY === "true";
-  const wsConnected = Boolean(wsUrl && !simulatorOnly);
 
-  useStockWebSocket(simulatorOnly || !wsUrl ? undefined : wsUrl);
+  const wsStatus = useStockWebSocket(simulatorOnly || !wsUrl ? undefined : wsUrl);
   useSimulatorStream();
   const workerEcho = useAnalyticsWorker("live-event-radar");
 
@@ -45,9 +44,10 @@ export function DashboardLive() {
               Brand Activation Demo &middot; live telemetry stream
             </p>
           </div>
-          <LiveStatusBadge
+          <ConnectionStatusBadge
             simulatorOnly={simulatorOnly}
-            wsConnected={wsConnected}
+            wsUrl={wsUrl}
+            wsStatus={wsStatus}
           />
         </div>
 

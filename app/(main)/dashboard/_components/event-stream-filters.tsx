@@ -78,7 +78,8 @@ function FilterPill({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-200 ease-[var(--ease-premium)] ${
+      aria-pressed={active}
+      className={`bry-filter-pill rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-200 ease-[var(--ease-premium)] ${
         active
           ? "bry-filter-pill-active"
           : "bry-inset text-[var(--text-secondary)] hover:-translate-y-px hover:text-[var(--text-primary)]"

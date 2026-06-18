@@ -60,6 +60,7 @@ Three layers:
 | M6 | Filter pill | `.bry-filter-pill-active` |
 | M8 | Map zone tint | polygon fill/stroke 0.4–0.55s |
 | M10 | Route crossfade | View Transitions API, 180ms |
+| M11 | Gauge scan accent | `.bry-gauge-scanline` on `StreamGauge` — subtle sweep, disabled under reduced motion |
 
 `prefers-reduced-motion: reduce` disables non-essential animation.
 

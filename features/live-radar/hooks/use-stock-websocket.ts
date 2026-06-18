@@ -1,18 +1,37 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { parseStockEvent } from "../parse-stock-event";
 import { useTelemetryStore } from "../state/telemetry-store";
 
-// Opens a WebSocket when url is set; otherwise does nothing (simulator keeps the mock timer).
-export function useStockWebSocket(url: string | undefined) {
+export type WsConnectionStatus = "idle" | "connecting" | "open" | "closed" | "error";
+
+// Opens a WebSocket when url is set; returns connection status for the feed badge.
+export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
   const appendEvent = useTelemetryStore((s) => s.appendEvent);
+  const [status, setStatus] = useState<WsConnectionStatus>("idle");
 
   useEffect(() => {
-    if (!url) return;
+    if (!url) {
+      setStatus("idle");
+      return;
+    }
 
     let done = false;
+    setStatus("connecting");
     const ws = new WebSocket(url);
+
+    ws.onopen = () => {
+      if (!done) setStatus("open");
+    };
+
+    ws.onclose = () => {
+      if (!done) setStatus("closed");
+    };
+
+    ws.onerror = () => {
+      if (!done) setStatus("error");
+    };
 
     ws.onmessage = (msg) => {
       if (done) return;
@@ -28,6 +47,9 @@ export function useStockWebSocket(url: string | undefined) {
     return () => {
       done = true;
       ws.close();
+      setStatus("idle");
     };
   }, [appendEvent, url]);
+
+  return status;
 }
