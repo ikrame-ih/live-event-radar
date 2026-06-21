@@ -28,6 +28,26 @@ export const useEventStore = create<EventState>((set) => ({
   activeIncidentId: null,
   selectedIncidentId: null,
   setActiveIncident: (id) => set({ activeIncidentId: id }),
-  selectIncident: (id) => set({ selectedIncidentId: id, activeIncidentId: id }),
-  syncIncidents: (incidents) => set({ incidents }),
+  selectIncident: (id) =>
+    set((state) => {
+      if (id === null) {
+        return { selectedIncidentId: null, activeIncidentId: null };
+      }
+      if (state.selectedIncidentId === id) {
+        return { selectedIncidentId: null, activeIncidentId: null };
+      }
+      return { selectedIncidentId: id, activeIncidentId: id };
+    }),
+  syncIncidents: (incidents) =>
+    set((state) => {
+      const selectionStillValid =
+        state.selectedIncidentId !== null &&
+        incidents.some((i) => i.id === state.selectedIncidentId);
+      return {
+        incidents,
+        ...(selectionStillValid
+          ? {}
+          : { selectedIncidentId: null, activeIncidentId: null }),
+      };
+    }),
 }));

@@ -72,7 +72,6 @@ No environment variables are required for the mock demo.
 | `npm run test:run`         | Vitest single run                         |
 | `npm run test:e2e`         | Playwright E2E — both routes, 3 viewports |
 | `npm run test:e2e:install` | Install Chromium for Playwright           |
-| `npm run capture:readme`   | Regenerate README hero PNGs               |
 | `npm run docs:dev`         | VitePress docs site (local)               |
 | `npm run docs:build`       | Build docs for GitHub Pages               |
 
@@ -85,7 +84,7 @@ npm run test:run
 npm run test:e2e
 ```
 
-Last verified: **20** Vitest tests · **18** Playwright runs (6 specs × desktop / tablet / phone).
+Last verified: **24** Vitest tests · **19** Playwright runs (7 specs × desktop / tablet / phone).
 
 ## Deploy on Vercel
 
@@ -120,6 +119,8 @@ app/
   _components/
     app-shell.tsx          # Persistent chrome across routes
 components/                # Shared UI (header, maps, sidebar, gauge, TransitionLink)
+design/
+  wireframes/              # Early UI sketches (Excalidraw)
 docs/                      # Public docs (VitePress) + README showcase assets
 features/live-radar/
   hooks/                   # Simulator, WebSocket, worker, Command Center sync
@@ -129,7 +130,7 @@ features/live-radar/
   workers/                 # analytics.worker.ts
 store/
   useEventStore.ts         # Incident + map selection state (/)
-e2e/                       # Playwright specs + readme-showcase capture
+e2e/                       # Playwright specs
 ```
 
 ## Data model (short)
