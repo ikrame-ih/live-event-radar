@@ -1,6 +1,6 @@
 import type { StockEvent } from "./types";
 
-// Guards WebSocket JSON before it reaches the store. Returns null if shape is wrong.
+// Validates WebSocket JSON before appendEvent. Returns null on bad shape.
 export function parseStockEvent(raw: unknown): StockEvent | null {
   if (!raw || typeof raw !== "object") return null;
 

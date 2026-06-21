@@ -6,9 +6,7 @@ import { startTransition, type ComponentProps, type MouseEvent } from "react";
 
 type TransitionLinkProps = ComponentProps<typeof NextLink>;
 
-// Returns true for any click that the browser or OS should handle natively
-// (middle-click, Ctrl+click, modified click, already-prevented, etc.).
-// In those cases we let the default Next.js link behaviour run unchanged.
+// Middle-click, modified click, etc. — leave default Link behaviour alone.
 function shouldSkipTransition(event: MouseEvent<HTMLAnchorElement>): boolean {
   return (
     event.defaultPrevented ||
@@ -20,9 +18,7 @@ function shouldSkipTransition(event: MouseEvent<HTMLAnchorElement>): boolean {
   );
 }
 
-// Wraps navigation in document.startViewTransition when the browser supports it.
-// This triggers the ~180ms crossfade defined in globals.css.
-// Falls back to a plain router.push for browsers that don't support the API yet.
+// ~180ms crossfade in globals.css; plain router.push when unsupported.
 function runViewTransition(navigate: () => void) {
   if (typeof document !== "undefined" && "startViewTransition" in document) {
     document.startViewTransition(() => {
@@ -34,9 +30,7 @@ function runViewTransition(navigate: () => void) {
   navigate();
 }
 
-// Drop-in replacement for Next.js <Link> that plays a View Transitions crossfade
-// on same-tab navigation. Anchor and hash links are excluded because the API
-// doesn't apply to in-page jumps.
+// Link with View Transitions on same-tab nav. Skips hash/anchor targets.
 export function TransitionLink({
   href,
   onClick,

@@ -6,7 +6,7 @@
 :root {
   color-scheme: light;
 
-  /* Shell UI — lavender page + frosted glass surfaces */
+  /* Shell — lavender page, frosted glass */
   --page-bg: #e9e6f0;
   --glass-blur-sm: 14px;
   --glass-blur: 22px;
@@ -78,7 +78,7 @@
   --map-bg: #eceaf2;
   --map-grid: rgb(170 165 185 / 0.28);
   --map-path: #d5d2de;
-  /* Map — neutral lavenders + warm stock tiers (legend-aligned) */
+  /* Map zone colours — aligned with legend tiers */
   --map-zone-fill: #e4e2ea;
   --map-heat-mid: #fde4c8;
   --map-heat-high: #f5c4bc;

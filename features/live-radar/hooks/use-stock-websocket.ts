@@ -6,9 +6,7 @@ import { useTelemetryStore } from "../state/telemetry-store";
 
 export type WsConnectionStatus = "idle" | "connecting" | "open" | "closed" | "error";
 
-// Opens a WebSocket connection when a URL is provided and returns the current
-// connection status so the UI can reflect it in the ConnectionStatusBadge.
-// When url is undefined (mock-only mode), the hook stays idle and is a no-op.
+// Optional live feed. Returns connection status for the badge; no-op when url is undefined.
 export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
   const appendEvent = useTelemetryStore((s) => s.appendEvent);
   const [status, setStatus] = useState<WsConnectionStatus>("idle");
@@ -19,8 +17,7 @@ export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
       return;
     }
 
-    // The `done` flag prevents state updates after the effect has cleaned up.
-    // Without it, a late-arriving callback could update state on an unmounted component.
+    // Guard against setState after unmount when a socket callback fires late.
     let done = false;
     setStatus("connecting");
     const ws = new WebSocket(url);
@@ -44,7 +41,7 @@ export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
         const row = parseStockEvent(data);
         if (row) appendEvent(row);
       } catch {
-        // Bad JSON frame — ignore silently and keep the connection open.
+        // malformed frame — keep socket open
       }
     };
 

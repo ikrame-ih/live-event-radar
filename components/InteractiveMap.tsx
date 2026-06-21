@@ -41,7 +41,7 @@ const LEGEND_ROWS: { heat: StockHeat; label: string }[] = [
   { heat: "hot", label: `Low <${STOCK_TIER_WATCH_MIN}%` },
 ];
 
-/** Solid fills — must read clearly against map bg (#eceaf2) and match legend swatches */
+/** Zone fills — contrast against #eceaf2, match legend */
 const ZONE_STYLE: Record<
   StockHeat,
   { fill: string; glow: string; stroke: string; stockColor: string }

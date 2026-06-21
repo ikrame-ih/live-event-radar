@@ -7,7 +7,7 @@ export const ZONE_NAMES = [
   "Main Stage Walkway",
 ] as const;
 
-/** Bottom-right of each zone polygon — clear of the text stack. */
+/** Incident anchor — bottom-right of each zone polygon */
 export const ZONE_ANCHORS: Record<string, { x: number; y: number }> = {
   "South Gate": { x: 210, y: 500 },
   "Sampling Court": { x: 600, y: 448 },
@@ -29,10 +29,7 @@ function resolveSeverity(eventCount: number, spikeCount: number): IncidentSeveri
   return "resolved";
 }
 
-/**
- * One rollup card per active zone (max 3). Individual spike events are folded
- * into the zone summary so the map never stacks overlapping nodes.
- */
+// One card per active zone — spikes fold into the summary so map nodes don't stack.
 export function deriveIncidents(events: StockEvent[]): Incident[] {
   const now = Date.now();
   const cutoff = now - WINDOW_MS;

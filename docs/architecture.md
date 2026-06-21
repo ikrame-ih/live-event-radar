@@ -2,11 +2,9 @@
 
 ## What it does
 
-The browser receives stock events (from a mock timer or an optional WebSocket), stores them in a rolling list via Zustand (a state management library), optionally processes summaries in a background Web Worker thread, then renders **two screens**: the Command Center at `/` (SVG venue map + incidents) and the Telemetry view at `/dashboard` (Leaflet map + filtered event stream).
+The browser receives stock events (mock timer or optional WebSocket), stores them in a rolling Zustand buffer, optionally runs lightweight summaries in a Web Worker, and renders **two screens**: the Command Center at `/` (SVG venue map + incidents) and Telemetry at `/dashboard` (Leaflet map + filtered event stream).
 
-## Current data path
-
-The diagram below shows how data moves from source to screen:
+## Data path
 
 ```mermaid
 flowchart TB
@@ -31,11 +29,9 @@ flowchart TB
   telemetry --> worker --> dash
 ```
 
-**Scope:** two routes, one shared store. No authentication. WebSocket is optional — a connection badge in the UI reflects the current state.
+Two routes, one shared store. No auth. WebSocket is optional — the connection badge reflects whatever feed is active.
 
 ## Event shape
-
-Every stock change in the system is represented as a single JSON object:
 
 ```json
 {
@@ -47,79 +43,26 @@ Every stock change in the system is represented as a single JSON object:
 ```
 
 Zones: `South Gate`, `Sampling Court`, `Main Stage Walkway`.  
-Items: `Soda`, `Cap`, `Sample bag`. A negative quantity means consumption (stock going down).
+Items: `Soda`, `Cap`, `Sample bag`. Negative quantity = consumption.
 
-## Technology roster
+## Stack
 
-| Technology | Role |
-| ---------- | ---- |
-| Next.js 16 | App Router, file-based routing, persistent layout |
-| React 19 | UI components |
-| TypeScript | Strict `StockEvent` typing across the codebase |
-| Tailwind CSS v4 | Layout and responsive styles |
-| Zustand | Shared `telemetry-store` and `useEventStore` — lightweight state management |
-| Web Workers | Analytics summaries computed off the main browser thread on `/dashboard` |
-| React SVG | Schematic venue map on `/` |
-| Leaflet | Geographic map with real tiles on `/dashboard` |
-| Vitest + Playwright | Unit tests + end-to-end browser tests |
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 · Zustand · Web Workers · React SVG + Leaflet · Vitest + Playwright
 
-## Per-message flow
+Each event follows the same path: parse → `appendEvent` → trim at 10,000 (oldest dropped first) → derive incidents and zone snapshots → both views re-render from selectors.
 
-Every event from any source follows this path:
+## How the project grew
 
-1. Parse into a typed `StockEvent`
-2. Push into Zustand via `appendEvent`
-3. Drop the oldest entry if the buffer exceeds 10,000 events (FIFO — first in, first out)
-4. Derive incidents and zone stock snapshots from the updated buffer
-5. Both views read from selectors and re-render what changed
+The first version was a single `/dashboard` route with a 4-panel grid and a Canvas 2D heatmap. Zone names were generic (`Entrance A`, `North stand`). Fine for a spike, but not what I wanted to show recruiters.
 
-## Project evolution {#project-evolution}
+I renamed zones to venue-realistic labels, shifted to a map-dominant layout, and added `/` as the primary Command Center — SVG map, incident sidebar, `useEventStore` bridged from `deriveIncidents`. `/dashboard` stayed for telemetry depth.
 
-### Phase A — Original MVP
+In June 2026 I did a full UI pass: glass shell, Leaflet on `/dashboard`, `deriveZoneSnapshots` for stock tiers, zone inventory cards split from the activity feed. Then macOS-style nav active states, a persistent `AppShell`, and `TransitionLink` with View Transitions (~180ms crossfade) so route changes don't flash the header.
 
-| Aspect | State |
-| ------ | ----- |
-| Route | `/` redirected → `/dashboard` |
-| Layout | 4-panel grid |
-| Map | Canvas 2D heatmap |
-| Zones | Entrance A, North stand, Main stage |
-
-### Phase B — UI iteration
-
-Zone names updated to venue-realistic labels. Asymmetric venue plan. Layout shifted to map-dominant.
-
-### Phase C — Command Center
-
-| Addition | Detail |
-| -------- | ------ |
-| Route | `/` becomes the primary screen (no redirect) |
-| Map | `InteractiveMap.tsx` — React SVG |
-| State | `useEventStore` + `deriveIncidents` bridge |
-| Interaction | Sidebar ↔ map zone selection |
-
-### Phase D — UI + telemetry redesign (Jun 2026)
-
-Glass design system, Leaflet on `/dashboard`, `deriveZoneSnapshots` stock model, Zone inventory and activity split.
-
-### Phase E — macOS polish (Jun 2026)
-
-`app/(main)/` route group, persistent `AppShell` (header and background stay mounted between navigations), `TransitionLink` with the View Transitions API, macOS-style active states.
-
-### Phase F — Public docs (Jun 2026)
-
-Portfolio case study and architecture notes published as a static site via GitHub Pages. README hero PNG showcase.
-
-### Phase G — Recruiter polish (Jun 2026)
-
-Technical decisions page, WebSocket connection badge, animated buffer KPI using `requestAnimationFrame`, gauge scan accent, accessibility pass on stream and filters.
+Docs went public on GitHub Pages around the same time. The last round was practical polish — connection badge, animated buffer KPI, accessibility on the stream and filters.
 
 ## Which route to demo
 
-| Screen | Purpose |
-| ------ | ------- |
-| `/` | First impression — shell UI, KPIs, stock heat map |
-| `/dashboard` | Technical depth — Leaflet, filters, capped FIFO stream |
-
-Both routes share `telemetry-store` and the same mock stream — any event that appears on one screen is reflected on the other.
+Start at `/` for the shell UI and stock heat map. Use `/dashboard` when you want Leaflet, filters, and the capped FIFO stream. Both read the same `telemetry-store`, so events stay in sync.
 
 Related: [Technical decisions](/technical-decisions) · [Current state](/current-state) · [Pipeline](/pipeline)

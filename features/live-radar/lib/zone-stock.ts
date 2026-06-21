@@ -3,7 +3,7 @@ import { ZONE_NAMES, countByZone } from "./derive-incidents";
 
 export const STOCK_MAX = 100;
 export const REPLENISH_INTERVAL_MS = 60_000;
-/** Match map legend + stockHeat bands */
+/** Map legend thresholds */
 export const STOCK_TIER_HEALTHY_MIN = 65;
 export const STOCK_TIER_WATCH_MIN = 35;
 const STOCK_WINDOW_MS = 120_000;
@@ -42,7 +42,7 @@ function resolveStatus(stock: number, spikes15s: number): ZoneStatus {
   return "healthy";
 }
 
-/** Stock level from recent consumption/restock events plus idle recovery toward full. */
+/** Recent events + idle drift back toward 100% */
 export function deriveZoneSnapshots(
   events: StockEvent[],
   now = Date.now(),
@@ -108,7 +108,6 @@ export function stockHeat(stock: number): "cool" | "mid" | "hot" {
 
 export type StockHeat = ReturnType<typeof stockHeat>;
 
-/** Human-readable zone status — separates stock vs demand signals. */
 export function zoneStatusCaption(snap: ZoneSnapshot): string {
   const lowStock = snap.stock < 35;
   const watchStock = snap.stock < 65;

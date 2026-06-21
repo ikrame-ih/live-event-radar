@@ -3,7 +3,7 @@ import { ZONE_NAMES } from "../lib/derive-incidents";
 
 const ITEMS = ["Soda", "Cap", "Sample bag"];
 
-/** Consumption-heavy mock — stock should reach watch (35–64%) and low (<35%) tiers in demo. */
+/** Tuned so watch/low tiers show up during a short demo */
 export function mockStockEvent(): StockEvent {
   const roll = Math.random();
   const zone = ZONE_NAMES[Math.floor(Math.random() * ZONE_NAMES.length)] ?? "Zone";
@@ -25,7 +25,7 @@ export function mockStockEvent(): StockEvent {
   };
 }
 
-/** Crew restock — one zone per pulse, partial refill (not a full reset on every zone). */
+/** One zone per pulse — partial refill, not a full reset */
 export function mockRestockPulse(): StockEvent[] {
   const ts = Date.now();
   const zone = ZONE_NAMES[Math.floor(Math.random() * ZONE_NAMES.length)] ?? ZONE_NAMES[0];
