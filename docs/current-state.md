@@ -29,11 +29,9 @@ Map fill follows three bands — Healthy (≥ 65%, lavender grey), Watch (35–6
 
 **Maps:** SVG schematic on `/` (zone fills from `stockHeat`); Leaflet + OpenStreetMap on `/dashboard`. Entry at south connector (`▲ ENTRY`), exit at avenue end (`EXIT ▶`).
 
-## Tests & deploy
+## Tests & CI
 
-Unit: `npm test` (store, mocks, zone-stock, parsers). E2E: `npm run test:e2e` on both routes, three viewports.
-
-Last verified: **24** Vitest tests · Playwright on `/` and `/dashboard`.
+Unit: `npm run test:run` (24 tests). E2E: `npm run test:e2e`. GitHub Actions runs lint, typecheck, unit tests, and build on every PR; Playwright (desktop) on pushes to `main`.
 
 | Surface | URL |
 | ------- | --- |

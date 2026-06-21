@@ -1,7 +1,4 @@
 import { expect, test } from "@playwright/test";
-import path from "node:path";
-
-const evidenceDir = path.resolve(process.cwd(), "../docs/assets");
 
 test.describe("LiveEvent Radar — Command Center (root)", () => {
   test("root page renders command center with incidents", async ({ page }) => {
@@ -38,7 +35,7 @@ test.describe("LiveEvent Radar — Command Center (root)", () => {
 });
 
 test.describe("LiveEvent Radar — /dashboard (event stream)", () => {
-  test("shows title and event stream section", async ({ page }, testInfo) => {
+  test("shows title and event stream section", async ({ page }) => {
     await page.goto("/dashboard");
     await expect(
       page.getByRole("heading", { name: "LiveEvent Radar", level: 1 })
@@ -53,13 +50,6 @@ test.describe("LiveEvent Radar — /dashboard (event stream)", () => {
     ).toBeVisible();
     await expect(page.getByText("Buffered rows")).toBeVisible();
     await expect(page.getByPlaceholder("Search zone or item…")).toBeVisible();
-
-    if (testInfo.project.name === "desktop") {
-      await page.screenshot({
-        path: path.join(evidenceDir, "test-evidence-dashboard-desktop.png"),
-        fullPage: true,
-      });
-    }
   });
 
   test("mock stream grows KPI count without reload", async ({ page }) => {
