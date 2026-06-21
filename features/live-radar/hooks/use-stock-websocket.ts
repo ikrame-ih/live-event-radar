@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { parseStockEvent } from "../parse-stock-event";
 import { useTelemetryStore } from "../state/telemetry-store";
 
-export type WsConnectionStatus = "idle" | "connecting" | "open" | "closed" | "error";
+export type WsConnectionStatus =
+  | "idle"
+  | "connecting"
+  | "open"
+  | "closed"
+  | "error";
 
 // Optional live feed. Returns connection status for the badge; no-op when url is undefined.
 export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
@@ -14,6 +19,18 @@ export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
   useEffect(() => {
     if (!url) {
       setStatus("idle");
+      return;
+    }
+
+    let parsed: URL;
+    try {
+      parsed = new URL(url);
+    } catch {
+      setStatus("error");
+      return;
+    }
+    if (parsed.protocol !== "ws:" && parsed.protocol !== "wss:") {
+      setStatus("error");
       return;
     }
 

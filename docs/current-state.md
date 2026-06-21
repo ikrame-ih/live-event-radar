@@ -31,9 +31,9 @@ Map fill follows three bands — Healthy (≥ 65%, lavender grey), Watch (35–6
 
 ## Tests & deploy
 
-Unit: `npm test` (store, mocks, zone-stock, parsers). E2E: `npm run test:e2e` on both routes, three viewports. Showcase: `npm run capture:readme` for hero PNGs.
+Unit: `npm test` (store, mocks, zone-stock, parsers). E2E: `npm run test:e2e` on both routes, three viewports.
 
-Last verified: **20** Vitest tests · Playwright on `/` and `/dashboard`.
+Last verified: **24** Vitest tests · Playwright on `/` and `/dashboard`.
 
 | Surface | URL |
 | ------- | --- |

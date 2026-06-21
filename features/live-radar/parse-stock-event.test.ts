@@ -20,4 +20,16 @@ describe("parseStockEvent", () => {
     ).toBeNull();
     expect(parseStockEvent({ zone: "A", item: "B" })).toBeNull();
   });
+
+  it("returns null for empty or oversized string fields", () => {
+    expect(parseStockEvent({ zone: "", item: "B", quantity: 1, timestamp: 1 })).toBeNull();
+    expect(
+      parseStockEvent({
+        zone: "A",
+        item: "x".repeat(300),
+        quantity: 1,
+        timestamp: 1,
+      })
+    ).toBeNull();
+  });
 });

@@ -24,6 +24,17 @@ test.describe("LiveEvent Radar — Command Center (root)", () => {
     });
     await expect(zoneActivity.getByText(/evt\/30s/).first()).toBeVisible();
   });
+
+  test("zone activity row toggles selection on repeat click", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForTimeout(3500);
+    const row = page.locator(".bry-incident-row").first();
+    await expect(row).toBeVisible();
+    await row.click();
+    await expect(row).toHaveAttribute("aria-pressed", "true");
+    await row.click();
+    await expect(row).toHaveAttribute("aria-pressed", "false");
+  });
 });
 
 test.describe("LiveEvent Radar — /dashboard (event stream)", () => {
