@@ -1,0 +1,23 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      production-dependencies:
+        dependency-type: production
+        patterns:
+          - "*"
+      development-dependencies:
+        dependency-type: development
+        patterns:
+          - "*"
+    ignore:
+      # VitePress pulls vite/esbuild; upgrade via dedicated PR after local docs:build check
+      - dependency-name: vitepress
+        update-types: [version-update:semver-major]
+      - dependency-name: vite
+        update-types: [version-update:semver-major]

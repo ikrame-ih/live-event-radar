@@ -3,51 +3,26 @@
 [![Live Demo](https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://live-event-radar.vercel.app)
 [![Docs](https://img.shields.io/badge/Docs-6366f1?style=for-the-badge)](https://ikrame-ih.github.io/live-event-radar/)
 
-Live operations telemetry for brand activations — zone stock, venue heat maps, and a capped event stream in the browser.
+Browser-based ops dashboard for brand activations: zone stock, venue maps, and a capped event stream. Two routes (`/` and `/dashboard`) share one Zustand buffer; data comes from a mock timer by default, with an optional WebSocket feed.
 
-Working promotions as a brand hostess, the pain point was **information arriving too late** — stock-outs discovered through WhatsApp, not a live venue picture. This prototype is a **Digital Command Center** that feels like real ops telemetry.
+Built as a portfolio prototype — **v0.1.0**, frontend-only, no backend in this repo.
 
-**Deep dives** (from the Docs badge): [Technical decisions](https://ikrame-ih.github.io/live-event-radar/technical-decisions) · [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture) · [Pipeline](https://ikrame-ih.github.io/live-event-radar/pipeline)
+**Docs:** [Technical decisions](https://ikrame-ih.github.io/live-event-radar/technical-decisions) · [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture) · [Pipeline](https://ikrame-ih.github.io/live-event-radar/pipeline)
 
 ## Preview
 
 <table>
   <tr>
     <td width="50%">
-      <img
-        src="./docs/assets/readme/command-center-activity.png"
-        alt="Zone inventory and activity feed"
-      />
-      <br />
-      <sub><b>Command Center</b> — zone stock tiers, SVG map, synced activity rows</sub>
+      <img src="./docs/assets/readme/command-center-activity.png" alt="Command Center" />
+      <br /><sub><b>/</b> — zone stock, SVG map, activity feed</sub>
     </td>
     <td width="50%">
-      <img
-        src="./docs/assets/readme/telemetry-dashboard.png"
-        alt="Telemetry dashboard with Leaflet map and event stream"
-      />
-      <br />
-      <sub><b>Telemetry</b> — Leaflet map (Teatinos), filters, capped event stream</sub>
+      <img src="./docs/assets/readme/telemetry-dashboard.png" alt="Telemetry dashboard" />
+      <br /><sub><b>/dashboard</b> — Leaflet map, filters, event stream</sub>
     </td>
   </tr>
 </table>
-
-## Screens
-
-| Route            | Role                                                                                                      |
-| ---------------- | --------------------------------------------------------------------------------------------------------- |
-| **`/`**          | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed                 |
-| **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped event stream, buffer KPI, Web Worker echo |
-
-Both routes share one **Zustand** store (`telemetry-store`). The mock stream runs at ~0.5 events/s with spike bursts and a single-zone crew restock every 60s. An optional **WebSocket** feed can be enabled via env vars.
-
-Navigation between routes uses a persistent shell (`AppShell`) and a **View Transitions** crossfade (~180ms) via `TransitionLink` — the header and background never flash.
-
-**With a real backend** I would wire an authenticated WebSocket or SSE feed, server-side rollups for multi-venue campaigns, and persistent incident export — the client already uses typed events, a capped FIFO buffer, and connection state in the UI.
-
-## Stack
-
-Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · Zustand · Flowbite React · Lucide · Leaflet · Vitest · Playwright
 
 ## Quick start
 
@@ -56,89 +31,52 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) — Command Center at `/`, telemetry at `/dashboard`.
-
-No environment variables are required for the mock demo.
+Open [http://localhost:3000](http://localhost:3000). No env vars required for the mock demo.
 
 ## Scripts
 
-| Command                    | Purpose                                   |
-| -------------------------- | ----------------------------------------- |
-| `npm run dev`              | Development server                        |
-| `npm run build`            | Production build                          |
-| `npm run start`            | Serve production build locally            |
-| `npm run lint`             | ESLint                                    |
-| `npm run test`             | Vitest (watch)                            |
-| `npm run test:run`         | Vitest single run                         |
-| `npm run test:e2e`         | Playwright E2E — both routes, 3 viewports |
-| `npm run test:e2e:install` | Install Chromium for Playwright           |
-| `npm run docs:dev`         | VitePress docs site (local)               |
-| `npm run docs:build`       | Build docs for GitHub Pages               |
+| Command              | Purpose                          |
+| -------------------- | -------------------------------- |
+| `npm run dev`        | Dev server                       |
+| `npm run build`      | Production build                 |
+| `npm run lint`       | ESLint                           |
+| `npm run typecheck`  | TypeScript (`tsc --noEmit`)      |
+| `npm run test:run`   | Vitest unit tests                |
+| `npm run test:e2e`   | Playwright (local; 3 viewports)  |
+| `npm run docs:build` | VitePress → GitHub Pages         |
 
-## Pre-deploy checklist
+CI on push/PR: lint, typecheck, unit tests, build. E2E (desktop) runs on `main` after those pass.
 
-```bash
-npm run lint
-npm run build
-npm run test:run
-npm run test:e2e
-```
+## Environment
 
-Last verified: **24** Vitest tests · **19** Playwright runs (7 specs × desktop / tablet / phone).
+Copy `.env.example` → `.env.local` if needed.
 
-## Deploy on Vercel
+| Variable                     | Purpose                                       |
+| ---------------------------- | --------------------------------------------- |
+| `NEXT_PUBLIC_WS_URL`         | WebSocket URL (`wss://…`); empty = mock only  |
+| `NEXT_PUBLIC_SIMULATOR_ONLY` | `true` mock timer; `false` + URL = live socket |
 
-1. Import [github.com/ikrame-ih/live-event-radar](https://github.com/ikrame-ih/live-event-radar) in Vercel.
-2. **Framework preset:** Next.js — no custom root directory (this repo _is_ the app).
-3. **Build command:** `npm run build` (default).
-4. **Environment variables:** none required for the mock demo. Optional:
-   - `NEXT_PUBLIC_SIMULATOR_ONLY=true` (default behaviour)
-   - `NEXT_PUBLIC_WS_URL=wss://…` when a live feed exists
-5. Smoke-test `/` and `/dashboard` on desktop and a narrow viewport after deploy.
+`NEXT_PUBLIC_*` is bundled in the browser — **never put secrets there.**
 
-## Environment (optional)
-
-Copy `.env.example` to `.env.local` and restart `npm run dev` after changes.
-
-| Variable                     | Purpose                                          |
-| ---------------------------- | ------------------------------------------------ |
-| `NEXT_PUBLIC_WS_URL`         | WebSocket endpoint; leave empty for mock-only    |
-| `NEXT_PUBLIC_SIMULATOR_ONLY` | `true` = mock timer; `false` + URL = live socket |
-
-`NEXT_PUBLIC_*` values are visible in the browser — never put secrets here.
-
-## Project structure
+## Project layout
 
 ```
-app/
-  layout.tsx               # Root layout (fonts, globals)
-  (main)/
-    layout.tsx             # Shared AppShell (header + background)
-    page.tsx               # Command Center (/)
-    dashboard/             # Telemetry route + components
-  _components/
-    app-shell.tsx          # Persistent chrome across routes
-components/                # Shared UI (header, maps, sidebar, gauge, TransitionLink)
-design/
-  wireframes/              # Early UI sketches (Excalidraw)
-docs/                      # Public docs (VitePress) + README showcase assets
-features/live-radar/
-  hooks/                   # Simulator, WebSocket, worker, Command Center sync
-  lib/                     # Zone stock, incidents, geo, labels
-  mock/                    # Mock event generator
-  state/                   # telemetry-store (Zustand)
-  workers/                 # analytics.worker.ts
-store/
-  useEventStore.ts         # Incident + map selection state (/)
-e2e/                       # Playwright specs
+app/                  # Next.js routes + AppShell
+components/           # Shared UI
+features/live-radar/  # Stream, store, derivation, worker
+store/                # Command Center incident selection
+design/wireframes/    # Early UI sketch (Excalidraw, repo only)
+docs/                 # VitePress site + README assets
+e2e/                  # Playwright specs
 ```
 
-## Data model (short)
+## Stack
 
-- **Zones:** South Gate · Sampling Court · Main Stage Walkway
-- **Buffer:** FIFO cap at 10,000 events in `telemetry-store` — oldest events drop first when the limit is reached
-- **Stock tiers:** Healthy ≥ 65% · Watch 35–64% · Low under 35%
-- **Maps:** SVG schematic on `/` · Leaflet + OpenStreetMap on `/dashboard`
+Next.js 16 · React 19 · TypeScript · Tailwind v4 · Zustand · Leaflet · Vitest · Playwright
+
+## License & security
+
+MIT — see [LICENSE](./LICENSE). To report a vulnerability: [SECURITY.md](./SECURITY.md).
 
 ## Author
 
