@@ -1,24 +1,20 @@
 # Client-side data pipeline
 
-## Goal
+Goal: handle a continuous stock event stream without unbounded memory, UI jank, or a blocked main thread.
 
-Show that the browser can handle a continuous stream of stock events responsibly — without unbounded memory growth, jank in the UI, or a collapsed main thread.
-
-## Current modules (Jun 2026)
+## Modules
 
 | Module | Path | Role |
 | ------ | ---- | ---- |
-| Simulator | `hooks/use-simulator-stream.ts` | Fires ~0.5 events/s with spike bursts and a crew restock every 60s |
-| WebSocket | `hooks/use-stock-websocket.ts` | Optional live feed when `NEXT_PUBLIC_WS_URL` is set |
-| Command Center sync | `hooks/use-command-center-sync.ts` | Computes incidents and pushes them to `useEventStore` for the `/` route |
-| Zone stock | `lib/zone-stock.ts` | Calculates stock percentage, tier (Healthy / Watch / Low), and idle recovery |
-| Mock generator | `mock/mock-event-generator.ts` | Generates spike-heavy consumption patterns |
-| Store | `state/telemetry-store.ts` | FIFO buffer capped at 10,000 events |
-| Worker | `hooks/use-analytics-worker.ts` | Sends lightweight summaries to a background thread on `/dashboard` |
+| Simulator | `hooks/use-simulator-stream.ts` | ~0.5 events/s, spike bursts, crew restock every 60s |
+| WebSocket | `hooks/use-stock-websocket.ts` | Live feed when `NEXT_PUBLIC_WS_URL` is set |
+| Command Center sync | `hooks/use-command-center-sync.ts` | Derives incidents → `useEventStore` for `/` |
+| Zone stock | `lib/zone-stock.ts` | Stock %, tier, idle recovery |
+| Mock generator | `mock/mock-event-generator.ts` | Spike-heavy consumption patterns |
+| Store | `state/telemetry-store.ts` | FIFO buffer, cap 10,000 |
+| Worker | `hooks/use-analytics-worker.ts` | Lightweight summaries on `/dashboard` |
 
 ## Event type
-
-Every stock change is a single typed record:
 
 ```typescript
 export type StockEvent = {
@@ -29,9 +25,9 @@ export type StockEvent = {
 };
 ```
 
-## Zustand store pattern
+## Store
 
-Zustand is a minimal state library. The store holds the event buffer and trims it when it grows past the cap:
+Everything enters through `appendEvent`. When the buffer passes 10,000 events, the oldest row is dropped:
 
 ```typescript
 const MAX_EVENTS = 10_000;
@@ -44,22 +40,20 @@ function trimEvents(events: StockEvent[], next: StockEvent): StockEvent[] {
 }
 ```
 
-This is the FIFO (first in, first out) cap in action: when the list is full, the oldest event is dropped to make room for the new one. Every event passes through the same `appendEvent()` entry point — simulator, WebSocket, or a future API.
+Same entry point for simulator, WebSocket, or a future API.
 
-## Simulator balance
+## Simulator tuning
 
-The simulator is tuned so stock changes become visible within a short demo session:
+Built so stock tiers become visible within a short demo:
 
-| Parameter | Value |
-| --------- | ----- |
-| Tick interval | 2000 ms (~0.5 events/s) |
-| Consumption | 32% of ticks are spikes (−3 or −5 units); rest are −1 or −2 |
-| Crew restock | One random zone every 60s, +10–21 units |
-| Idle recovery | After 40s with no activity, a zone recovers +1%/s back toward 100% |
+- Tick every 2000 ms (~0.5/s)
+- 32% of ticks are spikes (−3 or −5); rest −1 or −2
+- One random zone restocked every 60s (+10–21 units)
+- After 40s idle, a zone recovers +1%/s toward 100%
 
-## Derivation layer
+## Derivation
 
-Raw events are never rendered directly. Two functions compute the values the UI actually needs:
+Raw events aren't rendered directly. Two functions compute what the UI needs:
 
 ```mermaid
 flowchart TB
@@ -74,22 +68,17 @@ flowchart TB
   events --> snapshots --> dash
 ```
 
-- **`deriveIncidents`** — groups events by zone over a 30-second window and pushes summaries into `useEventStore` for the Command Center
-- **`deriveZoneSnapshots`** — calculates the current stock percentage, demand trend, and heat tier for both venue maps
+- **`deriveIncidents`** — groups by zone over 30s, pushes summaries into `useEventStore`
+- **`deriveZoneSnapshots`** — stock %, demand trend, heat tier for both maps
 
-## WebSocket hook (optional)
+## WebSocket
 
-`useStockWebSocket(url)` connects when `NEXT_PUBLIC_WS_URL` is set and `NEXT_PUBLIC_SIMULATOR_ONLY` is not `true`. Parsed events call the same `appendEvent` so the rest of the pipeline is identical to the simulator path.
+`useStockWebSocket(url)` connects when `NEXT_PUBLIC_WS_URL` is set and `NEXT_PUBLIC_SIMULATOR_ONLY` isn't `true`. Parsed events call the same `appendEvent`.
 
 ## Web Worker
 
-`analytics.worker.ts` runs in a separate browser thread. It receives lightweight event summaries — not the full buffer — and echoes them back for the E2E test to verify. Sending the whole 10,000-event array would defeat the purpose of keeping the main thread free.
+`analytics.worker.ts` currently echoes lightweight summaries — enough to prove `postMessage` works before heavier math. The main thread never sends the full 10,000-event buffer across the thread boundary; that would defeat the cap.
 
-## Stability checklist
-
-- All events enter through `appendEvent()` — one path regardless of source
-- `MAX_EVENTS` keeps memory bounded regardless of how long the session runs
-- `useEffect` cleanups stop intervals, close sockets, and cancel timers when a component unmounts
-- Workers exchange summaries only, keeping cross-thread message payloads small
+Effect cleanups stop intervals, close sockets, and terminate workers on unmount.
 
 Related: [Architecture](/architecture) · [Current state](/current-state)

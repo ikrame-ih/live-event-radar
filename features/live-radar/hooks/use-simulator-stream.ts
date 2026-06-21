@@ -9,7 +9,7 @@ import { REPLENISH_INTERVAL_MS } from "../lib/zone-stock";
 import { SIMULATOR_TICK_MS } from "../constants";
 import { useTelemetryStore } from "../state/telemetry-store";
 
-/** Mock stream plus periodic restock pulse when WebSocket is off. */
+/** Mock stream + 60s restock pulse when no live socket */
 export function useSimulatorStream() {
   const appendEvent = useTelemetryStore((s) => s.appendEvent);
   const wsUrl = process.env.NEXT_PUBLIC_WS_URL?.trim();

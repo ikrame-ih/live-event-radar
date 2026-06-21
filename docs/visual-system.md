@@ -1,88 +1,50 @@
 # Visual system & motion
 
-The presentation layer only — all data logic, simulator, WebSocket, and maps are unchanged.
-
-**Status (Jun 2026):** Phases 1–8 shipped. Glass shell, row capsules, gauge glow, View Transitions, macOS active states.
+CSS and component chrome only — data logic, simulator, WebSocket, and maps are unchanged.
 
 ## Design goal
 
-Make LiveEvent Radar feel like a **polished operations product** on first load — soft glass panels, readable hierarchy, and subtle motion that reacts to data without distracting from it.
+Make LiveEvent Radar feel like a polished ops product on first load: soft glass panels, readable hierarchy, motion that reacts to data without getting in the way.
 
-| Route | Role |
-| ----- | ---- |
-| `/` | Command Center — KPIs, zone inventory, SVG map, activity feed |
-| `/dashboard` | Telemetry — Leaflet map, filters, event stream, buffer KPI |
+`/` is the Command Center (KPIs, zone inventory, SVG map, activity feed). `/dashboard` is telemetry depth (Leaflet, filters, event stream, buffer KPI).
 
 ## Visual language
 
-| Pattern | Implementation |
-| ------- | -------------- |
-| Floating shell | `.bry-shell`, `.bry-glass`, lavender page background |
-| Panel cards | `.bry-box`, inset shadows |
-| Row capsules | `.bry-row-capsule`, subtle hover lift |
-| Nav dock | `.bry-nav-icon`, `.bry-nav-icon-active` (macOS blue) |
-| KPI hero | `.bry-stat-big`, tabular numbers (all digits same width) |
-| Stream gauge | Double ring + glow sweep (`StreamGauge`) |
-| Status badges | `.bry-status-badge-*` |
-| Search chrome | `.bry-search-whisper` focus ring |
-| Venue map | Stock-tier polygon fills + legend |
+The `.bry-*` prefix in `globals.css` marks internal design classes:
 
-**Fonts:** Inter, Montserrat, Plus Jakarta Sans (loaded from Google Fonts). SF Pro Display is used when available locally (macOS).
+- **Shell** — `.bry-shell`, `.bry-glass`, lavender page background with fixed colour orbs behind the blur
+- **Panels** — `.bry-box`, inset shadows; row capsules (`.bry-row-capsule`) with a subtle hover lift
+- **Nav** — dock-style icons; macOS blue (`.bry-nav-icon-active`, `--accent-macos`) for active route and filter pills
+- **Metrics** — `.bry-stat-big` with tabular numbers so live counters don't jump
+- **Gauge** — double ring + glow sweep on `StreamGauge`; scan accent disabled under `prefers-reduced-motion`
+- **Map** — polygon fills driven by stock tier; legend aligned with `zone-stock.ts`
 
-**Prefix:** `.bry-*` marks internal design-system classes defined in `globals.css`.
+**Fonts:** Inter, Montserrat, Plus Jakarta Sans via `next/font`. SF Pro Display when available locally.
 
 ## Glassmorphism
 
-Three layers stack to create the frosted glass look:
+Three layers: body gradients and orbs on `.bry-page-shell`, semi-transparent fill (`--shell-bg: rgb(255 255 255 / 0.44)`), then `backdrop-filter: blur(36px) saturate(1.75)` on shell and nested boxes.
 
-1. **Colour behind the panel** — body gradients and fixed orbs on `.bry-page-shell`
-2. **Semi-transparent fill** — e.g. `--shell-bg: rgb(255 255 255 / 0.44)`
-3. **`backdrop-filter`** — `blur(36px) saturate(1.75)` on the shell and nested boxes
+Key tokens: `--radius-shell` / `--radius-box` (40px / 32px), `--gradient-cta` (orange → pink), `--ease-out-soft`, `--shadow-row-hover`.
 
-## Key tokens
+## Motion
 
-| Token | Purpose |
-| ----- | ------- |
-| `--radius-shell` / `--radius-box` | 40px / 32px corner radii |
-| `--gradient-cta` | Orange → pink for primary actions |
-| `--accent-macos` | `#0a84ff` for active nav and filter states |
-| `--ease-out-soft` | Default easing curve for transitions |
-| `--shadow-row-hover` | Elevation shadow on capsule hover |
+Nav and filter pills transition in ~0.18–0.32s. New stream rows use `@keyframes row-enter` (transform only — no opacity flash). The gauge sweep runs ~0.9s via `stroke-dashoffset`. Map zone fills ease over 0.4–0.55s. Route changes crossfade through the View Transitions API (180ms, defined in `globals.css`).
 
-## Motion catalogue
-
-| ID | Interaction | Detail |
-| -- | ----------- | ------ |
-| M1 | Nav hover / active | `transition 0.18–0.32s` |
-| M3 | Row enter | `@keyframes row-enter` (transform only, no opacity flash) |
-| M4 | Gauge sweep | `stroke-dashoffset` animates over ~0.9s |
-| M5 | Row hover lift | `translateY(-2px)` |
-| M6 | Filter pill | `.bry-filter-pill-active` |
-| M8 | Map zone tint | Polygon fill and stroke transition 0.4–0.55s |
-| M10 | Route crossfade | View Transitions API, 180ms fade between pages |
-| M11 | Gauge scan accent | `.bry-gauge-scanline` on `StreamGauge` — a subtle sweep animation, turned off when the user has `prefers-reduced-motion` enabled |
-
-`prefers-reduced-motion: reduce` disables all non-essential animations throughout the app.
+`prefers-reduced-motion: reduce` turns off non-essential animation app-wide.
 
 ## Stock map tiers
 
-| Tier | Stock range | Fill |
-| ---- | ----------- | ---- |
+| Tier | Range | Fill |
+| ---- | ----- | ---- |
 | Healthy | ≥ 65% | Lavender grey |
 | Watch | 35–64% | Peach |
 | Low | < 35% | Coral |
 
-These colours are consistent across `InteractiveMap.tsx`, `zone-stock.ts`, and the Zone inventory cards.
+Same bands in `InteractiveMap.tsx`, `zone-stock.ts`, and the zone inventory cards.
 
-## Implementation phases
+## What shipped when
 
-1. Design tokens and base CSS
-2. Layout and shell (`AppShell`, `AppHeader`)
-3. Gauge hero component
-4. Row capsules
-5. Filters, badges, map chrome
-6. Mobile overrides
-7. QA — build, Vitest, Playwright
-8. macOS polish, route transitions, README hero screenshots
+Tokens and base CSS came first, then `AppShell` / `AppHeader`, the gauge hero, row capsules, filters and map chrome, mobile overrides (`mobile-overrides.css`), and a QA pass (build + Vitest + Playwright). macOS polish and README hero screenshots were last.
 
 Related: [Current state](/current-state) · [Architecture](/architecture)

@@ -37,7 +37,7 @@ A browser-based **Digital Command Center** that feels like real ops telemetry:
 - **Shared state** — one Zustand store (`telemetry-store`) feeds both routes; incidents are derived into `useEventStore` for the Command Center
 - **Glass UI** — lavender shell, frosted panels, macOS-style active states, and a View Transitions crossfade (~180ms) between routes
 
-My background mixes frontend with hardware description (VHDL), Python, and deep learning. That pushed me toward **stable, measurable UI** — tabular metrics that don't shift, capped buffers that don't grow forever, and maps that encode state instead of decorative charts.
+VHDL, Python, and deep learning in my degree — not just UI courses — probably explains why I care about tabular metrics that don't jump, buffers that don't grow forever, and maps that carry the data instead of decorative charts.
 
 ## Screens
 
@@ -77,16 +77,14 @@ Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · Zustand · Flowbite R
 
 ## Technical notes
 
-Three focused deep dives for anyone who wants the architecture detail (~5 min total):
+If you want the architecture detail:
 
-| Note | Topic |
-| ---- | ----- |
-| [Technical decisions](/technical-decisions) | Stack rationale, challenges solved, accessibility, and next steps with a real backend |
-| [Business](/business) | Operational problem and ROI framing |
-| [Architecture](/architecture) | Data path, technology roster, and project evolution |
-| [Pipeline](/pipeline) | Hooks, store, Web Worker, and derivation layer |
+- [Technical decisions](/technical-decisions) — stack rationale, bugs I hit, accessibility, backend next steps
+- [Business](/business) — the ops problem this solves
+- [Architecture](/architecture) — data path and how the repo evolved
+- [Pipeline](/pipeline) — hooks, store, worker, derivation
 
-Further reading: [Current state](/current-state) · [Visual system](/visual-system)
+Also: [Current state](/current-state) · [Visual system](/visual-system)
 
 ## Author
 

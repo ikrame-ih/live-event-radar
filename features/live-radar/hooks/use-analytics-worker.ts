@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { InMsg, OutMsg } from "../workers/analytics.worker";
 
-// Spawns the analytics worker, sends one echo job, returns the echoed text.
+// Echo worker — placeholder until real analytics land in the thread.
 export function useAnalyticsWorker(text: string) {
   const [response, setResponse] = useState<string | null>(null);
 

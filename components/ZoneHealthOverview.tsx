@@ -62,7 +62,7 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
         <div>
           <h2 className="text-lg font-bold">Zone inventory</h2>
           <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-            Operational metrics — stock, demand and restock countdown by zone
+            Stock and demand by zone
           </p>
         </div>
         <div className="flex flex-wrap gap-2 text-xs">

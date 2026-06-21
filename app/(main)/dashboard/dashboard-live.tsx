@@ -41,7 +41,7 @@ export function DashboardLive() {
               LiveEvent Radar
             </h1>
             <p className="mt-1 text-sm text-[var(--text-secondary)]">
-              Brand Activation Demo &middot; live telemetry stream
+              Brand activation demo · live stream
             </p>
           </div>
           <ConnectionStatusBadge

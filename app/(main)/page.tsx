@@ -124,8 +124,7 @@ export default function CommandCenter() {
             <div className="bry-venue-section-head mb-4">
               <h2 className="text-lg font-bold">Venue map</h2>
               <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-                Spatial layout — zone fill follows stock legend; click a zone or
-                Zone activity row to focus
+                Zone fill follows stock tiers — click a zone or activity row to focus
               </p>
             </div>
             <div className="bry-venue-map-canvas bry-inner bry-glass overflow-hidden">
@@ -141,8 +140,7 @@ export default function CommandCenter() {
               Tap a row to highlight the zone on the map
             </p>
             <p className="mb-4 hidden text-xs text-[var(--text-muted)] sm:block">
-              Live feed synced with the venue map — hover, tap a row, or click a
-              zone
+              Synced with the map — hover a row or click a zone
             </p>
             <IncidentSidebar />
           </section>
