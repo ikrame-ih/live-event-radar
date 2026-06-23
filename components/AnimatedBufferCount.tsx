@@ -42,9 +42,6 @@ export function AnimatedBufferCount({ value, className }: AnimatedBufferCountPro
     return () => cancelAnimationFrame(rafRef.current);
   }, [value]);
 
-  return (
-    <p ref={ref} className={className} data-kpi-buffer-count>
-      {displayRef.current.toLocaleString("en-US")}
-    </p>
-  );
+  // Number is written via ref in useEffect/rAF — keep JSX empty to satisfy react-hooks/refs.
+  return <p ref={ref} className={className} data-kpi-buffer-count />;
 }

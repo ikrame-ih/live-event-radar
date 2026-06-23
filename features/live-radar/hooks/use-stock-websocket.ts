@@ -11,32 +11,30 @@ export type WsConnectionStatus =
   | "closed"
   | "error";
 
+function wsUrlError(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "ws:" && parsed.protocol !== "wss:") {
+      return "invalid protocol";
+    }
+    return null;
+  } catch {
+    return "invalid url";
+  }
+}
+
 // Optional live feed. Returns connection status for the badge; no-op when url is undefined.
 export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
   const appendEvent = useTelemetryStore((s) => s.appendEvent);
-  const [status, setStatus] = useState<WsConnectionStatus>("idle");
+  const [status, setStatus] = useState<"open" | "closed" | "error" | null>(
+    null
+  );
+  const urlError = url ? wsUrlError(url) : null;
 
   useEffect(() => {
-    if (!url) {
-      setStatus("idle");
-      return;
-    }
+    if (!url || urlError) return;
 
-    let parsed: URL;
-    try {
-      parsed = new URL(url);
-    } catch {
-      setStatus("error");
-      return;
-    }
-    if (parsed.protocol !== "ws:" && parsed.protocol !== "wss:") {
-      setStatus("error");
-      return;
-    }
-
-    // Guard against setState after unmount when a socket callback fires late.
     let done = false;
-    setStatus("connecting");
     const ws = new WebSocket(url);
 
     ws.onopen = () => {
@@ -65,9 +63,12 @@ export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
     return () => {
       done = true;
       ws.close();
-      setStatus("idle");
+      setStatus(null);
     };
-  }, [appendEvent, url]);
+  }, [appendEvent, url, urlError]);
 
+  if (!url) return "idle";
+  if (urlError) return "error";
+  if (status === null) return "connecting";
   return status;
 }
