@@ -2,12 +2,22 @@
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://live-event-radar.vercel.app)
 [![Docs](https://img.shields.io/badge/Docs-6366f1?style=for-the-badge)](https://ikrame-ih.github.io/live-event-radar/)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwindcss&logoColor=white)
 
 Browser-based ops dashboard for brand activations: zone stock, venue maps, and a capped event stream. Two routes (`/` and `/dashboard`) share one Zustand buffer; data comes from a mock timer by default, with an optional WebSocket feed.
 
 Built as a portfolio prototype — **v0.1.0**, frontend-only, no backend in this repo.
 
 **Docs:** [Technical decisions](https://ikrame-ih.github.io/live-event-radar/technical-decisions) · [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture) · [Pipeline](https://ikrame-ih.github.io/live-event-radar/pipeline)
+
+## Why this stack
+
+- **Next.js App Router** — file-based routes for `/` and `/dashboard` without extra routing config; static export-friendly for Vercel.
+- **Zustand** — one shared telemetry buffer with minimal boilerplate (I wanted to focus on the stream logic, not Redux setup).
+- **Tailwind v4 + Vitest/Playwright** — fast UI iteration and automated checks a recruiter can run locally in under a minute.
 
 ## Preview
 
@@ -26,7 +36,11 @@ Built as a portfolio prototype — **v0.1.0**, frontend-only, no backend in this
 
 ## Quick start
 
+**Prerequisites:** Node.js **20+**, npm (comes with Node).
+
 ```bash
+git clone https://github.com/ikrame-ih/live-event-radar.git
+cd live-event-radar
 npm install
 npm run dev
 ```
