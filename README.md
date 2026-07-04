@@ -119,7 +119,9 @@ e2e/                  # Playwright specs
 
 **If analysis fails on metrics** (e.g. doc coverage on a small portfolio repo): **Settings → Metrics reporting** → lower thresholds or disable enforcement until you add coverage reporting. Code issues and metric gates are configured separately.
 
-**If analysis fails on Minor anti-patterns** (e.g. `JS-0067` module-level constants in React — a known false positive): open **Settings → Issue reporting → Anti-pattern** and disable **Fail check** for **Minor** severity. Alternatively, on the **Issues** tab: **Actions → Ignore this issue → For this repository** on `JS-0067`.
+**If analysis fails on Minor anti-patterns** (e.g. `JS-0067` module-level constants in React — a known false positive): open **Settings → Issue reporting → Anti-pattern** and disable **Fail check** for **Minor** severity. Repeat for **Bug risk → Minor**. Alternatively, on the **Issues** tab: **Actions → Ignore this issue → For this repository** on `JS-0067`, `JS-R1005`, `JS-0415`, and `JS-0833`.
+
+**If the message says “failing metrics”** (common on new repos with no coverage uploaded): open **Settings → Metrics reporting** and either disable **Fail check** for each metric, or lower thresholds to `0`. Also check the **Metrics** tab on the dashboard — a red metric tile blocks the check even when all code issues are ignored.
 
 **Local CLI (optional):** install from [DeepSource CLI releases](https://github.com/deepsourcecorp/cli/releases), then run `deepsource report --analyzer test-coverage` after generating coverage. Most workflow is dashboard-driven; CI uses the GitHub app automatically.
 

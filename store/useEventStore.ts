@@ -23,31 +23,40 @@ type EventState = {
   syncIncidents: (incidents: Incident[]) => void;
 };
 
+function nextSelection(
+  state: EventState,
+  id: string | null
+): Pick<EventState, "selectedIncidentId" | "activeIncidentId"> {
+  if (id === null || state.selectedIncidentId === id) {
+    return { selectedIncidentId: null, activeIncidentId: null };
+  }
+  return { selectedIncidentId: id, activeIncidentId: id };
+}
+
+function syncSelection(
+  state: EventState,
+  incidents: Incident[]
+): Partial<EventState> {
+  const selectionStillValid =
+    state.selectedIncidentId !== null &&
+    incidents.some((incident) => incident.id === state.selectedIncidentId);
+
+  if (selectionStillValid) {
+    return { incidents };
+  }
+
+  return {
+    incidents,
+    selectedIncidentId: null,
+    activeIncidentId: null,
+  };
+}
+
 export const useEventStore = create<EventState>((set) => ({
   incidents: [],
   activeIncidentId: null,
   selectedIncidentId: null,
   setActiveIncident: (id) => set({ activeIncidentId: id }),
-  selectIncident: (id) =>
-    set((state) => {
-      if (id === null) {
-        return { selectedIncidentId: null, activeIncidentId: null };
-      }
-      if (state.selectedIncidentId === id) {
-        return { selectedIncidentId: null, activeIncidentId: null };
-      }
-      return { selectedIncidentId: id, activeIncidentId: id };
-    }),
-  syncIncidents: (incidents) =>
-    set((state) => {
-      const selectionStillValid =
-        state.selectedIncidentId !== null &&
-        incidents.some((i) => i.id === state.selectedIncidentId);
-      return {
-        incidents,
-        ...(selectionStillValid
-          ? {}
-          : { selectedIncidentId: null, activeIncidentId: null }),
-      };
-    }),
+  selectIncident: (id) => set((state) => nextSelection(state, id)),
+  syncIncidents: (incidents) => set((state) => syncSelection(state, incidents)),
 }));

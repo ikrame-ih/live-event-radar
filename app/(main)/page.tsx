@@ -1,18 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Radio, Search } from "lucide-react";
-import { AnimatedBufferCount } from "@/components/AnimatedBufferCount";
-import { ConnectionStatusBadge } from "@/components/ConnectionStatusBadge";
+import { Search } from "lucide-react";
+import { CommandCenterGaugePanel } from "@/components/command-center/CommandCenterGaugePanel";
+import { CommandCenterKpiHero } from "@/components/command-center/CommandCenterKpiHero";
 import { InteractiveMap } from "@/components/InteractiveMap";
 import { IncidentSidebar } from "@/components/IncidentSidebar";
 import { ZoneHealthOverview } from "@/components/ZoneHealthOverview";
-import { StreamGauge } from "@/components/StreamGauge";
 import { useCommandCenterSync } from "@/features/live-radar/hooks/use-command-center-sync";
 import { useSimulatorStream } from "@/features/live-radar/hooks/use-simulator-stream";
 import { useStockWebSocket } from "@/features/live-radar/hooks/use-stock-websocket";
 import { deriveZoneSnapshots } from "@/features/live-radar/lib/zone-stock";
-import { alertCountLabel } from "@/features/live-radar/lib/alert-label";
 import { SIMULATOR_TICK_MS } from "@/features/live-radar/constants";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 import { useEventStore } from "@/store/useEventStore";
@@ -57,62 +55,18 @@ export default function CommandCenter() {
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:gap-6">
-        <div className="bry-kpi-hero bry-box bry-row-enter flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:p-8">
-          <div
-            className="bry-kpi-hero-icon flex shrink-0 items-center justify-center rounded-full sm:h-24 sm:w-24"
-            style={{
-              background: "var(--box-inner)",
-              boxShadow: "var(--shadow-inset)",
-            }}
-          >
-            <Radio
-              size={32}
-              strokeWidth={1.5}
-              className="text-[var(--text-muted)]"
-            />
-          </div>
-          <div className="min-w-0 flex-1">
-            <h1 className="bry-caps mb-2">Live operations</h1>
-            <AnimatedBufferCount
-              value={eventCount}
-              className="bry-stat-big bry-kpi-display font-mono"
-            />
-            <p className="mt-2 text-sm text-[var(--text-secondary)]">
-              Events buffered
-            </p>
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <ConnectionStatusBadge
-                simulatorOnly={simulatorOnly}
-                wsUrl={wsUrl}
-                wsStatus={wsStatus}
-              />
-              {criticalCount > 0 && (
-                <span className="bry-tag-neon inline-flex h-9 items-center px-4">
-                  {alertCountLabel(criticalCount)}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="bry-kpi-gauge bry-box bry-row-enter p-6 sm:p-7">
-          <p className="bry-caps mb-4 text-center">30 second window</p>
-          <StreamGauge value={activeZones} max={3} />
-          <ul className="mt-5 space-y-2 text-sm">
-            <li className="flex justify-between border-b border-white/45 pb-2">
-              <span className="text-[var(--text-muted)]">Active zones</span>
-              <span className="font-bold tabular-nums">{activeZones}/3</span>
-            </li>
-            <li className="flex justify-between border-b border-white/45 pb-2">
-              <span className="text-[var(--text-muted)]">Stream rate</span>
-              <span className="font-bold tabular-nums">{streamRateLabel}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="text-[var(--text-muted)]">Critical</span>
-              <span className="font-bold tabular-nums">{criticalCount}</span>
-            </li>
-          </ul>
-        </div>
+        <CommandCenterKpiHero
+          eventCount={eventCount}
+          criticalCount={criticalCount}
+          simulatorOnly={simulatorOnly}
+          wsUrl={wsUrl}
+          wsStatus={wsStatus}
+        />
+        <CommandCenterGaugePanel
+          activeZones={activeZones}
+          streamRateLabel={streamRateLabel}
+          criticalCount={criticalCount}
+        />
       </div>
 
       <ZoneHealthOverview snapshots={snapshots} events={events} />
