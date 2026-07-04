@@ -1,9 +1,11 @@
 # LiveEvent Radar
 
-[![CI](https://github.com/ikrame-ih/live-event-radar/actions/workflows/ci.yml/badge.svg)](https://github.com/ikrame-ih/live-event-radar/actions/workflows/ci.yml)
-[![DeepSource](https://app.deepsource.com/gh/ikrame-ih/live-event-radar.svg/?label=active+analysis&logo=deepsource)](https://app.deepsource.com/gh/ikrame-ih/live-event-radar/)
-[![Live Demo](https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://live-event-radar.vercel.app)
-[![Docs](https://img.shields.io/badge/Docs-6366f1?style=for-the-badge)](https://ikrame-ih.github.io/live-event-radar/)
+<p align="left">
+  <a href="https://github.com/ikrame-ih/live-event-radar/actions/workflows/ci.yml"><img height="28" src="https://img.shields.io/github/actions/workflow/status/ikrame-ih/live-event-radar/ci.yml?branch=main&style=for-the-badge" alt="CI" /></a>
+  <a href="https://app.deepsource.com/gh/ikrame-ih/live-event-radar/"><img height="28" src="https://img.shields.io/badge/DeepSource-active_analysis-007EC6?style=for-the-badge&logo=deepsource" alt="DeepSource" /></a>
+  <a href="https://live-event-radar.vercel.app"><img height="28" src="https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
+  <a href="https://ikrame-ih.github.io/live-event-radar/"><img height="28" src="https://img.shields.io/badge/Docs-6366f1?style=for-the-badge" alt="Docs" /></a>
+</p>
 
 **Live operations dashboard for brand activations** — zone stock, venue maps, and a capped event stream in a glass UI Command Center.
 
