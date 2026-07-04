@@ -50,69 +50,96 @@ function resolveStatus(stock: number, spikes15s: number): ZoneStatus {
   return "healthy";
 }
 
+function applyEventDeltas(
+  events: StockEvent[],
+  windowStart: number,
+  stock: Map<string, number>,
+  lastByZone: Map<string, StockEvent>
+): void {
+  const chronological = events
+    .filter((event) => event.timestamp >= windowStart)
+    .sort((left, right) => left.timestamp - right.timestamp);
+
+  for (const event of chronological) {
+    if (!stock.has(event.zone)) continue;
+    stock.set(
+      event.zone,
+      clamp((stock.get(event.zone) ?? STOCK_MAX) + event.quantity, 0, STOCK_MAX)
+    );
+    lastByZone.set(event.zone, event);
+  }
+}
+
+function applyIdleRecovery(
+  stock: Map<string, number>,
+  lastByZone: Map<string, StockEvent>,
+  now: number
+): void {
+  for (const zone of ZONE_NAMES) {
+    const last = lastByZone.get(zone);
+    const idleMs = last ? now - last.timestamp : STOCK_WINDOW_MS;
+    if (idleMs <= IDLE_RECOVERY_MS) continue;
+
+    const recoverySecs = (idleMs - IDLE_RECOVERY_MS) / 1000;
+    stock.set(
+      zone,
+      clamp(
+        (stock.get(zone) ?? STOCK_MAX) + recoverySecs * RECOVERY_PER_SEC,
+        0,
+        STOCK_MAX
+      )
+    );
+  }
+}
+
+function snapshotForZone(
+  zone: string,
+  events: StockEvent[],
+  stock: Map<string, number>,
+  lastByZone: Map<string, StockEvent>,
+  demand: Map<string, number>,
+  now: number,
+  spikeCutoff: number
+): ZoneSnapshot {
+  const zoneEvents = events.filter(
+    (event) => event.zone === zone && event.timestamp >= now - 30_000
+  );
+  const spikes15s = zoneEvents.filter(
+    (event) => event.timestamp >= spikeCutoff && event.quantity <= -2
+  ).length;
+  const last = lastByZone.get(zone) ?? null;
+  const level = Math.round(stock.get(zone) ?? STOCK_MAX);
+
+  return {
+    zone,
+    stock: level,
+    demand30s: demand.get(zone) ?? 0,
+    spikes15s,
+    lastItem: last?.item ?? null,
+    lastQuantity: last?.quantity ?? null,
+    status: resolveStatus(level, spikes15s),
+    subtitle: ZONE_META[zone]?.subtitle ?? zone,
+  };
+}
+
 /** Recent events + idle drift back toward 100% */
 export function deriveZoneSnapshots(
   events: StockEvent[],
   now = Date.now()
 ): ZoneSnapshot[] {
   const windowStart = now - STOCK_WINDOW_MS;
-  const chronological = events
-    .filter((e) => e.timestamp >= windowStart)
-    .sort((a, b) => a.timestamp - b.timestamp);
-
-  const stock = new Map<string, number>(ZONE_NAMES.map((z) => [z, STOCK_MAX]));
+  const stock = new Map<string, number>(ZONE_NAMES.map((zone) => [zone, STOCK_MAX]));
   const lastByZone = new Map<string, StockEvent>();
 
-  for (const e of chronological) {
-    if (!stock.has(e.zone)) continue;
-    stock.set(
-      e.zone,
-      clamp((stock.get(e.zone) ?? STOCK_MAX) + e.quantity, 0, STOCK_MAX)
-    );
-    lastByZone.set(e.zone, e);
-  }
-
-  for (const zone of ZONE_NAMES) {
-    const last = lastByZone.get(zone);
-    const idleMs = last ? now - last.timestamp : STOCK_WINDOW_MS;
-    if (idleMs > IDLE_RECOVERY_MS) {
-      const recoverySecs = (idleMs - IDLE_RECOVERY_MS) / 1000;
-      stock.set(
-        zone,
-        clamp(
-          (stock.get(zone) ?? STOCK_MAX) + recoverySecs * RECOVERY_PER_SEC,
-          0,
-          STOCK_MAX
-        )
-      );
-    }
-  }
+  applyEventDeltas(events, windowStart, stock, lastByZone);
+  applyIdleRecovery(stock, lastByZone, now);
 
   const demand = countByZone(events, 30_000);
   const spikeCutoff = now - 15_000;
 
-  return ZONE_NAMES.map((zone) => {
-    const zoneEvents = events.filter(
-      (e) => e.zone === zone && e.timestamp >= now - 30_000
-    );
-    const spikes15s = zoneEvents.filter(
-      (e) => e.timestamp >= spikeCutoff && e.quantity <= -2
-    ).length;
-    const last = lastByZone.get(zone) ?? null;
-    const level = Math.round(stock.get(zone) ?? STOCK_MAX);
-    const status = resolveStatus(level, spikes15s);
-
-    return {
-      zone,
-      stock: level,
-      demand30s: demand.get(zone) ?? 0,
-      spikes15s,
-      lastItem: last?.item ?? null,
-      lastQuantity: last?.quantity ?? null,
-      status,
-      subtitle: ZONE_META[zone]?.subtitle ?? zone,
-    };
-  });
+  return ZONE_NAMES.map((zone) =>
+    snapshotForZone(zone, events, stock, lastByZone, demand, now, spikeCutoff)
+  );
 }
 
 export function stockHeat(stock: number): "cool" | "mid" | "hot" {
