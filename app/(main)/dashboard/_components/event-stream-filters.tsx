@@ -14,11 +14,18 @@ type EventStreamFiltersProps = {
   onChange: (next: StreamFilters) => void;
 };
 
-export function EventStreamFilters({ filters, onChange }: EventStreamFiltersProps) {
+export function EventStreamFilters({
+  filters,
+  onChange,
+}: EventStreamFiltersProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="bry-search-whisper flex items-center gap-3 px-5 py-3.5">
-        <Search size={18} strokeWidth={1.5} className="shrink-0 text-[var(--text-muted)]" />
+        <Search
+          size={18}
+          strokeWidth={1.5}
+          className="shrink-0 text-[var(--text-muted)]"
+        />
         <input
           type="search"
           placeholder="Search zone or item…"

@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-  mockRestockPulse,
-  mockStockEvent,
-} from "../mock/mock-event-generator";
+import { mockRestockPulse, mockStockEvent } from "../mock/mock-event-generator";
 import { REPLENISH_INTERVAL_MS } from "../lib/zone-stock";
 import { SIMULATOR_TICK_MS } from "../constants";
 import { useTelemetryStore } from "../state/telemetry-store";
@@ -17,9 +14,12 @@ export function useSimulatorStream() {
 
   useEffect(() => {
     const useNetwork = wsUrl && !simulatorOnly;
-    if (useNetwork) return;
+    if (useNetwork) return undefined;
 
-    const tick = window.setInterval(() => appendEvent(mockStockEvent()), SIMULATOR_TICK_MS);
+    const tick = window.setInterval(
+      () => appendEvent(mockStockEvent()),
+      SIMULATOR_TICK_MS
+    );
     const restock = window.setInterval(() => {
       for (const event of mockRestockPulse()) appendEvent(event);
     }, REPLENISH_INTERVAL_MS);

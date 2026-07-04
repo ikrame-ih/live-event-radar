@@ -28,8 +28,16 @@ export const ZONE_META: Record<
   { short: string; subtitle: string; stands: number }
 > = {
   "South Gate": { short: "SG", subtitle: "Entry · 3 stands", stands: 3 },
-  "Sampling Court": { short: "SC", subtitle: "Activation · 6 stands", stands: 6 },
-  "Main Stage Walkway": { short: "MSW", subtitle: "Flow corridor · 2 stands", stands: 2 },
+  "Sampling Court": {
+    short: "SC",
+    subtitle: "Activation · 6 stands",
+    stands: 6,
+  },
+  "Main Stage Walkway": {
+    short: "MSW",
+    subtitle: "Flow corridor · 2 stands",
+    stands: 2,
+  },
 };
 
 function clamp(n: number, min: number, max: number): number {
@@ -45,7 +53,7 @@ function resolveStatus(stock: number, spikes15s: number): ZoneStatus {
 /** Recent events + idle drift back toward 100% */
 export function deriveZoneSnapshots(
   events: StockEvent[],
-  now = Date.now(),
+  now = Date.now()
 ): ZoneSnapshot[] {
   const windowStart = now - STOCK_WINDOW_MS;
   const chronological = events
@@ -57,7 +65,10 @@ export function deriveZoneSnapshots(
 
   for (const e of chronological) {
     if (!stock.has(e.zone)) continue;
-    stock.set(e.zone, clamp((stock.get(e.zone) ?? STOCK_MAX) + e.quantity, 0, STOCK_MAX));
+    stock.set(
+      e.zone,
+      clamp((stock.get(e.zone) ?? STOCK_MAX) + e.quantity, 0, STOCK_MAX)
+    );
     lastByZone.set(e.zone, e);
   }
 
@@ -68,7 +79,11 @@ export function deriveZoneSnapshots(
       const recoverySecs = (idleMs - IDLE_RECOVERY_MS) / 1000;
       stock.set(
         zone,
-        clamp((stock.get(zone) ?? STOCK_MAX) + recoverySecs * RECOVERY_PER_SEC, 0, STOCK_MAX),
+        clamp(
+          (stock.get(zone) ?? STOCK_MAX) + recoverySecs * RECOVERY_PER_SEC,
+          0,
+          STOCK_MAX
+        )
       );
     }
   }
@@ -78,10 +93,10 @@ export function deriveZoneSnapshots(
 
   return ZONE_NAMES.map((zone) => {
     const zoneEvents = events.filter(
-      (e) => e.zone === zone && e.timestamp >= now - 30_000,
+      (e) => e.zone === zone && e.timestamp >= now - 30_000
     );
     const spikes15s = zoneEvents.filter(
-      (e) => e.timestamp >= spikeCutoff && e.quantity <= -2,
+      (e) => e.timestamp >= spikeCutoff && e.quantity <= -2
     ).length;
     const last = lastByZone.get(zone) ?? null;
     const level = Math.round(stock.get(zone) ?? STOCK_MAX);

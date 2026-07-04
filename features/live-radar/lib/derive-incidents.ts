@@ -23,7 +23,10 @@ export const ZONE_SHORT: Record<string, string> = {
 const WINDOW_MS = 30_000;
 const SPIKE_MS = 15_000;
 
-function resolveSeverity(eventCount: number, spikeCount: number): IncidentSeverity {
+function resolveSeverity(
+  eventCount: number,
+  spikeCount: number
+): IncidentSeverity {
   if (spikeCount >= 2 || eventCount >= 10) return "critical";
   if (spikeCount >= 1 || eventCount >= 4) return "warning";
   return "resolved";
@@ -34,19 +37,21 @@ export function deriveIncidents(events: StockEvent[]): Incident[] {
   const now = Date.now();
   const cutoff = now - WINDOW_MS;
   const spikeCutoff = now - SPIKE_MS;
-  const recent = events.filter((e) => e.timestamp >= cutoff);
+  const recent = events.filter((event) => event.timestamp >= cutoff);
 
   const rollups: Incident[] = [];
 
   for (const zone of ZONE_NAMES) {
-    const zoneEvents = recent.filter((e) => e.zone === zone);
+    const zoneEvents = recent.filter((event) => event.zone === zone);
     if (zoneEvents.length === 0) continue;
 
     const spikes = zoneEvents.filter(
-      (e) => e.timestamp >= spikeCutoff && e.quantity <= -2,
+      (event) => event.timestamp >= spikeCutoff && event.quantity <= -2
     );
-    const latest = zoneEvents[zoneEvents.length - 1]!;
-    const anchor = ZONE_ANCHORS[zone]!;
+    const latest = zoneEvents[zoneEvents.length - 1];
+    if (!latest) continue;
+    const anchor = ZONE_ANCHORS[zone];
+    if (!anchor) continue;
 
     rollups.push({
       id: `zone-${zone}`,
@@ -69,14 +74,15 @@ export function deriveIncidents(events: StockEvent[]): Incident[] {
 
 export function countByZone(
   events: StockEvent[],
-  windowMs = WINDOW_MS,
+  windowMs = WINDOW_MS
 ): Map<string, number> {
   const cutoff = Date.now() - windowMs;
   const counts = new Map<string, number>();
   for (const zone of ZONE_NAMES) counts.set(zone, 0);
-  for (const e of events) {
-    if (e.timestamp < cutoff) continue;
-    if (counts.has(e.zone)) counts.set(e.zone, (counts.get(e.zone) ?? 0) + 1);
+  for (const event of events) {
+    if (event.timestamp < cutoff) continue;
+    if (counts.has(event.zone))
+      counts.set(event.zone, (counts.get(event.zone) ?? 0) + 1);
   }
   return counts;
 }

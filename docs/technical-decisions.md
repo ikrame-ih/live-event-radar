@@ -4,18 +4,18 @@ Notes on why the app is built this way — and a few real problems I ran into wh
 
 ## Why this problem
 
-I worked brand activations as a hostess. Stock issues always showed up late — usually through WhatsApp, never through a live picture of the venue. LiveEvent Radar is my frontend answer to that: a Command Center that *feels* like an ops dashboard, even when the data feed is simulated locally.
+I worked brand activations as a hostess. Stock issues always showed up late — usually through WhatsApp, never through a live picture of the venue. LiveEvent Radar is my frontend answer to that: a Command Center that _feels_ like an ops dashboard, even when the data feed is simulated locally.
 
 ## Stack choices
 
-| Choice | Why |
-| ------ | --- |
-| **Next.js 16 (App Router)** | File-based routes and shared layouts make the shell architecture simple. `(main)/layout.tsx` keeps the header and background mounted while only the page content swaps on navigation. |
-| **TypeScript** | The `StockEvent` type and store shapes are explicit. Adding a real API later means no guesswork about what fields the server sends. |
-| **Zustand** | One `telemetry-store` shared by both routes. Much less setup than Redux for a buffer and a few computed values. |
-| **React SVG + Leaflet** | Hand-drawn SVG schematic on `/` for stock heat at a glance. Leaflet on `/dashboard` for geographic context. I skipped Chart.js — the maps already encode the data. |
-| **Vitest + Playwright** | Vitest for stock math and parsers. Playwright for both routes across desktop, tablet, and phone. |
-| **VitePress on GitHub Pages** | Publish the case study without sharing my full private notes. |
+| Choice                        | Why                                                                                                                                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Next.js 16 (App Router)**   | File-based routes and shared layouts make the shell architecture simple. `(main)/layout.tsx` keeps the header and background mounted while only the page content swaps on navigation. |
+| **TypeScript**                | The `StockEvent` type and store shapes are explicit. Adding a real API later means no guesswork about what fields the server sends.                                                   |
+| **Zustand**                   | One `telemetry-store` shared by both routes. Much less setup than Redux for a buffer and a few computed values.                                                                       |
+| **React SVG + Leaflet**       | Hand-drawn SVG schematic on `/` for stock heat at a glance. Leaflet on `/dashboard` for geographic context. I skipped Chart.js — the maps already encode the data.                    |
+| **Vitest + Playwright**       | Vitest for stock math and parsers. Playwright for both routes across desktop, tablet, and phone.                                                                                      |
+| **VitePress on GitHub Pages** | Publish the case study without sharing my full private notes.                                                                                                                         |
 
 ## Challenges and how I solved them
 
@@ -58,6 +58,6 @@ The client is already structured for that: typed events, capped FIFO buffer, der
 
 ## Background that shaped this build
 
-My degree covered VHDL, Python, and deep learning — not just UI courses. That pushed me toward measurable UI: stable metrics, capped buffers, maps that encode state rather than decorative charts.
+Working promotions taught me that a dashboard only helps if the numbers stay trustworthy. Python from my degree plus ops experience on activations pushed me toward stable KPIs, capped buffers, and maps that show stock state — not decorative charts.
 
 Related: [Architecture](/architecture) · [Pipeline](/pipeline) · [Current state](/current-state)

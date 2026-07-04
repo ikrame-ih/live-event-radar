@@ -16,13 +16,18 @@ function latestEventLabel(events: StockEvent[]): string {
   return `${latest.zone}, ${latest.item}, quantity ${latest.quantity}`;
 }
 
-function matchesFilters(e: StockEvent, filters: StreamFilters): boolean {
-  if (filters.zone !== "all" && e.zone !== filters.zone) return false;
-  if (filters.status === "spike" && e.quantity > -2) return false;
-  if (filters.status === "normal" && e.quantity <= -2) return false;
+function matchesFilters(event: StockEvent, filters: StreamFilters): boolean {
+  if (filters.zone !== "all" && event.zone !== filters.zone) return false;
+  if (filters.status === "spike" && event.quantity > -2) return false;
+  if (filters.status === "normal" && event.quantity <= -2) return false;
   if (filters.search.trim()) {
-    const q = filters.search.toLowerCase();
-    if (!e.zone.toLowerCase().includes(q) && !e.item.toLowerCase().includes(q)) return false;
+    const query = filters.search.toLowerCase();
+    if (
+      !event.zone.toLowerCase().includes(query) &&
+      !event.item.toLowerCase().includes(query)
+    ) {
+      return false;
+    }
   }
   return true;
 }
@@ -37,9 +42,13 @@ function EventBadge({ event }: { event: StockEvent }) {
     );
   }
   if (event.quantity < 0) {
-    return <span className="bry-status-badge bry-status-badge-warn">Consumed</span>;
+    return (
+      <span className="bry-status-badge bry-status-badge-warn">Consumed</span>
+    );
   }
-  return <span className="bry-status-badge bry-status-badge-live">Restock</span>;
+  return (
+    <span className="bry-status-badge bry-status-badge-live">Restock</span>
+  );
 }
 
 function formatTime(ts: number): string {
@@ -53,7 +62,10 @@ function formatTime(ts: number): string {
 
 export function EventStreamList({ events, filters }: EventStreamListProps) {
   const rows = useMemo(() => {
-    return [...events].reverse().filter((e) => matchesFilters(e, filters)).slice(0, 50);
+    return [...events]
+      .reverse()
+      .filter((event) => matchesFilters(event, filters))
+      .slice(0, 50);
   }, [events, filters]);
 
   const liveLabel = latestEventLabel(events);
@@ -73,35 +85,35 @@ export function EventStreamList({ events, filters }: EventStreamListProps) {
       <p className="sr-only" aria-live="polite" aria-atomic="true">
         {liveLabel ? `Latest event: ${liveLabel}` : ""}
       </p>
-      {rows.map((e, i) => (
+      {rows.map((event, index) => (
         <article
-          key={`${e.timestamp}-${i}`}
+          key={`${event.zone}-${event.item}-${event.timestamp}-${event.quantity}`}
           className="bry-row-capsule bry-row-enter flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-5"
         >
-          <EventBadge event={e} />
+          <EventBadge event={event} />
 
           <div className="min-w-0 flex-1">
-            <p className="bry-caps">{e.zone}</p>
-            <p className="mt-0.5 text-base font-bold">{e.item}</p>
+            <p className="bry-caps">{event.zone}</p>
+            <p className="mt-0.5 text-base font-bold">{event.item}</p>
             <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-              Event #{String(events.length - i).padStart(4, "0")}
+              Event #{String(events.length - index).padStart(4, "0")}
             </p>
           </div>
 
           <div className="shrink-0 text-right">
             <p
               className={`font-mono text-lg font-bold tabular-nums ${
-                e.quantity <= -2
+                event.quantity <= -2
                   ? "text-[var(--semantic-coral)]"
-                  : e.quantity < 0
+                  : event.quantity < 0
                     ? "text-[var(--semantic-amber)]"
                     : "text-[var(--semantic-teal)]"
               }`}
             >
-              {e.quantity}
+              {event.quantity}
             </p>
             <p className="font-mono text-xs tabular-nums text-[var(--text-muted)]">
-              {formatTime(e.timestamp)}
+              {formatTime(event.timestamp)}
             </p>
           </div>
 

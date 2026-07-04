@@ -59,10 +59,10 @@ export default withMermaid(
       ],
       footer: {
         message:
-          'Built by <a href="https://ikrame-ih.vercel.app/" target="_blank" rel="noopener">Ikrame Ibn Hayoun</a>',
+          'Built by <a href="https://ikrame-ih.vercel.app/" target="_blank" rel="noopener noreferrer">Ikrame Ibn Hayoun</a>',
         copyright:
-          '<a href="https://github.com/ikrame-ih" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/ikrame-ih/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://ikrame-ih.vercel.app/" target="_blank" rel="noopener">Portfolio</a>',
+          '<a href="https://github.com/ikrame-ih" target="_blank" rel="noopener noreferrer">GitHub</a> · <a href="https://www.linkedin.com/in/ikrame-ih/" target="_blank" rel="noopener noreferrer">LinkedIn</a> · <a href="https://ikrame-ih.vercel.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>',
       },
     },
-  }),
+  })
 );

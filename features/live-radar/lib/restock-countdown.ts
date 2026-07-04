@@ -6,11 +6,11 @@ const RESTOCK_ITEM = "Crew restock";
 /** Milliseconds until the next scheduled crew restock pulse. */
 export function msUntilNextRestock(
   events: StockEvent[],
-  now = Date.now(),
+  now = Date.now()
 ): number {
   const lastRestock = events
-    .filter((e) => e.item === RESTOCK_ITEM)
-    .reduce((max, e) => Math.max(max, e.timestamp), 0);
+    .filter((event) => event.item === RESTOCK_ITEM)
+    .reduce((max, event) => Math.max(max, event.timestamp), 0);
 
   if (lastRestock === 0) {
     return REPLENISH_INTERVAL_MS;
@@ -24,7 +24,7 @@ export function msUntilNextRestock(
 export function formatRestockCountdown(ms: number): string {
   const totalSec = Math.max(0, Math.ceil(ms / 1000));
   if (totalSec < 60) return `${totalSec}s`;
-  const m = Math.floor(totalSec / 60);
-  const s = totalSec % 60;
-  return s > 0 ? `${m}m ${s}s` : `${m}m`;
+  const minutes = Math.floor(totalSec / 60);
+  const seconds = totalSec % 60;
+  return seconds > 0 ? `${minutes}m ${seconds}s` : `${minutes}m`;
 }

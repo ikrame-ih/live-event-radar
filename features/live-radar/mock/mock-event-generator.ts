@@ -6,7 +6,8 @@ const ITEMS = ["Soda", "Cap", "Sample bag"];
 /** Tuned so watch/low tiers show up during a short demo */
 export function mockStockEvent(): StockEvent {
   const roll = Math.random();
-  const zone = ZONE_NAMES[Math.floor(Math.random() * ZONE_NAMES.length)] ?? "Zone";
+  const zone =
+    ZONE_NAMES[Math.floor(Math.random() * ZONE_NAMES.length)] ?? "Zone";
 
   if (roll < 0.32) {
     return {
@@ -28,7 +29,8 @@ export function mockStockEvent(): StockEvent {
 /** One zone per pulse — partial refill, not a full reset */
 export function mockRestockPulse(): StockEvent[] {
   const ts = Date.now();
-  const zone = ZONE_NAMES[Math.floor(Math.random() * ZONE_NAMES.length)] ?? ZONE_NAMES[0];
+  const zone =
+    ZONE_NAMES[Math.floor(Math.random() * ZONE_NAMES.length)] ?? ZONE_NAMES[0];
   return [
     {
       zone,

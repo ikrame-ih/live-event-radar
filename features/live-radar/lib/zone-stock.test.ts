@@ -23,19 +23,41 @@ describe("deriveZoneSnapshots", () => {
       { zone: "South Gate", item: "Cap", quantity: -2, timestamp: now - 4000 },
     ];
     const drained = deriveZoneSnapshots(events, now);
-    const sg = drained.find((s) => s.zone === "South Gate")!;
+    const sg = drained.find((s) => s.zone === "South Gate");
+    if (!sg) {
+      throw new Error("South Gate snapshot not found");
+    }
     expect(sg.stock).toBeLessThan(100);
 
     const recovered = deriveZoneSnapshots(events, now + 45_000);
-    expect(recovered.find((s) => s.zone === "South Gate")!.stock).toBeGreaterThan(sg.stock);
+    const rec = recovered.find((s) => s.zone === "South Gate");
+    if (!rec) {
+      throw new Error("South Gate snapshot not found");
+    }
+    expect(rec.stock).toBeGreaterThan(sg.stock);
   });
 
   it("restock events raise stock level", () => {
     const events: StockEvent[] = [
-      { zone: "Sampling Court", item: "Soda", quantity: -2, timestamp: now - 3000 },
-      { zone: "Sampling Court", item: "Crew restock", quantity: 30, timestamp: now - 1000 },
+      {
+        zone: "Sampling Court",
+        item: "Soda",
+        quantity: -2,
+        timestamp: now - 3000,
+      },
+      {
+        zone: "Sampling Court",
+        item: "Crew restock",
+        quantity: 30,
+        timestamp: now - 1000,
+      },
     ];
-    const snap = deriveZoneSnapshots(events, now).find((s) => s.zone === "Sampling Court")!;
+    const snap = deriveZoneSnapshots(events, now).find(
+      (s) => s.zone === "Sampling Court"
+    );
+    if (!snap) {
+      throw new Error("Snapshot for Sampling Court not found");
+    }
     expect(snap.stock).toBeGreaterThan(90);
   });
 
@@ -49,7 +71,12 @@ describe("deriveZoneSnapshots", () => {
         timestamp: now - (30 - i) * 2000,
       });
     }
-    const snap = deriveZoneSnapshots(events, now).find((s) => s.zone === "South Gate")!;
+    const snap = deriveZoneSnapshots(events, now).find(
+      (s) => s.zone === "South Gate"
+    );
+    if (!snap) {
+      throw new Error("Snapshot for South Gate not found");
+    }
     expect(snap.stock).toBeLessThan(STOCK_TIER_HEALTHY_MIN);
     expect(stockHeat(snap.stock)).toMatch(/mid|hot/);
     expect(snap.stock).toBeLessThan(STOCK_TIER_WATCH_MIN + 15);

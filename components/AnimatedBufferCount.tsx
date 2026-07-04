@@ -8,7 +8,10 @@ type AnimatedBufferCountProps = {
 };
 
 // Count-up via rAF + DOM ref — avoids ~60 React re-renders/sec for a display-only effect.
-export function AnimatedBufferCount({ value, className }: AnimatedBufferCountProps) {
+export function AnimatedBufferCount({
+  value,
+  className,
+}: AnimatedBufferCountProps) {
   const ref = useRef<HTMLParagraphElement>(null);
   const displayRef = useRef(0);
   const rafRef = useRef(0);
@@ -19,7 +22,7 @@ export function AnimatedBufferCount({ value, className }: AnimatedBufferCountPro
 
     if (delta === 0) {
       if (ref.current) ref.current.textContent = value.toLocaleString("en-US");
-      return;
+      return undefined;
     }
 
     // Longer jumps get a bit more time, capped at 520ms.
@@ -27,13 +30,14 @@ export function AnimatedBufferCount({ value, className }: AnimatedBufferCountPro
     const t0 = performance.now();
 
     const step = (now: number) => {
-      const t = Math.min((now - t0) / duration, 1);
+      const progress = Math.min((now - t0) / duration, 1);
       // ease-out quad
-      const eased = 1 - (1 - t) ** 2;
+      const eased = 1 - (1 - progress) ** 2;
       const current = Math.round(start + delta * eased);
       displayRef.current = current;
-      if (ref.current) ref.current.textContent = current.toLocaleString("en-US");
-      if (t < 1) rafRef.current = requestAnimationFrame(step);
+      if (ref.current)
+        ref.current.textContent = current.toLocaleString("en-US");
+      if (progress < 1) rafRef.current = requestAnimationFrame(step);
       else displayRef.current = value;
     };
 

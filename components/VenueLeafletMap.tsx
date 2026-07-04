@@ -1,9 +1,19 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { CircleMarker, MapContainer, Popup, TileLayer, Tooltip } from "react-leaflet";
+import {
+  CircleMarker,
+  MapContainer,
+  Popup,
+  TileLayer,
+  Tooltip,
+} from "react-leaflet";
 import { ZONE_NAMES } from "@/features/live-radar/lib/derive-incidents";
-import { VENUE_CENTER, VENUE_MAP_ZOOM, ZONE_GEO } from "@/features/live-radar/lib/zone-geo";
+import {
+  VENUE_CENTER,
+  VENUE_MAP_ZOOM,
+  ZONE_GEO,
+} from "@/features/live-radar/lib/zone-geo";
 import {
   deriveZoneSnapshots,
   stockHeat,
@@ -28,10 +38,13 @@ export function VenueLeafletMap() {
     return () => window.clearInterval(id);
   }, []);
 
-  const snapshots = useMemo(() => deriveZoneSnapshots(events, now), [events, now]);
+  const snapshots = useMemo(
+    () => deriveZoneSnapshots(events, now),
+    [events, now]
+  );
   const snapshotByZone = useMemo(
     () => new Map(snapshots.map((s) => [s.zone, s])),
-    [snapshots],
+    [snapshots]
   );
 
   return (
@@ -85,7 +98,9 @@ export function VenueLeafletMap() {
                   </p>
                   <p>
                     Activity: {snap?.demand30s ?? 0} evt/30s
-                    {snap && snap.spikes15s > 0 ? ` · ${snap.spikes15s} spikes` : ""}
+                    {snap && snap.spikes15s > 0
+                      ? ` · ${snap.spikes15s} spikes`
+                      : ""}
                   </p>
                   {snap?.lastItem && (
                     <p className="text-[var(--text-secondary)]">

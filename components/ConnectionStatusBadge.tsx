@@ -26,7 +26,11 @@ function resolveFeedLabel(
     case "open":
       return { title: "Live", detail: "WebSocket", tone: "live" };
     case "error":
-      return { title: "Connection error", detail: "Check feed URL", tone: "warn" };
+      return {
+        title: "Connection error",
+        detail: "Check feed URL",
+        tone: "warn",
+      };
     case "closed":
       return { title: "Offline", detail: "Socket closed", tone: "warn" };
     default:
@@ -45,7 +49,11 @@ export function ConnectionStatusBadge({
   wsUrl,
   wsStatus,
 }: ConnectionStatusBadgeProps) {
-  const { title, detail, tone } = resolveFeedLabel(simulatorOnly, wsUrl, wsStatus);
+  const { title, detail, tone } = resolveFeedLabel(
+    simulatorOnly,
+    wsUrl,
+    wsStatus
+  );
 
   return (
     <div

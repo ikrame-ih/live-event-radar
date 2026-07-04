@@ -14,7 +14,7 @@ const VenueLeafletMap = dynamic(
         Loading map…
       </div>
     ),
-  },
+  }
 );
 
 export function DashboardVenueMap() {
@@ -26,10 +26,16 @@ export function DashboardVenueMap() {
     return () => window.clearInterval(id);
   }, []);
 
-  const snapshots = useMemo(() => deriveZoneSnapshots(events, now), [events, now]);
+  const snapshots = useMemo(
+    () => deriveZoneSnapshots(events, now),
+    [events, now]
+  );
 
   return (
-    <section id="venue-map" className="bry-box bry-row-enter overflow-hidden p-5 sm:p-7">
+    <section
+      id="venue-map"
+      className="bry-box bry-row-enter overflow-hidden p-5 sm:p-7"
+    >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold">Venue map</h2>

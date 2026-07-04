@@ -172,6 +172,48 @@ function ZoneLabels({
   );
 }
 
+function ZonePolygons({
+  zone,
+  palette,
+  heat,
+  isSelected,
+  isHovered,
+}: {
+  zone: ZonePolygon;
+  palette: ReturnType<typeof zonePalette>;
+  heat: StockHeat;
+  isSelected: boolean;
+  isHovered: boolean;
+}) {
+  return (
+    <>
+      <polygon
+        points={zone.points}
+        fill={palette.glow}
+        opacity={heat === "hot" ? 0.55 : heat === "mid" ? 0.5 : 0.35}
+        stroke="none"
+      />
+      <polygon
+        points={zone.points}
+        fill={palette.fillUrl}
+        stroke={palette.stroke}
+        strokeWidth={isSelected ? 3 : isHovered ? 2.5 : 2}
+        strokeOpacity={1}
+        className={isSelected ? "bry-map-zone-stroke-selected" : undefined}
+      />
+      {isSelected && (
+        <polygon
+          points={zone.points}
+          fill="none"
+          stroke="var(--text-primary)"
+          strokeWidth={1.5}
+          strokeOpacity={0.25}
+        />
+      )}
+    </>
+  );
+}
+
 function ZoneLayer({
   zone,
   stock,
@@ -202,33 +244,17 @@ function ZoneLayer({
       role="button"
       tabIndex={0}
       aria-label={`${zone.label}, stock ${stock}%, ${heat}`}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") onSelect();
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") onSelect();
       }}
     >
-      <polygon
-        points={zone.points}
-        fill={palette.glow}
-        opacity={heat === "hot" ? 0.55 : heat === "mid" ? 0.5 : 0.35}
-        stroke="none"
+      <ZonePolygons
+        zone={zone}
+        palette={palette}
+        heat={heat}
+        isSelected={isSelected}
+        isHovered={isHovered}
       />
-      <polygon
-        points={zone.points}
-        fill={palette.fillUrl}
-        stroke={palette.stroke}
-        strokeWidth={isSelected ? 3 : isHovered ? 2.5 : 2}
-        strokeOpacity={1}
-        className={isSelected ? "bry-map-zone-stroke-selected" : undefined}
-      />
-      {isSelected && (
-        <polygon
-          points={zone.points}
-          fill="none"
-          stroke="var(--text-primary)"
-          strokeWidth={1.5}
-          strokeOpacity={0.25}
-        />
-      )}
       <ZoneLabels zone={zone} stock={stock} heat={heat} highlight={highlight} />
     </g>
   );
@@ -294,6 +320,57 @@ function StockLegend() {
         );
       })}
     </g>
+  );
+}
+
+function MapEntryExitLabels() {
+  return (
+    <>
+      <g>
+        <rect
+          x={108}
+          y={518}
+          width={88}
+          height={26}
+          rx={10}
+          fill="rgb(255 255 255 / 0.92)"
+        />
+        <text
+          x={152}
+          y={535}
+          fill="var(--text-muted)"
+          fontSize={9}
+          fontFamily="var(--font-label), sans-serif"
+          fontWeight={800}
+          letterSpacing="0.08em"
+          textAnchor="middle"
+        >
+          ▲ ENTRY
+        </text>
+      </g>
+      <g>
+        <rect
+          x={868}
+          y={268}
+          width={76}
+          height={26}
+          rx={10}
+          fill="rgb(255 255 255 / 0.92)"
+        />
+        <text
+          x={906}
+          y={285}
+          fill="var(--text-muted)"
+          fontSize={9}
+          fontFamily="var(--font-label), sans-serif"
+          fontWeight={800}
+          letterSpacing="0.08em"
+          textAnchor="middle"
+        >
+          EXIT ▶
+        </text>
+      </g>
+    </>
   );
 }
 
@@ -427,51 +504,7 @@ export function InteractiveMap() {
 
       <StockLegend />
 
-      <g>
-        <rect
-          x={108}
-          y={518}
-          width={88}
-          height={26}
-          rx={10}
-          fill="rgb(255 255 255 / 0.92)"
-        />
-        <text
-          x={152}
-          y={535}
-          fill="var(--text-muted)"
-          fontSize={9}
-          fontFamily="var(--font-label), sans-serif"
-          fontWeight={800}
-          letterSpacing="0.08em"
-          textAnchor="middle"
-        >
-          ▲ ENTRY
-        </text>
-      </g>
-
-      <g>
-        <rect
-          x={868}
-          y={268}
-          width={76}
-          height={26}
-          rx={10}
-          fill="rgb(255 255 255 / 0.92)"
-        />
-        <text
-          x={906}
-          y={285}
-          fill="var(--text-muted)"
-          fontSize={9}
-          fontFamily="var(--font-label), sans-serif"
-          fontWeight={800}
-          letterSpacing="0.08em"
-          textAnchor="middle"
-        >
-          EXIT ▶
-        </text>
-      </g>
+      <MapEntryExitLabels />
     </svg>
   );
 }

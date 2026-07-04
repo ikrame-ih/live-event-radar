@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { formatRestockCountdown, msUntilNextRestock } from "./restock-countdown";
+import {
+  formatRestockCountdown,
+  msUntilNextRestock,
+} from "./restock-countdown";
 import { REPLENISH_INTERVAL_MS } from "./zone-stock";
 
 describe("msUntilNextRestock", () => {
@@ -10,7 +13,12 @@ describe("msUntilNextRestock", () => {
   it("counts down from the last restock pulse", () => {
     const now = 100_000;
     const events = [
-      { zone: "South Gate", item: "Crew restock", quantity: 30, timestamp: now - 10_000 },
+      {
+        zone: "South Gate",
+        item: "Crew restock",
+        quantity: 30,
+        timestamp: now - 10_000,
+      },
     ];
     expect(msUntilNextRestock(events, now)).toBe(50_000);
   });
