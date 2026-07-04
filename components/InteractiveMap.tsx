@@ -73,27 +73,30 @@ function zonePalette(heat: StockHeat) {
   };
 }
 
+function VerticalGradient({
+  id,
+  top,
+  bottom,
+}: {
+  id: string;
+  top: string;
+  bottom: string;
+}) {
+  return (
+    <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor={top} />
+      <stop offset="100%" stopColor={bottom} />
+    </linearGradient>
+  );
+}
+
 function MapDefs() {
   return (
     <defs>
-      <linearGradient id="map-bg-grad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#f6f5f9" />
-        <stop offset="100%" stopColor="#eceaf2" />
-      </linearGradient>
-
-      {/* Zone card tints — aligned with stock legend */}
-      <linearGradient id="zone-grad-cool" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#eeecf2" />
-        <stop offset="100%" stopColor="#dcdae4" />
-      </linearGradient>
-      <linearGradient id="zone-grad-mid" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#fff0e0" />
-        <stop offset="100%" stopColor="#fde4c8" />
-      </linearGradient>
-      <linearGradient id="zone-grad-hot" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#fdd5cc" />
-        <stop offset="100%" stopColor="#f5b8a8" />
-      </linearGradient>
+      <VerticalGradient id="map-bg-grad" top="#f6f5f9" bottom="#eceaf2" />
+      <VerticalGradient id="zone-grad-cool" top="#eeecf2" bottom="#dcdae4" />
+      <VerticalGradient id="zone-grad-mid" top="#fff0e0" bottom="#fde4c8" />
+      <VerticalGradient id="zone-grad-hot" top="#fdd5cc" bottom="#f5b8a8" />
       <filter id="zone-card-shadow" x="-8%" y="-8%" width="116%" height="116%">
         <feDropShadow
           dx="0"

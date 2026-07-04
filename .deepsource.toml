@@ -19,12 +19,10 @@ exclude_patterns = [
   "next.config.ts",
   "postcss.config.mjs",
   "eslint.config.mjs",
-]
-
-test_patterns = [
+  "e2e/**",
   "**/*.test.ts",
   "**/*.test.tsx",
-  "e2e/**",
+  "features/live-radar/workers/**",
 ]
 
 [[analyzers]]
