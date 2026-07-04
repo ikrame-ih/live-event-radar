@@ -37,7 +37,7 @@ A browser-based **Digital Command Center** that feels like real ops telemetry:
 - **Shared state** — one Zustand store (`telemetry-store`) feeds both routes; incidents are derived into `useEventStore` for the Command Center
 - **Glass UI** — lavender shell, frosted panels, macOS-style active states, and a View Transitions crossfade (~180ms) between routes
 
-VHDL, Python, and deep learning in my degree — not just UI courses — probably explains why I care about tabular metrics that don't jump, buffers that don't grow forever, and maps that carry the data instead of decorative charts.
+Working promotions taught me that a dashboard only helps if the numbers stay trustworthy. Python from my degree plus ops experience on activations pushed me toward stable KPIs, capped buffers, and maps that show stock state — not decorative charts.
 
 ## Screens
 

@@ -6,25 +6,25 @@ const MAX_FIELD_LEN = 256;
 export function parseStockEvent(raw: unknown): StockEvent | null {
   if (!raw || typeof raw !== "object") return null;
 
-  const o = raw as Record<string, unknown>;
+  const payload = raw as Record<string, unknown>;
 
   if (
-    typeof o.zone === "string" &&
-    typeof o.item === "string" &&
-    typeof o.quantity === "number" &&
-    typeof o.timestamp === "number" &&
-    o.zone.length > 0 &&
-    o.zone.length <= MAX_FIELD_LEN &&
-    o.item.length > 0 &&
-    o.item.length <= MAX_FIELD_LEN &&
-    Number.isFinite(o.quantity) &&
-    Number.isFinite(o.timestamp)
+    typeof payload.zone === "string" &&
+    typeof payload.item === "string" &&
+    typeof payload.quantity === "number" &&
+    typeof payload.timestamp === "number" &&
+    payload.zone.length > 0 &&
+    payload.zone.length <= MAX_FIELD_LEN &&
+    payload.item.length > 0 &&
+    payload.item.length <= MAX_FIELD_LEN &&
+    Number.isFinite(payload.quantity) &&
+    Number.isFinite(payload.timestamp)
   ) {
     return {
-      zone: o.zone,
-      item: o.item,
-      quantity: o.quantity,
-      timestamp: o.timestamp,
+      zone: payload.zone,
+      item: payload.item,
+      quantity: payload.quantity,
+      timestamp: payload.timestamp,
     };
   }
 

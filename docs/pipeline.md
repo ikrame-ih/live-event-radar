@@ -4,15 +4,15 @@ Goal: handle a continuous stock event stream without unbounded memory, UI jank, 
 
 ## Modules
 
-| Module | Path | Role |
-| ------ | ---- | ---- |
-| Simulator | `hooks/use-simulator-stream.ts` | ~0.5 events/s, spike bursts, crew restock every 60s |
-| WebSocket | `hooks/use-stock-websocket.ts` | Live feed when `NEXT_PUBLIC_WS_URL` is set |
-| Command Center sync | `hooks/use-command-center-sync.ts` | Derives incidents → `useEventStore` for `/` |
-| Zone stock | `lib/zone-stock.ts` | Stock %, tier, idle recovery |
-| Mock generator | `mock/mock-event-generator.ts` | Spike-heavy consumption patterns |
-| Store | `state/telemetry-store.ts` | FIFO buffer, cap 10,000 |
-| Worker | `hooks/use-analytics-worker.ts` | Lightweight summaries on `/dashboard` |
+| Module              | Path                               | Role                                                |
+| ------------------- | ---------------------------------- | --------------------------------------------------- |
+| Simulator           | `hooks/use-simulator-stream.ts`    | ~0.5 events/s, spike bursts, crew restock every 60s |
+| WebSocket           | `hooks/use-stock-websocket.ts`     | Live feed when `NEXT_PUBLIC_WS_URL` is set          |
+| Command Center sync | `hooks/use-command-center-sync.ts` | Derives incidents → `useEventStore` for `/`         |
+| Zone stock          | `lib/zone-stock.ts`                | Stock %, tier, idle recovery                        |
+| Mock generator      | `mock/mock-event-generator.ts`     | Spike-heavy consumption patterns                    |
+| Store               | `state/telemetry-store.ts`         | FIFO buffer, cap 10,000                             |
+| Worker              | `hooks/use-analytics-worker.ts`    | Lightweight summaries on `/dashboard`               |
 
 ## Event type
 

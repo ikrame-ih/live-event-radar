@@ -26,6 +26,8 @@ function statusPillClass(status: ZoneStatus): string {
       return "pill-zone pill-map-mid";
     case "healthy":
       return "pill-zone pill-map-cool";
+    default:
+      return "pill-zone pill-map-cool";
   }
 }
 
@@ -36,6 +38,8 @@ function stockBarClass(status: ZoneStatus): string {
     case "watch":
       return "bry-stock-fill-watch";
     case "healthy":
+      return "bry-stock-fill-healthy";
+    default:
       return "bry-stock-fill-healthy";
   }
 }
@@ -51,7 +55,9 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
   const restockMs = msUntilNextRestock(events, now);
   const avgStock =
     snapshots.length > 0
-      ? Math.round(snapshots.reduce((sum, s) => sum + s.stock, 0) / snapshots.length)
+      ? Math.round(
+          snapshots.reduce((sum, s) => sum + s.stock, 0) / snapshots.length
+        )
       : 0;
   const atRisk = snapshots.filter((s) => s.status !== "healthy").length;
   const lowest = [...snapshots].sort((a, b) => a.stock - b.stock)[0];
@@ -69,7 +75,9 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
           <span className="pill-zone font-semibold tabular-nums">
             Restock in {formatRestockCountdown(restockMs)}
           </span>
-          <span className="pill-zone font-semibold tabular-nums">Avg {avgStock}%</span>
+          <span className="pill-zone font-semibold tabular-nums">
+            Avg {avgStock}%
+          </span>
           {atRisk > 0 && (
             <span className="pill-zone pill-amber font-semibold tabular-nums">
               {atRisk} at risk
@@ -77,7 +85,8 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
           )}
           {lowest && (
             <span className="pill-zone font-semibold tabular-nums">
-              Low: {ZONE_META[lowest.zone]?.short ?? lowest.zone.split(" ")[0]} {lowest.stock}%
+              Low: {ZONE_META[lowest.zone]?.short ?? lowest.zone.split(" ")[0]}{" "}
+              {lowest.stock}%
             </span>
           )}
         </div>
@@ -92,7 +101,9 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <p className="truncate text-sm font-bold">{snap.zone}</p>
-                <p className="truncate text-xs text-[var(--text-muted)]">{snap.subtitle}</p>
+                <p className="truncate text-xs text-[var(--text-muted)]">
+                  {snap.subtitle}
+                </p>
               </div>
               <span
                 className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${statusPillClass(snap.status)}`}
@@ -104,7 +115,9 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
             <div>
               <div className="mb-1 flex items-baseline justify-between gap-2">
                 <span className="text-xs text-[var(--text-muted)]">Stock</span>
-                <span className="font-mono text-sm font-bold tabular-nums">{snap.stock}%</span>
+                <span className="font-mono text-sm font-bold tabular-nums">
+                  {snap.stock}%
+                </span>
               </div>
               <div className="bry-stock-bar" aria-hidden>
                 <div
@@ -117,11 +130,15 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
             <ul className="space-y-1.5 border-t border-white/45 pt-3 text-xs">
               <li className="flex justify-between gap-2">
                 <span className="text-[var(--text-muted)]">Demand</span>
-                <span className="font-mono font-semibold tabular-nums">{snap.demand30s} evt/30s</span>
+                <span className="font-mono font-semibold tabular-nums">
+                  {snap.demand30s} evt/30s
+                </span>
               </li>
               <li className="flex justify-between gap-2">
                 <span className="text-[var(--text-muted)]">Spikes (15s)</span>
-                <span className="font-mono font-semibold tabular-nums">{snap.spikes15s}</span>
+                <span className="font-mono font-semibold tabular-nums">
+                  {snap.spikes15s}
+                </span>
               </li>
               <li className="flex justify-between gap-2">
                 <span className="text-[var(--text-muted)]">Last event</span>

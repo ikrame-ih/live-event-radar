@@ -32,7 +32,7 @@ export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
   const urlError = url ? wsUrlError(url) : null;
 
   useEffect(() => {
-    if (!url || urlError) return;
+    if (!url || urlError) return undefined;
 
     let done = false;
     const ws = new WebSocket(url);

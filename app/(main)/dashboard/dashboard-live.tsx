@@ -27,7 +27,9 @@ export function DashboardLive() {
   const wsUrl = process.env.NEXT_PUBLIC_WS_URL?.trim();
   const simulatorOnly = process.env.NEXT_PUBLIC_SIMULATOR_ONLY === "true";
 
-  const wsStatus = useStockWebSocket(simulatorOnly || !wsUrl ? undefined : wsUrl);
+  const wsStatus = useStockWebSocket(
+    simulatorOnly || !wsUrl ? undefined : wsUrl
+  );
   useSimulatorStream();
   const workerEcho = useAnalyticsWorker("live-event-radar");
 
@@ -35,55 +37,55 @@ export function DashboardLive() {
 
   return (
     <div className="bry-shell mx-auto max-w-[var(--content-max)] p-6 sm:p-8 lg:p-12">
-        <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
-              LiveEvent Radar
-            </h1>
-            <p className="mt-1 text-sm text-[var(--text-secondary)]">
-              Brand activation demo · live stream
-            </p>
-          </div>
-          <ConnectionStatusBadge
-            simulatorOnly={simulatorOnly}
-            wsUrl={wsUrl}
-            wsStatus={wsStatus}
-          />
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
+            LiveEvent Radar
+          </h1>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
+            Brand activation demo · live stream
+          </p>
         </div>
+        <ConnectionStatusBadge
+          simulatorOnly={simulatorOnly}
+          wsUrl={wsUrl}
+          wsStatus={wsStatus}
+        />
+      </div>
 
-        <EventStreamFilters filters={filters} onChange={setFilters} />
+      <EventStreamFilters filters={filters} onChange={setFilters} />
 
-        <div className="mt-8">
-          <DashboardVenueMap />
+      <div className="mt-8">
+        <DashboardVenueMap />
+      </div>
+
+      <div className="mt-8 flex flex-wrap items-end justify-between gap-4">
+        <h2 className="text-lg font-bold">Event stream</h2>
+        <div className="bry-box bry-row-enter px-5 py-3 text-right">
+          <p className="text-xs font-medium text-[var(--text-muted)]">
+            Buffered rows
+          </p>
+          <p
+            className="font-mono text-2xl font-extrabold tabular-nums sm:text-3xl"
+            data-kpi-buffer-count
+          >
+            {events.length}
+          </p>
+          <p className="text-xs text-[var(--text-muted)]">
+            cap {maxLabel} · FIFO
+          </p>
         </div>
+      </div>
 
-        <div className="mt-8 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-lg font-bold">Event stream</h2>
-          <div className="bry-box bry-row-enter px-5 py-3 text-right">
-            <p className="text-xs font-medium text-[var(--text-muted)]">
-              Buffered rows
-            </p>
-            <p
-              className="font-mono text-2xl font-extrabold tabular-nums sm:text-3xl"
-              data-kpi-buffer-count
-            >
-              {events.length}
-            </p>
-            <p className="text-xs text-[var(--text-muted)]">
-              cap {maxLabel} · FIFO
-            </p>
-          </div>
-        </div>
+      <div className="mt-5">
+        <EventStreamList events={events} filters={filters} />
+      </div>
 
-        <div className="mt-5">
-          <EventStreamList events={events} filters={filters} />
-        </div>
-
-        {workerEcho && (
-          <span className="sr-only" data-worker-echo={workerEcho}>
-            {workerEcho}
-          </span>
-        )}
+      {workerEcho && (
+        <span className="sr-only" data-worker-echo={workerEcho}>
+          {workerEcho}
+        </span>
+      )}
     </div>
   );
 }

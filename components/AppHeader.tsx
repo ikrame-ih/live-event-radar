@@ -84,7 +84,11 @@ export function AppHeader({
         >
           <LayoutGrid size={20} strokeWidth={1.5} />
         </TransitionLink>
-        <TransitionLink href={mapHref} className="bry-nav-icon" aria-label="Venue map">
+        <TransitionLink
+          href={mapHref}
+          className="bry-nav-icon"
+          aria-label="Venue map"
+        >
           <MapPin size={20} strokeWidth={1.5} />
         </TransitionLink>
       </nav>

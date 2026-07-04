@@ -13,6 +13,8 @@ function severityAccent(severity: IncidentSeverity): string {
       return "var(--map-zone-stroke-mid)";
     case "resolved":
       return "var(--map-zone-stroke-cool)";
+    default:
+      return "var(--map-zone-stroke-cool)";
   }
 }
 
@@ -26,14 +28,16 @@ function SeverityIcon({ severity }: { severity: IncidentSeverity }) {
       return <Clock size={size} style={{ color }} />;
     case "resolved":
       return <CheckCircle size={size} style={{ color }} />;
+    default:
+      return <CheckCircle size={size} style={{ color }} />;
   }
 }
 
 function formatAge(ts: number): string {
-  const s = Math.floor(Math.max(0, Date.now() - ts) / 1000);
-  if (s < 60) return `${s}s ago`;
-  const m = Math.floor(s / 60);
-  return m < 60 ? `${m}m ago` : `${Math.floor(m / 60)}h ago`;
+  const seconds = Math.floor(Math.max(0, Date.now() - ts) / 1000);
+  if (seconds < 60) return `${seconds}s ago`;
+  const minutes = Math.floor(seconds / 60);
+  return minutes < 60 ? `${minutes}m ago` : `${Math.floor(minutes / 60)}h ago`;
 }
 
 function Row({
@@ -133,10 +137,11 @@ export function IncidentSidebar() {
   );
 
   useEffect(() => {
-    if (!selectedIncidentId) return;
+    if (!selectedIncidentId) return undefined;
     cardRefs.current
       .get(selectedIncidentId)
       ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    return undefined;
   }, [selectedIncidentId]);
 
   if (incidents.length === 0) {

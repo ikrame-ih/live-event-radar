@@ -10,7 +10,7 @@ That leads to visible stock-outs (empty counters, frustrated guests) and mismatc
 
 A coordinator opens a tablet. On a simplified venue heat map, a zone flashes a warning with something like:
 
-> *High consumption: this stand may run empty in roughly X minutes (estimate).*
+> _High consumption: this stand may run empty in roughly X minutes (estimate)._
 
 The prediction doesn't need to be perfect on day one. The value is a UI that feels like **real ops telemetry** — nudging action before the gap becomes visible to guests.
 
@@ -20,10 +20,10 @@ A **Next.js app** fed by consecutive events (mocked locally or streamed via WebS
 
 Two screens:
 
-| Route | Role |
-| ----- | ---- |
-| `/` | Digital Command Center — SVG venue map, zone inventory, activity feed |
-| `/dashboard` | Telemetry depth — Leaflet map, filters, capped event stream |
+| Route        | Role                                                                  |
+| ------------ | --------------------------------------------------------------------- |
+| `/`          | Digital Command Center — SVG venue map, zone inventory, activity feed |
+| `/dashboard` | Telemetry depth — Leaflet map, filters, capped event stream           |
 
 For ops teams that's faster awareness per zone and one dashboard instead of scattered messages. As an engineering demo it shows capped buffers, derived state, and dual-surface maps running entirely in the browser.
 

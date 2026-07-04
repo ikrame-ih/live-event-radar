@@ -5,7 +5,7 @@ import type { StockEvent } from "../types";
 function fakeEvent(
   zone: string,
   quantity: number,
-  offsetMs: number,
+  offsetMs: number
 ): StockEvent {
   return {
     zone,
@@ -43,7 +43,7 @@ describe("deriveIncidents", () => {
 
   it("returns at most one rollup per zone (no overlapping map nodes)", () => {
     const events = Array.from({ length: 20 }, (_, i) =>
-      fakeEvent("South Gate", -2, i * 500),
+      fakeEvent("South Gate", -2, i * 500)
     );
     const result = deriveIncidents(events);
     expect(result).toHaveLength(1);
