@@ -24,6 +24,9 @@ export const metadata: Metadata = {
   title: "LiveEvent Radar",
   description:
     "Digital Command Center — live event operations telemetry, zone stock, and incident tracking.",
+  other: {
+    google: "notranslate",
+  },
   openGraph: {
     title: "LiveEvent Radar",
     description:
@@ -40,6 +43,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      translate="no"
       suppressHydrationWarning
       className={`${inter.variable} ${montserrat.variable} ${jakarta.variable} h-full antialiased`}
     >
