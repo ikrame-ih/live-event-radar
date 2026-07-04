@@ -17,7 +17,7 @@ Portfolio project (v0.1.0): frontend-only, mock stream by default, optional WebS
 |                               |                                                                                        |
 | ----------------------------- | -------------------------------------------------------------------------------------- |
 | **Live app**                  | [live-event-radar.vercel.app](https://live-event-radar.vercel.app)                     |
-| **Case study & architecture** | [GitHub Pages docs](https://ikrame-ih.github.io/live-event-radar/)                     |
+| **Documentation**             | [GitHub Pages docs](https://ikrame-ih.github.io/live-event-radar/)                     |
 | **Source**                    | [github.com/ikrame-ih/live-event-radar](https://github.com/ikrame-ih/live-event-radar) |
 
 ## Highlights
@@ -131,7 +131,7 @@ e2e/                  # Playwright specs
 - [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture)
 - [Data pipeline](https://ikrame-ih.github.io/live-event-radar/pipeline)
 
-## License & security
+## License
 
 MIT — see [LICENSE](./LICENSE). Vulnerability reports: [SECURITY.md](./SECURITY.md).
 
