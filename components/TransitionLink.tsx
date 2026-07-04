@@ -6,7 +6,6 @@ import { startTransition, type ComponentProps, type MouseEvent } from "react";
 
 type TransitionLinkProps = ComponentProps<typeof NextLink>;
 
-// Middle-click, modified click, etc. — leave default Link behaviour alone.
 function shouldSkipTransition(event: MouseEvent<HTMLAnchorElement>): boolean {
   return (
     event.defaultPrevented ||
@@ -18,7 +17,16 @@ function shouldSkipTransition(event: MouseEvent<HTMLAnchorElement>): boolean {
   );
 }
 
-// ~180ms crossfade in globals.css; plain router.push when unsupported.
+function resolveTransitionTarget(
+  href: TransitionLinkProps["href"]
+): string | null {
+  if (typeof href === "string") return href;
+  if (typeof href === "object" && href.pathname) {
+    return `${href.pathname}${href.hash ?? ""}`;
+  }
+  return null;
+}
+
 function runViewTransition(navigate: () => void) {
   if (typeof document !== "undefined" && "startViewTransition" in document) {
     document.startViewTransition(() => {
@@ -30,7 +38,6 @@ function runViewTransition(navigate: () => void) {
   navigate();
 }
 
-// Link with View Transitions on same-tab nav. Skips hash/anchor targets.
 export function TransitionLink({
   href,
   onClick,
@@ -46,13 +53,7 @@ export function TransitionLink({
         onClick?.(event);
         if (shouldSkipTransition(event)) return;
 
-        const target =
-          typeof href === "string"
-            ? href
-            : typeof href === "object" && href.pathname
-              ? `${href.pathname}${href.hash ?? ""}`
-              : null;
-
+        const target = resolveTransitionTarget(href);
         if (!target || target.startsWith("#")) return;
 
         event.preventDefault();
