@@ -172,6 +172,17 @@ body {
   color: var(--text-primary);
   font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  cursor: text;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 h1,
