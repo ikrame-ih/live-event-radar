@@ -20,7 +20,7 @@ export function CommandCenterKpiHero({
   wsStatus,
 }: CommandCenterKpiHeroProps) {
   return (
-    <div className="bry-kpi-hero bry-box bry-row-enter flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:p-8">
+    <div className="bry-kpi-hero bry-box bry-row-enter flex min-h-full flex-col gap-6 p-6 sm:flex-row sm:items-center sm:p-8">
       <div
         className="bry-kpi-hero-icon flex shrink-0 items-center justify-center rounded-full sm:h-24 sm:w-24"
         style={{
@@ -31,7 +31,7 @@ export function CommandCenterKpiHero({
         <Radio
           size={32}
           strokeWidth={1.5}
-          className="text-[var(--text-muted)]"
+          className="text-(--text-muted)"
         />
       </div>
       <div className="min-w-0 flex-1">
@@ -40,7 +40,7 @@ export function CommandCenterKpiHero({
           value={eventCount}
           className="bry-stat-big bry-kpi-display font-mono"
         />
-        <p className="mt-2 text-sm text-[var(--text-secondary)]">
+        <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
           Events buffered
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-2">

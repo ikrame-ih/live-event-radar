@@ -478,6 +478,34 @@ h3 {
     var(--shadow-inset);
 }
 
+.bry-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.bry-section-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.bry-section-subtitle {
+  margin-top: 0.25rem;
+  max-width: 36rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.bry-mini-metric {
+  min-width: 8.5rem;
+  padding: 0.875rem 1.25rem;
+  text-align: right;
+}
+
 .bry-kpi-display {
   font-size: var(--text-display);
 }
@@ -859,6 +887,28 @@ h3 {
 
 .bry-stock-fill-critical {
   background: linear-gradient(90deg, #d9786a 0%, #f5c4bc 100%);
+}
+
+.bry-zone-health-card {
+  min-height: 220px;
+}
+
+.bry-event-row {
+  display: grid;
+  align-items: center;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.bry-event-quantity {
+  min-width: 5.5rem;
+}
+
+@media (min-width: 640px) {
+  .bry-event-row {
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    gap: 1.25rem;
+  }
 }
 
 /* ── Venue map — schematic floor plan ── */

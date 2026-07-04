@@ -36,13 +36,13 @@ export function DashboardLive() {
   const maxLabel = Intl.NumberFormat("en-US").format(MAX_EVENTS);
 
   return (
-    <div className="bry-shell mx-auto max-w-[var(--content-max)] p-6 sm:p-8 lg:p-12">
-      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+    <div className="bry-shell mx-auto max-w-(--content-max) p-6 sm:p-8 lg:p-12">
+      <div className="bry-section-head mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
+          <h1 className="text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">
             LiveEvent Radar
           </h1>
-          <p className="mt-1 text-sm text-[var(--text-secondary)]">
+          <p className="bry-section-subtitle text-sm">
             Brand activation demo · live stream
           </p>
         </div>
@@ -59,10 +59,15 @@ export function DashboardLive() {
         <DashboardVenueMap />
       </div>
 
-      <div className="mt-8 flex flex-wrap items-end justify-between gap-4">
-        <h2 className="text-lg font-bold">Event stream</h2>
-        <div className="bry-box bry-row-enter px-5 py-3 text-right">
-          <p className="text-xs font-medium text-[var(--text-muted)]">
+      <div className="bry-section-head mt-8">
+        <div>
+          <h2 className="bry-section-title">Event stream</h2>
+          <p className="bry-section-subtitle">
+            Latest stock events, filtered without reloading the dashboard
+          </p>
+        </div>
+        <div className="bry-box bry-mini-metric bry-row-enter">
+          <p className="text-xs font-medium text-(--text-muted)">
             Buffered rows
           </p>
           <p
@@ -71,7 +76,7 @@ export function DashboardLive() {
           >
             {events.length}
           </p>
-          <p className="text-xs text-[var(--text-muted)]">
+          <p className="text-xs text-(--text-muted)">
             cap {maxLabel} · FIFO
           </p>
         </div>

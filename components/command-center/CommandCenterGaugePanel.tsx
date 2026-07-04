@@ -12,20 +12,20 @@ export function CommandCenterGaugePanel({
   criticalCount,
 }: CommandCenterGaugePanelProps) {
   return (
-    <div className="bry-kpi-gauge bry-box bry-row-enter p-6 sm:p-7">
+    <div className="bry-kpi-gauge bry-box bry-row-enter flex min-h-full flex-col p-6 sm:p-7">
       <p className="bry-caps mb-4 text-center">30 second window</p>
       <StreamGauge value={activeZones} max={3} />
       <ul className="mt-5 space-y-2 text-sm">
-        <li className="flex justify-between border-b border-white/45 pb-2">
-          <span className="text-[var(--text-muted)]">Active zones</span>
+        <li className="flex items-center justify-between gap-4 border-b border-white/45 pb-2">
+          <span className="text-(--text-muted)">Active zones</span>
           <span className="font-bold tabular-nums">{activeZones}/3</span>
         </li>
-        <li className="flex justify-between border-b border-white/45 pb-2">
-          <span className="text-[var(--text-muted)]">Stream rate</span>
+        <li className="flex items-center justify-between gap-4 border-b border-white/45 pb-2">
+          <span className="text-(--text-muted)">Stream rate</span>
           <span className="font-bold tabular-nums">{streamRateLabel}</span>
         </li>
-        <li className="flex justify-between">
-          <span className="text-[var(--text-muted)]">Critical</span>
+        <li className="flex items-center justify-between gap-4">
+          <span className="text-(--text-muted)">Critical</span>
           <span className="font-bold tabular-nums">{criticalCount}</span>
         </li>
       </ul>
