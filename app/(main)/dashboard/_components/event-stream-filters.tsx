@@ -20,22 +20,22 @@ export function EventStreamFilters({
 }: EventStreamFiltersProps) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="bry-search-whisper flex items-center gap-3 px-5 py-3.5">
+      <div className="bry-search-whisper flex min-h-12 items-center gap-3 px-5 py-3">
         <Search
           size={18}
           strokeWidth={1.5}
-          className="shrink-0 text-[var(--text-muted)]"
+          className="shrink-0 text-(--text-muted)"
         />
         <input
           type="search"
           placeholder="Search zone or item…"
           value={filters.search}
           onChange={(e) => onChange({ ...filters, search: e.target.value })}
-          className="min-w-0 flex-1 bg-transparent text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]"
+          className="min-w-0 flex-1 bg-transparent text-sm text-(--text-primary) outline-none placeholder:text-(--text-muted)"
         />
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <FilterPill
           label="All zones"
           active={filters.zone === "all"}
@@ -51,7 +51,7 @@ export function EventStreamFilters({
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <FilterPill
           label="All events"
           active={filters.status === "all"}
@@ -86,10 +86,10 @@ function FilterPill({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`bry-filter-pill rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-200 ease-[var(--ease-premium)] ${
+      className={`bry-filter-pill inline-flex min-h-9 items-center rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-200 ease-(--ease-premium) ${
         active
           ? "bry-filter-pill-active"
-          : "bry-inset text-[var(--text-secondary)] hover:-translate-y-px hover:text-[var(--text-primary)]"
+          : "bry-inset text-(--text-secondary) hover:-translate-y-px hover:text-(--text-primary)"
       }`}
     >
       {label}

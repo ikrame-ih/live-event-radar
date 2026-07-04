@@ -43,11 +43,13 @@ type ZoneHealthCardProps = {
 
 export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
   return (
-    <article className="bry-zone-health-card bry-box bry-row-enter flex flex-col gap-3 p-4 sm:p-5">
+    <article className="bry-zone-health-card bry-box bry-row-enter flex flex-col justify-between gap-4 p-4 sm:p-5">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold">{snapshot.zone}</p>
-          <p className="truncate text-xs text-[var(--text-muted)]">
+          <p className="truncate text-sm font-extrabold leading-tight">
+            {snapshot.zone}
+          </p>
+          <p className="truncate text-xs text-(--text-muted)">
             {snapshot.subtitle}
           </p>
         </div>
@@ -58,9 +60,9 @@ export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
         </span>
       </div>
 
-      <div>
+      <div className="mt-auto">
         <div className="mb-1 flex items-baseline justify-between gap-2">
-          <span className="text-xs text-[var(--text-muted)]">Stock</span>
+          <span className="text-xs text-(--text-muted)">Stock</span>
           <span className="font-mono text-sm font-bold tabular-nums">
             {snapshot.stock}%
           </span>
@@ -75,20 +77,20 @@ export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
 
       <ul className="space-y-1.5 border-t border-white/45 pt-3 text-xs">
         <li className="flex justify-between gap-2">
-          <span className="text-[var(--text-muted)]">Demand</span>
+          <span className="text-(--text-muted)">Demand</span>
           <span className="font-mono font-semibold tabular-nums">
             {snapshot.demand30s} evt/30s
           </span>
         </li>
         <li className="flex justify-between gap-2">
-          <span className="text-[var(--text-muted)]">Spikes (15s)</span>
+          <span className="text-(--text-muted)">Spikes (15s)</span>
           <span className="font-mono font-semibold tabular-nums">
             {snapshot.spikes15s}
           </span>
         </li>
         <li className="flex justify-between gap-2">
-          <span className="text-[var(--text-muted)]">Last event</span>
-          <span className="truncate text-right font-medium text-[var(--text-secondary)]">
+          <span className="text-(--text-muted)">Last event</span>
+          <span className="truncate text-right font-medium text-(--text-secondary)">
             {formatLastEvent(snapshot)}
           </span>
         </li>

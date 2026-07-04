@@ -49,6 +49,16 @@
     align-items: flex-start;
   }
 
+  .bry-section-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .bry-mini-metric {
+    width: 100%;
+    text-align: left;
+  }
+
   .bry-zone-activity-section {
     padding: 1rem;
   }

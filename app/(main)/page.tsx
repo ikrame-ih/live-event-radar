@@ -48,8 +48,8 @@ export default function CommandCenter() {
   useSimulatorStream();
 
   return (
-    <main className="bry-shell bry-shell--page mx-auto max-w-[var(--content-max)] p-6 sm:p-8 lg:p-12">
-      <div className="bry-search-whisper mb-8 flex max-w-sm items-center gap-3 px-5 py-3.5 text-sm text-[var(--text-muted)]">
+    <main className="bry-shell bry-shell--page mx-auto max-w-(--content-max) p-6 sm:p-8 lg:p-12">
+      <div className="bry-search-whisper mb-8 flex max-w-sm items-center gap-3 px-5 py-3.5 text-sm text-(--text-muted)">
         <Search size={18} strokeWidth={1.5} />
         <span>Search zones&hellip;</span>
       </div>
@@ -76,12 +76,14 @@ export default function CommandCenter() {
           id="venue-map"
           className="bry-box bry-row-enter overflow-hidden p-5 sm:p-7"
         >
-          <div className="bry-venue-section-head mb-4">
-            <h2 className="text-lg font-bold">Venue map</h2>
-            <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-              Zone fill follows stock tiers — click a zone or activity row to
-              focus
-            </p>
+          <div className="bry-section-head bry-venue-section-head mb-4">
+            <div>
+              <h2 className="bry-section-title">Venue map</h2>
+              <p className="bry-section-subtitle">
+                Zone fill follows stock tiers — click a zone or activity row to
+                focus
+              </p>
+            </div>
           </div>
           <div className="bry-venue-map-canvas bry-inner bry-glass overflow-hidden">
             <div className="min-h-[360px] sm:min-h-[420px] lg:min-h-[480px]">
@@ -91,13 +93,17 @@ export default function CommandCenter() {
         </section>
 
         <section className="bry-zone-activity-section bry-box bry-row-enter p-5 sm:p-7">
-          <h2 className="mb-1 text-lg font-bold">Zone activity</h2>
-          <p className="mb-4 text-xs text-[var(--text-muted)] sm:hidden">
-            Tap a row to highlight the zone on the map
-          </p>
-          <p className="mb-4 hidden text-xs text-[var(--text-muted)] sm:block">
-            Synced with the map — hover a row or click a zone
-          </p>
+          <div className="bry-section-head mb-4">
+            <div>
+              <h2 className="bry-section-title">Zone activity</h2>
+              <p className="bry-section-subtitle sm:hidden">
+                Tap a row to highlight the zone on the map
+              </p>
+              <p className="bry-section-subtitle hidden sm:block">
+                Synced with the map — hover a row or click a zone
+              </p>
+            </div>
+          </div>
           <IncidentSidebar />
         </section>
       </div>

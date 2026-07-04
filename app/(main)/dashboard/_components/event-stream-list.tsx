@@ -72,7 +72,7 @@ export function EventStreamList({ events, filters }: EventStreamListProps) {
 
   if (rows.length === 0) {
     return (
-      <div className="bry-inner bry-glass px-4 py-16 text-center text-sm text-[var(--text-muted)]">
+      <div className="bry-inner bry-glass px-4 py-16 text-center text-sm text-(--text-muted)">
         {events.length === 0
           ? "Events will appear here as the stream runs."
           : "No events match the current filters."}
@@ -88,36 +88,36 @@ export function EventStreamList({ events, filters }: EventStreamListProps) {
       {rows.map((event, index) => (
         <article
           key={`${event.zone}-${event.item}-${event.timestamp}-${event.quantity}`}
-          className="bry-row-capsule bry-row-enter flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-5"
+          className="bry-event-row bry-row-capsule bry-row-enter p-4 sm:p-5"
         >
           <EventBadge event={event} />
 
           <div className="min-w-0 flex-1">
             <p className="bry-caps">{event.zone}</p>
             <p className="mt-0.5 text-base font-bold">{event.item}</p>
-            <p className="mt-0.5 text-xs text-[var(--text-muted)]">
+            <p className="mt-0.5 text-xs text-(--text-muted)">
               Event #{String(events.length - index).padStart(4, "0")}
             </p>
           </div>
 
-          <div className="shrink-0 text-right">
+          <div className="bry-event-quantity text-left sm:text-right">
             <p
               className={`font-mono text-lg font-bold tabular-nums ${
                 event.quantity <= -2
-                  ? "text-[var(--semantic-coral)]"
+                  ? "text-(--semantic-coral)"
                   : event.quantity < 0
-                    ? "text-[var(--semantic-amber)]"
-                    : "text-[var(--semantic-teal)]"
+                    ? "text-(--semantic-amber)"
+                    : "text-(--semantic-teal)"
               }`}
             >
               {event.quantity}
             </p>
-            <p className="font-mono text-xs tabular-nums text-[var(--text-muted)]">
+            <p className="font-mono text-xs tabular-nums text-(--text-muted)">
               {formatTime(event.timestamp)}
             </p>
           </div>
 
-          <button type="button" className="bry-btn-secondary shrink-0">
+          <button type="button" className="bry-btn-secondary w-full sm:w-auto">
             View details
             <ChevronRight size={14} />
           </button>

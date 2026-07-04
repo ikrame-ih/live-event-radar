@@ -39,10 +39,10 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
 
   return (
     <section className="mt-6" aria-label="Zone inventory">
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+      <div className="bry-section-head mb-4">
         <div>
-          <h2 className="text-lg font-bold">Zone inventory</h2>
-          <p className="mt-0.5 text-xs text-[var(--text-muted)]">
+          <h2 className="bry-section-title">Zone inventory</h2>
+          <p className="bry-section-subtitle">
             Stock and demand by zone
           </p>
         </div>
