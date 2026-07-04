@@ -20,7 +20,7 @@ features:
   - title: Telemetry depth
     details: Secondary screen at /dashboard — Leaflet map (Teatinos, Málaga), filters, a capped event stream, and a Web Worker running in the background.
   - title: Stable under load
-    details: Zustand buffer capped at 10,000 events, derived zone snapshots, optional WebSocket feed. 20 Vitest tests · 18 Playwright runs.
+    details: Zustand buffer capped at 10,000 events, derived zone snapshots, optional WebSocket feed. 24 Vitest tests · 7 Playwright specs (3 viewports locally).
 ---
 
 ## The problem
@@ -41,10 +41,10 @@ VHDL, Python, and deep learning in my degree — not just UI courses — probabl
 
 ## Screens
 
-| Route            | Role                                                                                                     |
-| ---------------- | -------------------------------------------------------------------------------------------------------- |
-| **`/`**          | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed                |
-| **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped event stream, buffer KPI, Web Worker     |
+| Route            | Role                                                                                                 |
+| ---------------- | ---------------------------------------------------------------------------------------------------- |
+| **`/`**          | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed            |
+| **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped event stream, buffer KPI, Web Worker |
 
 Both routes share one **Zustand** store. Navigation uses a persistent `AppShell` and **View Transitions** via `TransitionLink` so the header and background never flash.
 

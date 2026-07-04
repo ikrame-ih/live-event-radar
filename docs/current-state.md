@@ -4,9 +4,9 @@ Snapshot of what's shipped and where things live. App is complete; live on Verce
 
 ## Routes
 
-| Route | Purpose |
-| ----- | ------- |
-| `/` | Command Center — KPIs, zone inventory, SVG map, zone activity feed |
+| Route        | Purpose                                                                        |
+| ------------ | ------------------------------------------------------------------------------ |
+| `/`          | Command Center — KPIs, zone inventory, SVG map, zone activity feed             |
 | `/dashboard` | Telemetry — Leaflet (Teatinos), filters, event stream, buffer KPI, worker echo |
 
 Both share `telemetry-store`. Neither redirects. Layout lives under `app/(main)/` with a persistent `AppShell` so the header and background stay mounted.
@@ -31,13 +31,13 @@ Map fill follows three bands — Healthy (≥ 65%, lavender grey), Watch (35–6
 
 ## Tests & CI
 
-Unit: `npm run test:run` (24 tests). E2E: `npm run test:e2e`. GitHub Actions runs lint, typecheck, unit tests, and build on every PR; Playwright (desktop) on pushes to `main`.
+Unit: `npm run test:run` (24 tests). E2E: `npm run test:e2e` (7 specs × 3 viewports). GitHub Actions runs lint, typecheck, unit tests, and build on every PR; Playwright (desktop) on pushes to `main`. [DeepSource](https://app.deepsource.com/gh/ikrame-ih/live-event-radar/) static analysis runs on push/PR when the repo is activated.
 
-| Surface | URL |
-| ------- | --- |
-| Live app | [live-event-radar.vercel.app](https://live-event-radar.vercel.app) |
-| Source | [github.com/ikrame-ih/live-event-radar](https://github.com/ikrame-ih/live-event-radar) |
-| Docs | GitHub Pages (this site) |
+| Surface  | URL                                                                                    |
+| -------- | -------------------------------------------------------------------------------------- |
+| Live app | [live-event-radar.vercel.app](https://live-event-radar.vercel.app)                     |
+| Source   | [github.com/ikrame-ih/live-event-radar](https://github.com/ikrame-ih/live-event-radar) |
+| Docs     | GitHub Pages (this site)                                                               |
 
 Private build notes live in Obsidian — a superset of what's published here.
 
