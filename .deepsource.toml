@@ -1,0 +1,30 @@
+# DeepSource analysis config — https://docs.deepsource.com/docs/platform/reference/core-analyzers
+version = 1
+
+exclude_patterns = [
+  ".next/**",
+  "out/**",
+  "build/**",
+  "node_modules/**",
+  "docs/.vitepress/dist/**",
+  "docs/.vitepress/cache/**",
+  ".flowbite-react/**",
+  "next-env.d.ts",
+  "package-lock.json",
+]
+
+test_patterns = [
+  "**/*.test.ts",
+  "**/*.test.tsx",
+  "e2e/**",
+]
+
+[[analyzers]]
+name = "javascript"
+enabled = true
+
+  [analyzers.meta]
+  plugins = ["react"]
+  environment = ["nodejs", "browser", "vitest"]
+  dialect = "typescript"
+  cyclomatic_complexity_threshold = "high"

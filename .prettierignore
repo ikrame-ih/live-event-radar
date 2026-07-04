@@ -4,3 +4,6 @@ build
 node_modules
 next-env.d.ts
 package-lock.json
+.flowbite-react
+docs/.vitepress/dist
+docs/.vitepress/cache

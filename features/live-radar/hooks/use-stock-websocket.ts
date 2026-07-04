@@ -56,7 +56,8 @@ export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
         const row = parseStockEvent(data);
         if (row) appendEvent(row);
       } catch {
-        // malformed frame — keep socket open
+        // Drop malformed frames; keep the socket open for valid messages.
+        return;
       }
     };
 
