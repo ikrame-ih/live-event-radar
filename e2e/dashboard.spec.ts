@@ -42,7 +42,9 @@ test.describe("LiveEvent Radar — /dashboard (event stream)", () => {
     await expect(
       page.getByRole("heading", { name: "LiveEvent Radar", level: 1 })
     ).toBeVisible();
-    await expect(page.getByRole("status")).toBeVisible();
+    await expect(
+      page.locator('[role="status"].bry-inset', { hasText: "Simulator" })
+    ).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Venue map", level: 2 })
     ).toBeVisible();
