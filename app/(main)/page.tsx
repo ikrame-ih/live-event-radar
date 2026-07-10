@@ -8,10 +8,8 @@ import { InteractiveMap } from "@/components/InteractiveMap";
 import { IncidentSidebar } from "@/components/IncidentSidebar";
 import { ZoneHealthOverview } from "@/components/ZoneHealthOverview";
 import { useCommandCenterSync } from "@/features/live-radar/hooks/use-command-center-sync";
-import { useSimulatorStream } from "@/features/live-radar/hooks/use-simulator-stream";
-import { useStockWebSocket } from "@/features/live-radar/hooks/use-stock-websocket";
+import { useLiveFeed } from "@/features/live-radar/hooks/use-live-feed";
 import { deriveZoneSnapshots } from "@/features/live-radar/lib/zone-stock";
-import { SIMULATOR_TICK_MS } from "@/features/live-radar/constants";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 import { useEventStore } from "@/store/useEventStore";
 
@@ -34,22 +32,15 @@ export default function CommandCenter() {
   ).length;
   const activeZones = snapshots.filter((s) => s.demand30s > 0).length;
 
-  const wsUrl = process.env.NEXT_PUBLIC_WS_URL?.trim();
-  const simulatorOnly = process.env.NEXT_PUBLIC_SIMULATOR_ONLY === "true";
-  const streamRateLabel =
-    !simulatorOnly && wsUrl
-      ? "~live"
-      : `~${(1000 / SIMULATOR_TICK_MS).toFixed(1)}/s`;
-
-  const wsStatus = useStockWebSocket(
-    simulatorOnly || !wsUrl ? undefined : wsUrl
-  );
+  const { wsUrl, simulatorOnly, wsStatus, streamRateLabel } = useLiveFeed();
   useCommandCenterSync();
-  useSimulatorStream();
 
   return (
     <main className="bry-shell bry-shell--page mx-auto max-w-(--content-max) p-6 sm:p-8 lg:p-12">
-      <div className="bry-search-whisper mb-8 flex max-w-sm items-center gap-3 px-5 py-3.5 text-sm text-(--text-muted)">
+      <div
+        className="bry-search-whisper mb-8 flex max-w-sm items-center gap-3 px-5 py-3.5 text-sm text-(--text-muted)"
+        aria-hidden="true"
+      >
         <Search size={18} strokeWidth={1.5} />
         <span>Search zones&hellip;</span>
       </div>

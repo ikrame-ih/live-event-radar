@@ -12,7 +12,7 @@ Goal: handle a continuous stock event stream without unbounded memory, UI jank, 
 | Zone stock          | `lib/zone-stock.ts`                | Stock %, tier, idle recovery                        |
 | Mock generator      | `mock/mock-event-generator.ts`     | Spike-heavy consumption patterns                    |
 | Store               | `state/telemetry-store.ts`         | FIFO buffer, cap 10,000                             |
-| Worker              | `hooks/use-analytics-worker.ts`    | Lightweight summaries on `/dashboard`               |
+| Worker              | `hooks/use-analytics-worker.ts`    | Main-thread placeholder echo on `/dashboard` (worker file ready for future wiring) |
 
 ## Event type
 
@@ -77,8 +77,8 @@ flowchart TB
 
 ## Web Worker
 
-`analytics.worker.ts` currently echoes lightweight summaries — enough to prove `postMessage` works before heavier math. The main thread never sends the full 10,000-event buffer across the thread boundary; that would defeat the cap.
+`analytics.worker.ts` is a stub that echoes input — the hook currently runs on the main thread so the dashboard stays simple while the worker file and E2E marker remain ready for heavier math later. The main thread never sends the full 10,000-event buffer across the thread boundary; that would defeat the cap.
 
-Effect cleanups stop intervals, close sockets, and terminate workers on unmount.
+Effect cleanups stop intervals and close sockets on unmount.
 
 Related: [Architecture](/architecture) · [Current state](/current-state)

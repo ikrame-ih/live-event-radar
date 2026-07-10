@@ -20,8 +20,13 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="min-h-screen bry-page-shell px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <a href="#main-content" className="bry-skip-link">
+        Skip to content
+      </a>
       <AppHeader roleLabel={roleLabel} criticalCount={criticalCount} />
-      <div className="bry-page-content-area">{children}</div>
+      <div id="main-content" className="bry-page-content-area">
+        {children}
+      </div>
       <footer className="mt-12 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 pb-4 text-xs text-(--text-muted)">
         <span>Ikrame Ibn Hayoun</span>
         <span aria-hidden>·</span>

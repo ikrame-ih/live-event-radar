@@ -14,12 +14,6 @@ export const ZONE_ANCHORS: Record<string, { x: number; y: number }> = {
   "Main Stage Walkway": { x: 860, y: 448 },
 };
 
-export const ZONE_SHORT: Record<string, string> = {
-  "South Gate": "SG",
-  "Sampling Court": "SC",
-  "Main Stage Walkway": "MSW",
-};
-
 const WINDOW_MS = 30_000;
 const SPIKE_MS = 15_000;
 

@@ -3,7 +3,7 @@ import { ZONE_NAMES, countByZone } from "./derive-incidents";
 
 export const STOCK_MAX = 100;
 export const REPLENISH_INTERVAL_MS = 60_000;
-/** Map legend thresholds */
+/** Map legend thresholds — drives SVG/Leaflet fill colours */
 export const STOCK_TIER_HEALTHY_MIN = 65;
 export const STOCK_TIER_WATCH_MIN = 35;
 const STOCK_WINDOW_MS = 120_000;
@@ -45,6 +45,7 @@ function clamp(n: number, min: number, max: number): number {
 }
 
 function resolveStatus(stock: number, spikes15s: number): ZoneStatus {
+  // Inventory card pills — tighter bands than map heat tiers above.
   if (stock < 30 || spikes15s >= 2) return "critical";
   if (stock < 55 || spikes15s >= 1) return "watch";
   return "healthy";

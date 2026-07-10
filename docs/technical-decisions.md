@@ -37,7 +37,7 @@ Mock simulator and WebSocket both call `appendEvent()`. `parseStockEvent` guards
 
 ### Web Worker scope
 
-The analytics worker on `/dashboard` receives lightweight summaries, not the full 10,000-event buffer. Sending the whole array across threads would undo the memory cap.
+`analytics.worker.ts` is ready, but the dashboard hook still echoes on the main thread — keeps the demo simple while preserving the E2E marker. When wired, the worker should receive lightweight summaries only, not the full 10,000-event buffer. Sending the whole array across threads would undo the memory cap.
 
 ### README media on GitHub
 
@@ -46,8 +46,9 @@ Inline `<video>` with repo-relative paths doesn't play on github.com (CSP). Stat
 ## Accessibility
 
 - `aria-label` and `aria-current` on main nav and both maps
-- `aria-live="polite"` on the event stream
-- Visible `:focus-visible` on nav, filter pills, list rows
+- `aria-live="polite"` on the event stream and incident feed
+- Visible `:focus-visible` on nav, filter pills, list rows, and interactive map zones
+- Decorative header controls marked disabled until wired
 - `prefers-reduced-motion` disables gauge scan and other decorative motion
 
 ## What I'd add with a real backend

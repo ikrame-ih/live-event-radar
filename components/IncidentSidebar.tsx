@@ -68,11 +68,15 @@ function Row({
       ref={cardRef}
       role="button"
       tabIndex={0}
+      aria-label={`${incident.title}, ${incident.zone}, ${incident.metric}`}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
       onClick={onClick}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") onClick();
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
       }}
       className={`bry-incident-row bry-row-capsule bry-row-enter mb-4 flex cursor-pointer items-center gap-3 p-4 last:mb-0 ${stateClass}`}
       style={
@@ -146,31 +150,35 @@ export function IncidentSidebar() {
 
   if (incidents.length === 0) {
     return (
-      <div className="bry-inner bry-glass px-4 py-12 text-center text-sm text-[var(--text-muted)]">
+      <div
+        className="bry-inner bry-glass px-4 py-12 text-center text-sm text-[var(--text-muted)]"
+        role="status"
+      >
         Waiting for stream events&hellip;
       </div>
     );
   }
 
   return (
-    <div>
+    <ul className="list-none" aria-live="polite">
       {incidents.map((inc) => {
         const isSelected = selectedIncidentId === inc.id;
         const isHovered = activeIncidentId === inc.id && !isSelected;
 
         return (
-          <Row
-            key={inc.id}
-            incident={inc}
-            isSelected={isSelected}
-            isHovered={isHovered}
-            cardRef={setCardRef(inc.id)}
-            onHover={() => setActiveIncident(inc.id)}
-            onLeave={() => setActiveIncident(null)}
-            onClick={() => selectIncident(inc.id)}
-          />
+          <li key={inc.id}>
+            <Row
+              incident={inc}
+              isSelected={isSelected}
+              isHovered={isHovered}
+              cardRef={setCardRef(inc.id)}
+              onHover={() => setActiveIncident(inc.id)}
+              onLeave={() => setActiveIncident(null)}
+              onClick={() => selectIncident(inc.id)}
+            />
+          </li>
         );
       })}
-    </div>
+    </ul>
   );
 }

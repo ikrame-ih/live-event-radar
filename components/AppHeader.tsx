@@ -38,7 +38,13 @@ export function AppHeader({
         <button
           type="button"
           className="bry-nav-icon relative"
-          aria-label="Alerts"
+          aria-label={
+            criticalCount > 0
+              ? `Alerts, ${criticalCount} critical`
+              : "Alerts (coming soon)"
+          }
+          aria-disabled="true"
+          disabled
         >
           <Bell size={20} strokeWidth={1.5} />
           {criticalCount > 0 && (
@@ -48,14 +54,18 @@ export function AppHeader({
         <button
           type="button"
           className="bry-nav-icon hidden sm:flex"
-          aria-label="Settings"
+          aria-label="Settings (coming soon)"
+          aria-disabled="true"
+          disabled
         >
           <Settings size={20} strokeWidth={1.5} />
         </button>
         <button
           type="button"
           className="bry-profile-avatar"
-          aria-label="User profile"
+          aria-label="User profile (coming soon)"
+          aria-disabled="true"
+          disabled
         >
           <span className="flex flex-col items-center" aria-hidden>
             <span className="bry-profile-avatar-head" />

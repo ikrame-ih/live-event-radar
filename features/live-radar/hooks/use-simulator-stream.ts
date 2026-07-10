@@ -6,14 +6,20 @@ import { REPLENISH_INTERVAL_MS } from "../lib/zone-stock";
 import { SIMULATOR_TICK_MS } from "../constants";
 import { useTelemetryStore } from "../state/telemetry-store";
 
+export type SimulatorStreamConfig = {
+  wsUrl?: string;
+  simulatorOnly: boolean;
+};
+
 /** Mock stream + 60s restock pulse when no live socket */
-export function useSimulatorStream() {
+export function useSimulatorStream({
+  wsUrl,
+  simulatorOnly,
+}: SimulatorStreamConfig) {
   const appendEvent = useTelemetryStore((s) => s.appendEvent);
-  const wsUrl = process.env.NEXT_PUBLIC_WS_URL?.trim();
-  const simulatorOnly = process.env.NEXT_PUBLIC_SIMULATOR_ONLY === "true";
 
   useEffect(() => {
-    const useNetwork = wsUrl && !simulatorOnly;
+    const useNetwork = Boolean(wsUrl) && !simulatorOnly;
     if (useNetwork) return undefined;
 
     const tick = window.setInterval(
