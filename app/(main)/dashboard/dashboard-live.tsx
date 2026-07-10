@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { ConnectionStatusBadge } from "@/components/ConnectionStatusBadge";
 import { useAnalyticsWorker } from "@/features/live-radar/hooks/use-analytics-worker";
-import { useSimulatorStream } from "@/features/live-radar/hooks/use-simulator-stream";
-import { useStockWebSocket } from "@/features/live-radar/hooks/use-stock-websocket";
+import { useLiveFeed } from "@/features/live-radar/hooks/use-live-feed";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 import { MAX_EVENTS } from "@/features/live-radar/constants";
 import {
@@ -24,19 +23,13 @@ export function DashboardLive() {
   const events = useTelemetryStore((s) => s.events);
   const [filters, setFilters] = useState<StreamFilters>(defaultFilters);
 
-  const wsUrl = process.env.NEXT_PUBLIC_WS_URL?.trim();
-  const simulatorOnly = process.env.NEXT_PUBLIC_SIMULATOR_ONLY === "true";
-
-  const wsStatus = useStockWebSocket(
-    simulatorOnly || !wsUrl ? undefined : wsUrl
-  );
-  useSimulatorStream();
+  const { wsUrl, simulatorOnly, wsStatus } = useLiveFeed();
   const workerEcho = useAnalyticsWorker("live-event-radar");
 
   const maxLabel = Intl.NumberFormat("en-US").format(MAX_EVENTS);
 
   return (
-    <div className="bry-shell mx-auto max-w-(--content-max) p-6 sm:p-8 lg:p-12">
+    <main className="bry-shell mx-auto max-w-(--content-max) p-6 sm:p-8 lg:p-12">
       <div className="bry-section-head mb-6">
         <div>
           <h1 className="text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">
@@ -91,6 +84,6 @@ export function DashboardLive() {
           {workerEcho}
         </span>
       )}
-    </div>
+    </main>
   );
 }

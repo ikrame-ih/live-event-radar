@@ -1,7 +1,5 @@
 @import "tailwindcss";
-@import "flowbite-react/plugin/tailwindcss";
 @import "./mobile-overrides.css";
-@source "../.flowbite-react/class-list.json";
 
 :root {
   color-scheme: light;
@@ -183,6 +181,24 @@ textarea,
   cursor: text;
   -webkit-user-select: text;
   user-select: text;
+}
+
+.bry-skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-inner);
+  background: var(--text-primary);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.bry-skip-link:focus {
+  left: 1rem;
+  top: 1rem;
 }
 
 h1,
@@ -592,9 +608,21 @@ h3 {
 .bry-btn-primary:focus-visible,
 .bry-btn-secondary:focus-visible,
 .bry-row-capsule:focus-visible,
-.bry-filter-pill:focus-visible {
+.bry-filter-pill:focus-visible,
+.bry-map-zone:focus-visible,
+.bry-incident-row:focus-visible {
   outline: 3px solid rgb(244 114 182 / 0.28);
   outline-offset: 3px;
+}
+
+.bry-nav-icon:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.bry-profile-avatar:disabled {
+  cursor: default;
+  opacity: 0.55;
 }
 
 .bry-nav-icon-active {

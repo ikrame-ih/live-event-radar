@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { AlertTriangle, ChevronRight } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import type { StockEvent } from "@/features/live-radar/types";
 import type { StreamFilters } from "./event-stream-filters";
 
@@ -72,7 +72,10 @@ export function EventStreamList({ events, filters }: EventStreamListProps) {
 
   if (rows.length === 0) {
     return (
-      <div className="bry-inner bry-glass px-4 py-16 text-center text-sm text-(--text-muted)">
+      <div
+        className="bry-inner bry-glass px-4 py-16 text-center text-sm text-(--text-muted)"
+        role="status"
+      >
         {events.length === 0
           ? "Events will appear here as the stream runs."
           : "No events match the current filters."}
@@ -116,11 +119,6 @@ export function EventStreamList({ events, filters }: EventStreamListProps) {
               {formatTime(event.timestamp)}
             </p>
           </div>
-
-          <button type="button" className="bry-btn-secondary w-full sm:w-auto">
-            View details
-            <ChevronRight size={14} />
-          </button>
         </article>
       ))}
     </div>

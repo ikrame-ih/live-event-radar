@@ -222,12 +222,14 @@ function ZoneLayer({
   stock,
   highlight,
   dimmed,
+  interactive,
   onSelect,
 }: {
   zone: ZonePolygon;
   stock: number;
   highlight: HighlightLevel;
   dimmed: boolean;
+  interactive: boolean;
   onSelect: () => void;
 }) {
   const heat = stockHeat(stock);
@@ -241,15 +243,27 @@ function ZoneLayer({
       opacity={dimmed ? 0.5 : 1}
       style={{
         transition: "opacity var(--dur-med) var(--ease-premium)",
-        cursor: "pointer",
+        cursor: interactive ? "pointer" : "default",
       }}
-      onClick={onSelect}
-      role="button"
-      tabIndex={0}
-      aria-label={`${zone.label}, stock ${stock}%, ${heat}`}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") onSelect();
-      }}
+      onClick={interactive ? onSelect : undefined}
+      role={interactive ? "button" : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      aria-label={
+        interactive
+          ? `${zone.label}, stock ${stock}%, ${heat}`
+          : `${zone.label}, stock ${stock}%, ${heat} — no active incident`
+      }
+      aria-disabled={interactive ? undefined : true}
+      onKeyDown={
+        interactive
+          ? (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onSelect();
+              }
+            }
+          : undefined
+      }
     >
       <ZonePolygons
         zone={zone}
@@ -500,6 +514,7 @@ export function InteractiveMap() {
             stock={stock}
             highlight={highlight}
             dimmed={dimmed}
+            interactive={incidentByZone.has(zone.label)}
             onSelect={() => handleZoneSelect(zone.label)}
           />
         );

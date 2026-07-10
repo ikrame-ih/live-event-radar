@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { parseStockEvent } from "../parse-stock-event";
+import { wsUrlError } from "../lib/ws-url-error";
 import { useTelemetryStore } from "../state/telemetry-store";
 
 export type WsConnectionStatus =
@@ -10,18 +11,6 @@ export type WsConnectionStatus =
   | "open"
   | "closed"
   | "error";
-
-function wsUrlError(url: string): string | null {
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol !== "ws:" && parsed.protocol !== "wss:") {
-      return "invalid protocol";
-    }
-    return null;
-  } catch {
-    return "invalid url";
-  }
-}
 
 // Optional live feed. Returns connection status for the badge; no-op when url is undefined.
 export function useStockWebSocket(url: string | undefined): WsConnectionStatus {

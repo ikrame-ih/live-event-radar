@@ -9,7 +9,7 @@
 
 **Live operations dashboard for brand activations** — zone stock, venue maps, and a capped event stream in a glass UI Command Center.
 
-Portfolio project (v0.1.0): frontend-only, mock stream by default, optional WebSocket feed. Two routes share one Zustand buffer.
+Portfolio project (v0.1.0): frontend-only, mock stream by default, optional WebSocket feed. Two routes share one event buffer (`telemetry-store`); incidents are derived into a second store for the Command Center sidebar.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
@@ -25,24 +25,13 @@ Portfolio project (v0.1.0): frontend-only, mock stream by default, optional WebS
 ## Highlights
 
 - **Command Center (`/`)** — KPIs, zone inventory, SVG venue map with stock heat tiers, synced activity feed
-- **Telemetry (`/dashboard`)** — Leaflet map, filters, capped event stream, buffer KPI, background worker
-- **Shared state** — one Zustand store feeds both routes; incidents derived for the Command Center sidebar
-- **Production-minded defaults** — FIFO buffer cap (10k events), strict TypeScript, ESLint, 24 unit tests, Playwright E2E
+- **Telemetry (`/dashboard`)** — Leaflet map, filters, capped event stream, buffer KPI, worker hook placeholder
+- **Shared state** — `telemetry-store` holds the event buffer on both routes; `useEventStore` holds derived incidents and map/sidebar selection on the Command Center
+- **Production-minded defaults** — FIFO buffer cap (10k events), strict TypeScript, ESLint, 34 unit tests, Playwright E2E
 
 ## Preview
 
-<table>
-  <tr>
-    <td width="50%">
-      <img src="./docs/assets/readme/command-center-activity.png" alt="Command Center — zone stock, SVG map, activity feed" />
-      <br /><sub><b>/</b> — Command Center</sub>
-    </td>
-    <td width="50%">
-      <img src="./docs/assets/readme/telemetry-dashboard.png" alt="Telemetry dashboard — Leaflet map and event stream" />
-      <br /><sub><b>/dashboard</b> — Telemetry</sub>
-    </td>
-  </tr>
-</table>
+Try the **[live demo](https://live-event-radar.vercel.app)** — Command Center at `/`, telemetry and event stream at `/dashboard`. Case study and architecture notes on [GitHub Pages](https://ikrame-ih.github.io/live-event-radar/).
 
 ## Quick start
 
@@ -69,7 +58,7 @@ Open [http://localhost:3000](http://localhost:3000). No environment variables re
 | `npm run test:e2e`   | Playwright (desktop, tablet, phone) |
 | `npm run docs:build` | VitePress → GitHub Pages            |
 
-**CI (every push/PR):** lint · typecheck · unit tests · build. **E2E (desktop)** runs on pushes to `main`. Docs deploy to GitHub Pages on `main`.
+**CI (every push/PR):** lint · typecheck · unit tests · build. **E2E (desktop)** runs on pushes to `main` (tablet/phone projects available locally). Docs deploy to GitHub Pages on `main`.
 
 ## Stack
 
@@ -91,7 +80,7 @@ Copy `.env.example` → `.env.local` when using a live WebSocket feed.
 ```
 app/                  # Next.js routes + AppShell
 components/           # Shared UI
-features/live-radar/  # Stream, store, derivation, worker
+features/live-radar/  # Stream, hooks, derivation, worker placeholder
 store/                # Command Center incident selection
 docs/                 # VitePress site + README assets
 e2e/                  # Playwright specs

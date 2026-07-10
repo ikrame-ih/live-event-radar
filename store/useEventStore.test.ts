@@ -39,4 +39,10 @@ describe("useEventStore selectIncident", () => {
     useEventStore.getState().syncIncidents([]);
     expect(useEventStore.getState().selectedIncidentId).toBeNull();
   });
+
+  it("keeps selection when sync still includes the selected incident", () => {
+    useEventStore.getState().selectIncident(sample.id);
+    useEventStore.getState().syncIncidents([sample]);
+    expect(useEventStore.getState().selectedIncidentId).toBe(sample.id);
+  });
 });

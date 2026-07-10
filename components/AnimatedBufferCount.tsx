@@ -47,5 +47,15 @@ export function AnimatedBufferCount({
   }, [value]);
 
   // Number is written via ref in useEffect/rAF — keep JSX empty to satisfy react-hooks/refs.
-  return <p ref={ref} className={className} data-kpi-buffer-count />;
+  return (
+    <p
+      ref={ref}
+      className={className}
+      data-kpi-buffer-count
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {value.toLocaleString("en-US")}
+    </p>
+  );
 }

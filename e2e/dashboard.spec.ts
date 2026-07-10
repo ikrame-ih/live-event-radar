@@ -63,7 +63,7 @@ test.describe("LiveEvent Radar — /dashboard (event stream)", () => {
     expect(after).toBeGreaterThan(before);
   });
 
-  test("worker echo returns from background thread", async ({ page }) => {
+  test("worker echo hook exposes sr-only marker", async ({ page }) => {
     await page.goto("/dashboard");
     await expect(
       page.locator('[data-worker-echo="live-event-radar"]')
@@ -73,7 +73,7 @@ test.describe("LiveEvent Radar — /dashboard (event stream)", () => {
   test("event stream rows populate after mock runs", async ({ page }) => {
     await page.goto("/dashboard");
     await page.waitForTimeout(3500);
-    await expect(page.getByText("View details").first()).toBeVisible();
+    await expect(page.locator(".bry-event-row").first()).toBeVisible();
     await expect(
       page.getByText("Spike").or(page.getByText("Consumed")).first()
     ).toBeVisible();

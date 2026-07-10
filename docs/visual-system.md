@@ -35,13 +35,19 @@ Nav and filter pills transition in ~0.18–0.32s. New stream rows use `@keyframe
 
 ## Stock map tiers
 
+Map fill colours use **65% / 35%** bands (`STOCK_TIER_*` in `zone-stock.ts`).
+
 | Tier    | Range  | Fill          |
 | ------- | ------ | ------------- |
 | Healthy | ≥ 65%  | Lavender grey |
 | Watch   | 35–64% | Peach         |
 | Low     | < 35%  | Coral         |
 
-Same bands in `InteractiveMap.tsx`, `zone-stock.ts`, and the zone inventory cards.
+Same bands in `InteractiveMap.tsx` and the zone inventory cards.
+
+## Inventory status pills
+
+Zone health **status** labels use tighter rules (30% / 55% stock plus spike counts) — so a zone can show “Watch” on the card while the map fill is still mid-tier. Both models live in `zone-stock.ts`.
 
 ## What shipped when
 

@@ -11,7 +11,11 @@ export function StreamGauge({ value, max = 3 }: StreamGaugeProps) {
   const offset = circumference * (1 - pct);
 
   return (
-    <div className="bry-gauge-glow relative mx-auto flex h-[132px] w-[132px] items-center justify-center">
+    <div
+      className="bry-gauge-glow relative mx-auto flex h-[132px] w-[132px] items-center justify-center"
+      role="img"
+      aria-label={`${value} of ${max} active zones`}
+    >
       <span className="bry-gauge-scanline" aria-hidden />
       <div className="bry-glass absolute inset-3 rounded-full" />
       <svg

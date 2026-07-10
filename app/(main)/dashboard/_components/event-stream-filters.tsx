@@ -26,7 +26,11 @@ export function EventStreamFilters({
           strokeWidth={1.5}
           className="shrink-0 text-(--text-muted)"
         />
+        <label htmlFor="stream-search" className="sr-only">
+          Search zone or item
+        </label>
         <input
+          id="stream-search"
           type="search"
           placeholder="Search zone or item…"
           value={filters.search}
@@ -45,6 +49,7 @@ export function EventStreamFilters({
           <FilterPill
             key={zone}
             label={zone.split(" ")[0]}
+            ariaLabel={zone}
             active={filters.zone === zone}
             onClick={() => onChange({ ...filters, zone })}
           />
@@ -74,10 +79,12 @@ export function EventStreamFilters({
 
 function FilterPill({
   label,
+  ariaLabel,
   active,
   onClick,
 }: {
   label: string;
+  ariaLabel?: string;
   active: boolean;
   onClick: () => void;
 }) {
@@ -86,6 +93,7 @@ function FilterPill({
       type="button"
       onClick={onClick}
       aria-pressed={active}
+      aria-label={ariaLabel ?? label}
       className={`bry-filter-pill inline-flex min-h-9 items-center rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-200 ease-(--ease-premium) ${
         active
           ? "bry-filter-pill-active"
