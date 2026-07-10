@@ -46,6 +46,12 @@ export default withMermaid(
             { text: "Visual system", link: "/visual-system" },
           ],
         },
+        {
+          text: "Development",
+          items: [
+            { text: "DeepSource setup", link: "/development/deepsource" },
+          ],
+        },
       ],
       socialLinks: [
         {
