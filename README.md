@@ -7,7 +7,13 @@
 
 **Frontend dashboard for brand activation demos** — zone stock, venue maps, and a capped event stream in a glass UI Command Center.
 
+<<<<<<< HEAD
 Portfolio project (v0.1.0): **frontend-only**, no backend or external infra required for the default demo. A mock stream feeds the UI out of the box; an optional WebSocket URL can replace it without changing components. Both routes share one raw event buffer (`telemetry-store`); the Command Center derives incidents into a second store (`useEventStore`) for sidebar and map selection.
+=======
+Live Event Radar is a frontend-only application with a reproducible mock event stream by default and optional WebSocket support.
+
+The two main routes share a single telemetry event buffer (`telemetry-store`). Derived incident data is computed separately and stored for the Command Center experience, keeping raw events and UI state concerns separated.
+>>>>>>> c650fe9669e1fe99149a081ce9b094f26efe9d75
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
