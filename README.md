@@ -7,7 +7,7 @@
 
 **Frontend dashboard for brand activation demos** — zone stock, venue maps, and a capped event stream in a glass UI Command Center.
 
-Portfolio project (v0.1.0): **frontend-only**, no backend or external infra required for the default demo. A mock stream feeds the UI out of the box; an optional WebSocket URL can replace it without changing components. Both routes share one raw event buffer (`telemetry-store`); the Command Center derives incidents into a second store (`useEventStore`) for sidebar and map selection.
+**Frontend-only** — no backend or external infra required for the default demo. A mock stream feeds the UI out of the box; an optional WebSocket URL can replace it without changing components. Both routes share one raw event buffer (`telemetry-store`); the Command Center derives incidents into a second store (`useEventStore`) for sidebar and map selection.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
@@ -26,15 +26,6 @@ Portfolio project (v0.1.0): **frontend-only**, no backend or external infra requ
 - **Telemetry (`/dashboard`)** — Leaflet map, filters, capped event stream, buffer KPI; worker file and hook are **placeholders only** (no active Web Worker today)
 - **Shared state** — `telemetry-store` holds the raw event buffer on both routes; `useEventStore` holds derived incidents and UI selection (sidebar, map focus) on the Command Center
 - **Engineering practices** — FIFO buffer cap (10k events), strict TypeScript, ESLint, 34 Vitest tests, Playwright E2E
-
-## Engineering decisions
-
-Short notes on choices you can walk through in an interview:
-
-- **Capped event buffer** — events are stored in a FIFO queue with a 10k limit so long-running demos do not grow memory without bound.
-- **Raw telemetry vs derived incidents** — the stream stays in one store; incident rows and map tiers are derived and cached separately so UI state does not mix with ingest.
-- **Mock stream by default** — a timer-driven simulator makes the demo reproducible without standing up a WebSocket server.
-- **Optional WebSocket** — set `NEXT_PUBLIC_WS_URL` to swap the feed source; the same hooks and components render either way, with a connection badge showing the active mode.
 
 ## Preview
 
