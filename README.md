@@ -7,7 +7,9 @@
 
 **Live operations dashboard for brand activations** — zone stock, venue maps, and a capped event stream in a glass UI Command Center.
 
-Portfolio project (v0.1.0): frontend-only, mock stream by default, optional WebSocket feed. Two routes share one event buffer (`telemetry-store`); incidents are derived into a second store for the Command Center sidebar.
+Live Event Radar is a frontend-only application with a reproducible mock event stream by default and optional WebSocket support.
+
+The two main routes share a single telemetry event buffer (`telemetry-store`). Derived incident data is computed separately and stored for the Command Center experience, keeping raw events and UI state concerns separated.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
