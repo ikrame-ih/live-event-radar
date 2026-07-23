@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatedBufferCount } from "@/components/AnimatedBufferCount";
 import { ConnectionStatusBadge } from "@/components/ConnectionStatusBadge";
 import { useAnalyticsWorker } from "@/features/live-radar/hooks/use-analytics-worker";
 import { useLiveFeed } from "@/features/live-radar/hooks/use-live-feed";
@@ -50,7 +51,7 @@ export function DashboardLive() {
       <div className="bry-dashboard-split">
         <DashboardVenueMap focusedZone={focusedZone} />
 
-        <section className="bry-stream-panel bry-box bry-row-enter p-4 sm:p-5">
+        <section className="bry-stream-panel bry-box p-4 sm:p-5">
           <div className="bry-section-head">
             <div>
               <h2 className="bry-section-title">Stock events</h2>
@@ -60,12 +61,10 @@ export function DashboardLive() {
             </div>
             <div className="bry-stream-buffer shrink-0 text-right">
               <p className="bry-caps text-[10px]">Stored</p>
-              <p
+              <AnimatedBufferCount
+                value={events.length}
                 className="bry-metric text-xl font-extrabold sm:text-2xl"
-                data-kpi-buffer-count
-              >
-                {events.length}
-              </p>
+              />
               <p className="text-[11px] text-(--text-muted)">
                 cap {maxLabel}
               </p>

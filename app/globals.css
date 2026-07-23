@@ -965,18 +965,22 @@ h3 {
   border-radius: 14px;
   box-shadow: var(--box-highlight), var(--shadow-row);
   transition:
-    transform var(--dur-med) var(--ease-out-soft),
     box-shadow var(--dur-med) var(--ease-out-soft),
-    background var(--dur-med) var(--ease-out-soft);
+    background var(--dur-med) var(--ease-out-soft),
+    border-color var(--dur-med) var(--ease-out-soft);
 }
 
 .bry-event-row--dense:hover {
-  transform: translateY(-1px);
   box-shadow: var(--box-highlight), var(--shadow-row-hover);
+  background: rgb(255 255 255 / 0.92);
 }
 
 .bry-event-row--dense > * {
   pointer-events: none;
+}
+
+.bry-event-row--fresh {
+  animation: stream-row-in 0.4s var(--ease-out-soft) both;
 }
 
 .bry-event-row-focused {
@@ -1310,6 +1314,17 @@ h3 {
     transform: translateY(8px);
   }
   to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes stream-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
 }

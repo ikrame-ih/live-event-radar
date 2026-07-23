@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { deriveSessionTally } from "@/features/live-radar/lib/derive-session-tally";
 import { ZONE_META, type ZoneSnapshot } from "@/features/live-radar/lib/zone-stock";
 import { useSessionStore } from "@/features/live-radar/state/session-store";
@@ -32,38 +32,35 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
   const newSession = useSessionStore((s) => s.newSession);
   const selectZone = useSessionStore((s) => s.selectZone);
 
-  const [now, setNow] = useState<number | null>(null);
+  const elapsedRef = useRef<HTMLSpanElement>(null);
   const frozen = endedAt !== null;
-  const mounted = now !== null;
 
+  // Elapsed clock via DOM — avoids hydration mismatch and setState-in-effect lint.
   useEffect(() => {
-    setNow(Date.now());
-  }, []);
-
-  useEffect(() => {
-    if (frozen || !mounted) return undefined;
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    const write = () => {
+      if (!elapsedRef.current) return;
+      const end = endedAt ?? Date.now();
+      elapsedRef.current.textContent = ` · ${formatElapsed(end - startedAt)}`;
+    };
+    write();
+    if (frozen) return undefined;
+    const id = window.setInterval(write, 1000);
     return () => window.clearInterval(id);
-  }, [frozen, mounted]);
-
-  const clock = now ?? startedAt;
+  }, [startedAt, endedAt, frozen]);
 
   const tally = useMemo(
     () =>
       deriveSessionTally(events, {
         startedAt,
         endedAt,
-        now: clock,
       }),
-    [events, startedAt, endedAt, clock]
+    [events, startedAt, endedAt]
   );
 
   const stockByZone = useMemo(
     () => new Map(snapshots.map((s) => [s.zone, s.stock])),
     [snapshots]
   );
-
-  const elapsedMs = (endedAt ?? clock) - startedAt;
 
   return (
     <div className="flex flex-col gap-4">
@@ -79,7 +76,7 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
           </p>
           <p className="mt-1 text-xs text-(--text-muted)">
             {frozen ? "Event ended" : "Running"}
-            {mounted ? ` · ${formatElapsed(elapsedMs)}` : ""}
+            <span ref={elapsedRef} />
             {frozen ? " frozen" : ""}
           </p>
         </div>
