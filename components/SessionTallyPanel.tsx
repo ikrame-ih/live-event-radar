@@ -110,7 +110,7 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
             className="bry-btn-secondary"
             onClick={() => void handleCopy()}
           >
-            {copied ? "Copied" : "Copy for WhatsApp"}
+            {copied ? "Copied" : "Copy"}
           </button>
           {frozen ? (
             <>

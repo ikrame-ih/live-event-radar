@@ -507,9 +507,13 @@ h3 {
 
 .bry-section-head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.bry-section-head > div:first-child {
+  min-width: 0;
 }
 
 .bry-section-title {
@@ -946,6 +950,24 @@ h3 {
 
 .bry-zone-health-card {
   min-height: 220px;
+  height: 100%;
+}
+
+.bry-zone-health-grid {
+  align-items: stretch;
+}
+
+.bry-zone-stat-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(5.5rem, auto);
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.bry-zone-stat-value {
+  text-align: right;
+  justify-self: end;
+  max-width: 100%;
 }
 
 .bry-event-row {
@@ -1155,31 +1177,136 @@ h3 {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-inner);
-  background: var(--map-bg);
+  background:
+    radial-gradient(ellipse 70% 55% at 12% 18%, rgb(229 77 58 / 0.1), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 88% 82%, rgb(120 100 180 / 0.1), transparent 50%),
+    linear-gradient(145deg, #fbf3f0 0%, #f4f0f7 48%, #ebe6f2 100%);
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.55);
 }
 
 .bry-venue-map-canvas.bry-glass {
-  background: var(--map-bg);
-  background-image: none;
+  background:
+    radial-gradient(ellipse 70% 55% at 12% 18%, rgb(229 77 58 / 0.1), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 88% 82%, rgb(120 100 180 / 0.1), transparent 50%),
+    linear-gradient(145deg, #fbf3f0 0%, #f4f0f7 48%, #ebe6f2 100%);
+  background-image:
+    radial-gradient(ellipse 70% 55% at 12% 18%, rgb(229 77 58 / 0.1), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 88% 82%, rgb(120 100 180 / 0.1), transparent 50%),
+    linear-gradient(145deg, #fbf3f0 0%, #f4f0f7 48%, #ebe6f2 100%);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.55);
 }
 
+.bry-venue-map-stage {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.bry-venue-map-stage > .bry-venue-map-frame {
+  flex: 1 1 auto;
+}
+
 .bry-venue-map-svg {
   display: block;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  /* Room for focus scale without clipping zone edges */
+  overflow: visible;
+}
+
+.bry-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.65rem 1rem 1.15rem;
+  list-style: none;
+}
+
+.bry-map-legend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.75rem;
+  padding: 0.25rem 0.7rem 0.25rem 0.45rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.78);
+  box-shadow: var(--shadow-inset);
+  border: 1px solid rgb(255 255 255 / 0.85);
+}
+
+.bry-map-legend-swatch {
+  display: block;
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+  border-radius: 5px;
+  border: 1.5px solid;
+}
+
+.bry-map-legend-swatch--cool {
+  background: linear-gradient(180deg, #e8f5ee, #cfe8db);
+  border-color: #0d9b5c;
+}
+
+.bry-map-legend-swatch--mid {
+  background: linear-gradient(180deg, #fff4e6, #fde0bd);
+  border-color: #d97706;
+}
+
+.bry-map-legend-swatch--hot {
+  background: linear-gradient(180deg, #fdecea, #f5c4bc);
+  border-color: #e54d3a;
+}
+
+.bry-map-legend-label {
+  font-family: var(--font-metric);
+  font-size: 0.75rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--text-secondary);
+}
+
+.bry-map-path {
+  transition: opacity var(--dur-med) var(--ease-out-soft);
+}
+
+.bry-map-zone {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 0.4s var(--ease-out-soft),
+    transform 0.4s var(--ease-out-soft);
 }
 
 .bry-map-zone polygon {
   transition:
     fill 0.55s var(--ease-premium),
     stroke 0.4s var(--ease-premium),
-    opacity 0.4s var(--ease-premium);
+    opacity 0.4s var(--ease-premium),
+    filter 0.4s var(--ease-premium);
+}
+
+.bry-map-zone--selected {
+  transform: scale(1.015);
+}
+
+.bry-map-zone--dimmed {
+  opacity: 0.72;
+}
+
+.bry-map-zone--hot .bry-map-zone-bloom--hot {
+  animation: map-hot-pulse 2.8s var(--ease-out-soft) infinite;
 }
 
 .bry-map-zone-stroke-selected {
-  filter: url(#zone-card-shadow);
+  filter: url(#zone-lift-shadow);
 }
 
 .bry-map-zone-glow-selected,
@@ -1285,6 +1412,7 @@ h3 {
 .bry-tally-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .bry-tally-table th {
@@ -1297,9 +1425,19 @@ h3 {
   color: var(--text-muted);
   text-align: right;
   border-bottom: 1px solid rgb(26 26 28 / 0.08);
+  vertical-align: bottom;
 }
 
-.bry-tally-table th:first-child,
+.bry-tally-table th:first-child {
+  width: 36%;
+  text-align: left;
+  padding-left: 0.85rem;
+}
+
+.bry-tally-table th:not(:first-child) {
+  width: 16%;
+}
+
 .bry-tally-table td:first-child {
   text-align: left;
   padding-left: 0.85rem;
@@ -1331,6 +1469,7 @@ h3 {
   font-weight: 700;
   letter-spacing: -0.02em;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .bry-tally-num--muted {
@@ -1451,6 +1590,16 @@ h3 {
   }
 }
 
+@keyframes map-hot-pulse {
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 @keyframes gauge-glow-pulse {
   0%,
   100% {
@@ -1499,7 +1648,12 @@ h3 {
   .bry-map-zone-glow-selected,
   .bry-map-zone-glow-hover,
   .bry-map-zone-glow-hot,
-  .bry-map-pin-ring-selected {
+  .bry-map-pin-ring-selected,
+  .bry-map-zone--hot .bry-map-zone-bloom--hot {
     animation: none;
+  }
+
+  .bry-map-zone--selected {
+    transform: none;
   }
 }

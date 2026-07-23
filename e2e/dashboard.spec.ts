@@ -20,7 +20,7 @@ test.describe("LiveEvent Radar — Command Center (root)", () => {
     await expect(tally).toBeVisible();
     await expect(tally.getByRole("button", { name: "End event" })).toBeVisible();
     await expect(
-      tally.getByRole("button", { name: "Copy for WhatsApp" })
+      tally.getByRole("button", { name: "Copy" })
     ).toBeVisible();
     await expect(tally.getByText("Taken out")).toBeVisible();
 

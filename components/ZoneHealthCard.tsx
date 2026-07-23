@@ -76,21 +76,21 @@ export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
       </div>
 
       <ul className="space-y-1.5 border-t border-white/45 pt-3 text-xs">
-        <li className="flex justify-between gap-2">
+        <li className="bry-zone-stat-row">
           <span className="text-(--text-muted)">Demand</span>
-          <span className="bry-metric">
+          <span className="bry-metric bry-zone-stat-value">
             {snapshot.demand30s} evt/30s
           </span>
         </li>
-        <li className="flex justify-between gap-2">
+        <li className="bry-zone-stat-row">
           <span className="text-(--text-muted)">Spikes (15s)</span>
-          <span className="bry-metric">
+          <span className="bry-metric bry-zone-stat-value">
             {snapshot.spikes15s}
           </span>
         </li>
-        <li className="flex justify-between gap-2">
+        <li className="bry-zone-stat-row">
           <span className="text-(--text-muted)">Last event</span>
-          <span className="truncate text-right font-medium text-(--text-secondary)">
+          <span className="bry-zone-stat-value truncate font-medium text-(--text-secondary)">
             {formatLastEvent(snapshot)}
           </span>
         </li>
