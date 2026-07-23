@@ -24,7 +24,10 @@ export type DeriveSessionTallyOptions = {
   startedAt: number;
   /** Inclusive upper bound (ms). When set, freezes the window. */
   endedAt?: number | null;
-  /** Wall clock used when endedAt is null. */
+  /**
+   * Optional live upper bound when endedAt is null.
+   * Prefer omitting this in React render — live defaults to an open window.
+   */
   now?: number;
 };
 
@@ -36,8 +39,7 @@ export function deriveSessionTally(
   events: StockEvent[],
   options: DeriveSessionTallyOptions
 ): SessionTally {
-  const now = options.now ?? Date.now();
-  const end = options.endedAt ?? now;
+  const end = options.endedAt ?? options.now ?? Number.MAX_SAFE_INTEGER;
   const start = options.startedAt;
 
   const byZone = new Map<string, ZoneSessionTally>();

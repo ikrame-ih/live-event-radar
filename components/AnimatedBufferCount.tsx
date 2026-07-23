@@ -25,8 +25,8 @@ export function AnimatedBufferCount({
       return undefined;
     }
 
-    // Longer jumps get a bit more time, capped at 520ms.
-    const duration = Math.min(520, 160 + Math.abs(delta) * 6);
+    // Longer jumps get a bit more time, capped at 640ms — softer than a hard snap.
+    const duration = Math.min(640, 220 + Math.abs(delta) * 8);
     const t0 = performance.now();
 
     const step = (now: number) => {

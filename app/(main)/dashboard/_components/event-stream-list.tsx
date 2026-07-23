@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, PackagePlus, TrendingDown } from "lucide-react";
 import type { StockEvent } from "@/features/live-radar/types";
 import type { StreamFilters } from "./event-stream-filters";
 
 const VISIBLE_CAP = 24;
+const FRESH_MS = 420;
 
 type EventStreamListProps = {
   events: StockEvent[];
@@ -42,8 +43,8 @@ function latestEventLabel(events: StockEvent[]): string {
   return `${latest.zone}, ${latest.item}, quantity ${latest.quantity}`;
 }
 
-function formatAge(ts: number): string {
-  const seconds = Math.floor(Math.max(0, Date.now() - ts) / 1000);
+function formatAge(ts: number, now: number): string {
+  const seconds = Math.floor(Math.max(0, now - ts) / 1000);
   if (seconds < 60) return `${seconds}s ago`;
   const minutes = Math.floor(seconds / 60);
   return minutes < 60 ? `${minutes}m ago` : `${Math.floor(minutes / 60)}h ago`;
@@ -96,6 +97,9 @@ export function EventStreamList({
   onFocusZone,
 }: EventStreamListProps) {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [freshKey, setFreshKey] = useState<string | null>(null);
+  const prevCountRef = useRef(0);
+  const ageRefs = useRef(new Map<string, HTMLParagraphElement>());
 
   const filtered = useMemo(
     () =>
@@ -123,6 +127,40 @@ export function EventStreamList({
   }, [filtered, rows.length]);
 
   const liveLabel = latestEventLabel(events);
+
+  // Soft enter only for the newest arrival — not every remounted sibling.
+  useEffect(() => {
+    if (rows.length === 0) {
+      prevCountRef.current = events.length;
+      return undefined;
+    }
+    const topKey = eventKey(rows[0]);
+    if (events.length > prevCountRef.current) {
+      setFreshKey(topKey);
+      const clear = window.setTimeout(() => {
+        setFreshKey((current) => (current === topKey ? null : current));
+      }, FRESH_MS);
+      prevCountRef.current = events.length;
+      return () => window.clearTimeout(clear);
+    }
+    prevCountRef.current = events.length;
+    return undefined;
+  }, [events.length, rows]);
+
+  // Age labels tick via DOM so rows don't re-render (or re-animate) every second.
+  useEffect(() => {
+    const writeAges = () => {
+      const t = Date.now();
+      for (const event of rows) {
+        const key = eventKey(event);
+        const node = ageRefs.current.get(key);
+        if (node) node.textContent = formatAge(event.timestamp, t);
+      }
+    };
+    writeAges();
+    const id = window.setInterval(writeAges, 1000);
+    return () => window.clearInterval(id);
+  }, [rows]);
 
   function handleSelect(event: StockEvent) {
     const key = eventKey(event);
@@ -165,6 +203,7 @@ export function EventStreamList({
         {rows.map((event) => {
           const key = eventKey(event);
           const isSelected = selectedKey === key;
+          const isFresh = freshKey === key;
           const kind = eventKind(event.quantity);
           return (
             <article
@@ -180,9 +219,9 @@ export function EventStreamList({
                   handleSelect(event);
                 }
               }}
-              className={`bry-event-row bry-event-row--dense bry-row-enter w-full cursor-pointer ${
-                isSelected ? "bry-event-row-focused" : ""
-              }`}
+              className={`bry-event-row bry-event-row--dense w-full cursor-pointer ${
+                isFresh ? "bry-event-row--fresh" : ""
+              } ${isSelected ? "bry-event-row-focused" : ""}`}
             >
               <EventIcon kind={kind} />
 
@@ -204,9 +243,13 @@ export function EventStreamList({
                   {event.item}
                   {event.quantity < 0 ? " consumption" : " restock"}
                 </p>
-                <p className="mt-0.5 text-[11px] text-(--text-muted)">
-                  {formatAge(event.timestamp)}
-                </p>
+                <p
+                  className="mt-0.5 text-[11px] text-(--text-muted) tabular-nums"
+                  ref={(node) => {
+                    if (node) ageRefs.current.set(key, node);
+                    else ageRefs.current.delete(key);
+                  }}
+                />
               </div>
 
               <p

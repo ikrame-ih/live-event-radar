@@ -40,7 +40,7 @@ export function DashboardVenueMap({
   return (
     <section
       id="venue-map"
-      className="bry-dashboard-map bry-box bry-row-enter overflow-hidden p-4 sm:p-5"
+      className="bry-dashboard-map bry-box overflow-hidden p-4 sm:p-5"
     >
       <div className="bry-section-head mb-3 shrink-0">
         <div>
