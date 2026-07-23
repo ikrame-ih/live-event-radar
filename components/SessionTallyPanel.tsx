@@ -32,23 +32,30 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
   const newSession = useSessionStore((s) => s.newSession);
   const selectZone = useSessionStore((s) => s.selectZone);
 
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState<number | null>(null);
   const frozen = endedAt !== null;
+  const mounted = now !== null;
 
   useEffect(() => {
-    if (frozen) return undefined;
+    setNow(Date.now());
+  }, []);
+
+  useEffect(() => {
+    if (frozen || !mounted) return undefined;
     const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
-  }, [frozen]);
+  }, [frozen, mounted]);
+
+  const clock = now ?? startedAt;
 
   const tally = useMemo(
     () =>
       deriveSessionTally(events, {
         startedAt,
         endedAt,
-        now,
+        now: clock,
       }),
-    [events, startedAt, endedAt, now]
+    [events, startedAt, endedAt, clock]
   );
 
   const stockByZone = useMemo(
@@ -56,7 +63,7 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
     [snapshots]
   );
 
-  const elapsedMs = (endedAt ?? now) - startedAt;
+  const elapsedMs = (endedAt ?? clock) - startedAt;
 
   return (
     <div className="flex flex-col gap-4">
@@ -71,8 +78,8 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
             {tally.totals.net}
           </p>
           <p className="mt-1 text-xs text-(--text-muted)">
-            {frozen ? "Event ended · " : "Running · "}
-            {formatElapsed(elapsedMs)}
+            {frozen ? "Event ended" : "Running"}
+            {mounted ? ` · ${formatElapsed(elapsedMs)}` : ""}
             {frozen ? " frozen" : ""}
           </p>
         </div>
