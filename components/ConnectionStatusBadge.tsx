@@ -39,7 +39,7 @@ function resolveFeedLabel(
 }
 
 const toneColor = {
-  sim: "var(--gradient-start)",
+  sim: "var(--accent)",
   live: "var(--semantic-teal)",
   warn: "var(--semantic-amber)",
 } as const;
@@ -59,7 +59,7 @@ export function ConnectionStatusBadge({
     <div
       role="status"
       aria-live="polite"
-      className="bry-inset bry-glass inline-flex items-center gap-2.5 px-4 py-2 text-sm"
+      className="bry-inset inline-flex items-center gap-2.5 px-4 py-2 text-sm"
     >
       <span className="relative flex h-2.5 w-2.5" aria-hidden>
         <span

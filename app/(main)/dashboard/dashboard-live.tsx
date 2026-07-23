@@ -22,6 +22,7 @@ const defaultFilters: StreamFilters = {
 export function DashboardLive() {
   const events = useTelemetryStore((s) => s.events);
   const [filters, setFilters] = useState<StreamFilters>(defaultFilters);
+  const [focusedZone, setFocusedZone] = useState<string | null>(null);
 
   const { wsUrl, simulatorOnly, wsStatus } = useLiveFeed();
   const workerEcho = useAnalyticsWorker("live-event-radar");
@@ -30,13 +31,13 @@ export function DashboardLive() {
 
   return (
     <main className="bry-shell mx-auto max-w-(--content-max) p-6 sm:p-8 lg:p-12">
-      <div className="bry-section-head mb-6">
+      <div className="bry-section-head mb-5">
         <div>
-          <h1 className="text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">
-            LiveEvent Radar
+          <h1 className="bry-section-title text-2xl sm:text-[1.75rem]">
+            Live dashboard
           </h1>
-          <p className="bry-section-subtitle text-sm">
-            Brand activation demo · live stream
+          <p className="bry-section-subtitle">
+            Map and stock events, updated as they happen
           </p>
         </div>
         <ConnectionStatusBadge
@@ -46,37 +47,39 @@ export function DashboardLive() {
         />
       </div>
 
-      <EventStreamFilters filters={filters} onChange={setFilters} />
+      <div className="bry-dashboard-split">
+        <DashboardVenueMap focusedZone={focusedZone} />
 
-      <div className="mt-8">
-        <DashboardVenueMap />
-      </div>
+        <section className="bry-stream-panel bry-box bry-row-enter p-4 sm:p-5">
+          <div className="bry-section-head">
+            <div>
+              <h2 className="bry-section-title">Stock events</h2>
+              <p className="bry-section-subtitle">
+                Tap a row to highlight that zone on the map
+              </p>
+            </div>
+            <div className="bry-stream-buffer shrink-0 text-right">
+              <p className="bry-caps text-[10px]">Stored</p>
+              <p
+                className="bry-metric text-xl font-extrabold sm:text-2xl"
+                data-kpi-buffer-count
+              >
+                {events.length}
+              </p>
+              <p className="text-[11px] text-(--text-muted)">
+                cap {maxLabel}
+              </p>
+            </div>
+          </div>
 
-      <div className="bry-section-head mt-8">
-        <div>
-          <h2 className="bry-section-title">Event stream</h2>
-          <p className="bry-section-subtitle">
-            Latest stock events, filtered without reloading the dashboard
-          </p>
-        </div>
-        <div className="bry-box bry-mini-metric bry-row-enter">
-          <p className="text-xs font-medium text-(--text-muted)">
-            Buffered rows
-          </p>
-          <p
-            className="font-mono text-2xl font-extrabold tabular-nums sm:text-3xl"
-            data-kpi-buffer-count
-          >
-            {events.length}
-          </p>
-          <p className="text-xs text-(--text-muted)">
-            cap {maxLabel} · FIFO
-          </p>
-        </div>
-      </div>
+          <EventStreamFilters filters={filters} onChange={setFilters} />
 
-      <div className="mt-5">
-        <EventStreamList events={events} filters={filters} />
+          <EventStreamList
+            events={events}
+            filters={filters}
+            onFocusZone={setFocusedZone}
+          />
+        </section>
       </div>
 
       {workerEcho && (

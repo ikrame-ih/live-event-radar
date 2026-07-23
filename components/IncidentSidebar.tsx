@@ -8,13 +8,13 @@ import type { Incident, IncidentSeverity } from "@/store/useEventStore";
 function severityAccent(severity: IncidentSeverity): string {
   switch (severity) {
     case "critical":
-      return "var(--map-zone-stroke-low)";
+      return "var(--semantic-coral)";
     case "warning":
-      return "var(--map-zone-stroke-mid)";
+      return "var(--semantic-amber)";
     case "resolved":
-      return "var(--map-zone-stroke-cool)";
+      return "var(--semantic-teal)";
     default:
-      return "var(--map-zone-stroke-cool)";
+      return "var(--semantic-teal)";
   }
 }
 
@@ -78,7 +78,7 @@ function Row({
           onClick();
         }
       }}
-      className={`bry-incident-row bry-row-capsule bry-row-enter mb-4 flex cursor-pointer items-center gap-3 p-4 last:mb-0 ${stateClass}`}
+      className={`bry-incident-row bry-row-capsule flex cursor-pointer items-center gap-3 px-4 py-5 ${stateClass}`}
       style={
         isSelected
           ? { ["--row-accent" as string]: severityAccent(incident.severity) }
@@ -94,17 +94,13 @@ function Row({
         <SeverityIcon severity={incident.severity} />
       </span>
       <div className="min-w-0 flex-1">
-        <p
-          className={`truncate text-sm ${isSelected ? "font-extrabold" : "font-bold"}`}
-        >
-          {incident.title}
-        </p>
+        <p className="bry-card-title truncate">{incident.title}</p>
         <p className="truncate text-xs text-[var(--text-muted)]">
           {incident.zone}
         </p>
       </div>
       <div className="bry-incident-metric shrink-0 text-right">
-        <p className="font-mono text-xs font-semibold tabular-nums">
+        <p className="bry-metric text-xs">
           {incident.metric}
         </p>
         <p className="text-xs text-[var(--text-muted)]">
@@ -151,34 +147,36 @@ export function IncidentSidebar() {
   if (incidents.length === 0) {
     return (
       <div
-        className="bry-inner bry-glass px-4 py-12 text-center text-sm text-[var(--text-muted)]"
+        className="bry-inner px-4 py-12 text-center text-sm text-[var(--text-muted)]"
         role="status"
       >
-        Waiting for stream events&hellip;
+        Waiting for the first events&hellip;
       </div>
     );
   }
 
   return (
-    <ul className="list-none" aria-live="polite">
-      {incidents.map((inc) => {
-        const isSelected = selectedIncidentId === inc.id;
-        const isHovered = activeIncidentId === inc.id && !isSelected;
+    <div className="bry-zone-activity-scroll max-h-[min(52vh,28rem)] overflow-y-auto pr-1">
+      <ul className="flex list-none flex-col gap-5" aria-live="polite">
+        {incidents.map((inc) => {
+          const isSelected = selectedIncidentId === inc.id;
+          const isHovered = activeIncidentId === inc.id && !isSelected;
 
-        return (
-          <li key={inc.id}>
-            <Row
-              incident={inc}
-              isSelected={isSelected}
-              isHovered={isHovered}
-              cardRef={setCardRef(inc.id)}
-              onHover={() => setActiveIncident(inc.id)}
-              onLeave={() => setActiveIncident(null)}
-              onClick={() => selectIncident(inc.id)}
-            />
-          </li>
-        );
-      })}
-    </ul>
+          return (
+            <li key={inc.id} className="bry-row-enter">
+              <Row
+                incident={inc}
+                isSelected={isSelected}
+                isHovered={isHovered}
+                cardRef={setCardRef(inc.id)}
+                onHover={() => setActiveIncident(inc.id)}
+                onLeave={() => setActiveIncident(null)}
+                onClick={() => selectIncident(inc.id)}
+              />
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

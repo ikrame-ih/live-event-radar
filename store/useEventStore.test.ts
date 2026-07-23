@@ -3,7 +3,7 @@ import { useEventStore, type Incident } from "./useEventStore";
 
 const sample: Incident = {
   id: "zone-South Gate",
-  title: "Zone activity",
+  title: "Stock update",
   zone: "South Gate",
   severity: "warning",
   timestamp: Date.now(),

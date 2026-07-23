@@ -4,8 +4,8 @@
 :root {
   color-scheme: light;
 
-  /* Shell — lavender page, frosted glass */
-  --page-bg: #e9e6f0;
+  /* Shell — warm lavender page, frosted glass */
+  --page-bg: #efe8ea;
   --glass-blur-sm: 14px;
   --glass-blur: 22px;
   --glass-blur-lg: 36px;
@@ -30,16 +30,18 @@
   --text-secondary: #4a4558;
   --text-muted: #7a7488;
 
-  --gradient-cta: linear-gradient(135deg, #ff8a4c 0%, #f472b6 100%);
-  --gradient-start: #ff8a4c;
-  --gradient-end: #f472b6;
-  --accent-macos: #0a84ff;
-  --accent-macos-soft: rgb(10 132 255 / 0.2);
+  /* Single product accent — cool ops blue (no peach / neon rivals) */
+  --accent: #0a84ff;
+  --accent-soft: rgb(10 132 255 / 0.18);
+  --accent-macos: var(--accent);
+  --accent-macos-soft: var(--accent-soft);
+  --gradient-cta: var(--accent);
+  --gradient-start: var(--accent);
+  --gradient-end: #3b9eff;
 
-  --accent-neon: #c8f542;
-  --accent-neon-text: #2d3a00;
+  /* Unified stock tiers: OK / watch / critical */
   --semantic-teal: #0d9b5c;
-  --semantic-teal-soft: #dceee4;
+  --semantic-teal-soft: #d5ebe0;
   --semantic-coral: #e54d3a;
   --semantic-coral-soft: #fdecea;
   --semantic-amber: #d97706;
@@ -67,7 +69,7 @@
   --dur-slow: 0.6s;
 
   --gauge-track: rgb(255 255 255 / 0.28);
-  --gauge-glow: 0 0 48px rgb(180 140 255 / 0.35);
+  --gauge-glow: 0 0 40px rgb(10 132 255 / 0.22);
 
   --glow-teal: 0 0 0 3px rgb(13 155 92 / 0.15);
   --glow-coral: 0 0 0 3px rgb(229 77 58 / 0.15);
@@ -76,21 +78,21 @@
   --map-bg: #eceaf2;
   --map-grid: rgb(170 165 185 / 0.28);
   --map-path: #d5d2de;
-  /* Map zone colours — aligned with legend tiers */
-  --map-zone-fill: #e4e2ea;
-  --map-heat-mid: #fde4c8;
-  --map-heat-high: #f5c4bc;
-  --map-zone-stroke-cool: #c8c4d4;
-  --map-zone-stroke-mid: #d4a574;
-  --map-zone-stroke-low: #d9786a;
+  /* Map zone colours — same tier language as pills / Leaflet */
+  --map-zone-fill: var(--semantic-teal-soft);
+  --map-heat-mid: var(--semantic-amber-soft);
+  --map-heat-high: var(--semantic-coral-soft);
+  --map-zone-stroke-cool: var(--semantic-teal);
+  --map-zone-stroke-mid: var(--semantic-amber);
+  --map-zone-stroke-low: var(--semantic-coral);
   --map-zone-glow-focus: rgb(255 255 255 / 0.78);
   --map-zone-ring-focus: rgb(20 20 22 / 0.14);
-  --map-pin-critical: #d9786a;
-  --map-pin-warning: #d4a574;
-  --map-pin-resolved: #9aa3a0;
+  --map-pin-critical: var(--semantic-coral);
+  --map-pin-warning: var(--semantic-amber);
+  --map-pin-resolved: var(--semantic-teal);
 
-  /* Typography — loaded: Inter, Montserrat, Plus Jakarta (next/font)
-     Stack-only (local if installed): SF Pro Display, Proxima Nova, Eurostile, Microgramma */
+  /* Typography roles — UI body · heading titles · display KPIs · metric digits · label caps
+     Loaded via next/font: Inter, Montserrat, Plus Jakarta. Local if installed: SF Pro, Proxima Nova */
   --font-ui:
     var(--font-inter), "Proxima Nova", var(--font-jakarta), system-ui,
     sans-serif;
@@ -99,9 +101,7 @@
     var(--font-jakarta), sans-serif;
   --font-heading:
     var(--font-montserrat), "Proxima Nova", var(--font-jakarta), sans-serif;
-  --font-label:
-    "Eurostile", "Microgramma D Extended", "Microgramma",
-    var(--font-montserrat), sans-serif;
+  --font-label: var(--font-montserrat), var(--font-jakarta), sans-serif;
   --font-metric:
     "SF Pro Display", -apple-system, var(--font-inter), var(--font-montserrat),
     sans-serif;
@@ -120,9 +120,9 @@
   --ops-text-primary: #1a1a1c;
   --ops-text-muted: #5a5568;
   --ops-text-subtle: #8a8498;
-  --ops-heat-low: #e4e2ea;
-  --ops-heat-mid: #fde4c8;
-  --ops-heat-high: #e54d3a;
+  --ops-heat-low: var(--semantic-teal-soft);
+  --ops-heat-mid: var(--semantic-amber-soft);
+  --ops-heat-high: var(--semantic-coral);
   --ops-heat-empty: #eceaf2;
   --ops-zone-a: #0d9b5c;
   --ops-zone-b: #d97706;
@@ -152,17 +152,17 @@ body {
   background-image:
     radial-gradient(
       ellipse 85% 60% at 12% -5%,
-      rgb(186 168 230 / 0.55) 0%,
+      rgb(229 77 58 / 0.14) 0%,
       transparent 58%
     ),
     radial-gradient(
       ellipse 55% 48% at 92% 2%,
-      rgb(255 186 150 / 0.42) 0%,
+      rgb(229 77 58 / 0.1) 0%,
       transparent 55%
     ),
     radial-gradient(
       ellipse 40% 35% at 50% 100%,
-      rgb(196 184 226 / 0.28) 0%,
+      rgb(217 119 6 / 0.1) 0%,
       transparent 50%
     ),
     linear-gradient(180deg, rgb(255 255 255 / 0.22), transparent 42%);
@@ -231,7 +231,7 @@ h3 {
   height: min(440px, 52vw);
   background: radial-gradient(
     circle,
-    rgb(168 148 220 / 0.5) 0%,
+    rgb(229 77 58 / 0.2) 0%,
     transparent 68%
   );
 }
@@ -243,7 +243,7 @@ h3 {
   height: min(360px, 44vw);
   background: radial-gradient(
     circle,
-    rgb(255 175 140 / 0.42) 0%,
+    rgb(229 77 58 / 0.12) 0%,
     transparent 68%
   );
 }
@@ -325,8 +325,6 @@ h3 {
   background: var(--box-inner);
   border: 1px solid rgb(255 255 255 / 0.42);
   border-radius: var(--radius-inner);
-  backdrop-filter: blur(var(--glass-blur-sm)) var(--glass-saturate);
-  -webkit-backdrop-filter: blur(var(--glass-blur-sm)) var(--glass-saturate);
 }
 
 .bry-glass {
@@ -338,9 +336,14 @@ h3 {
   -webkit-backdrop-filter: blur(var(--glass-blur)) var(--glass-saturate);
 }
 
+/* Flat nested surfaces — avoid glass-on-glass */
 .bry-inner.bry-glass,
 .bry-glass.bry-inner {
-  background: rgb(255 255 255 / 0.24);
+  background: rgb(255 255 255 / 0.55);
+  background-image: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5);
 }
 
 .bry-page-content {
@@ -372,7 +375,7 @@ h3 {
   height: 40px;
   padding: 0;
   border-radius: 50%;
-  background: var(--gradient-cta);
+  background: var(--accent);
   border: var(--shell-border);
   box-shadow: var(--box-highlight), var(--shadow-box);
   backdrop-filter: blur(8px);
@@ -432,12 +435,9 @@ h3 {
 
 .bry-row-capsule {
   background: var(--box-bg-elevated);
-  background-image: var(--glass-shine);
-  border: 1px solid rgb(255 255 255 / 0.72);
-  border-radius: 28px;
+  border: 1px solid rgb(255 255 255 / 0.65);
+  border-radius: 20px;
   box-shadow: var(--box-highlight), var(--shadow-row);
-  backdrop-filter: blur(var(--glass-blur-sm)) var(--glass-saturate);
-  -webkit-backdrop-filter: blur(var(--glass-blur-sm)) var(--glass-saturate);
   transition:
     transform var(--dur-med) var(--ease-out-soft),
     box-shadow var(--dur-med) var(--ease-out-soft),
@@ -501,18 +501,19 @@ h3 {
   background: rgb(255 255 255 / 0.48);
   border-color: rgb(255 255 255 / 0.72);
   box-shadow:
-    0 0 0 3px rgb(244 114 182 / 0.12),
+    0 0 0 3px var(--accent-soft),
     var(--shadow-inset);
 }
 
 .bry-section-head {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
 }
 
 .bry-section-title {
+  font-family: var(--font-heading);
   font-size: 1.125rem;
   font-weight: 800;
   line-height: 1.15;
@@ -522,9 +523,29 @@ h3 {
 .bry-section-subtitle {
   margin-top: 0.25rem;
   max-width: 36rem;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  line-height: 1.45;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.bry-card-title {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.bry-brand-mark {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.bry-metric {
+  font-family: var(--font-metric);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
 }
 
 .bry-mini-metric {
@@ -542,7 +563,7 @@ h3 {
   inset: 10px;
   border-radius: 9999px;
   content: "";
-  background: radial-gradient(circle, rgb(244 114 182 / 0.26), transparent 62%);
+  background: radial-gradient(circle, rgb(10 132 255 / 0.2), transparent 62%);
   filter: blur(8px);
   animation: gauge-glow-pulse 2.6s ease-in-out infinite;
   pointer-events: none;
@@ -563,7 +584,7 @@ h3 {
   background: linear-gradient(
     0deg,
     transparent 0%,
-    rgb(16 185 129 / 0.18) 45%,
+    rgb(10 132 255 / 0.16) 45%,
     transparent 100%
   );
   animation: bry-gauge-scan 12s linear infinite;
@@ -611,7 +632,7 @@ h3 {
 .bry-filter-pill:focus-visible,
 .bry-map-zone:focus-visible,
 .bry-incident-row:focus-visible {
-  outline: 3px solid rgb(244 114 182 / 0.28);
+  outline: 3px solid var(--accent-soft);
   outline-offset: 3px;
 }
 
@@ -626,19 +647,19 @@ h3 {
 }
 
 .bry-nav-icon-active {
-  background: rgb(255 255 255 / 0.72);
-  color: var(--accent-macos);
+  background: var(--semantic-coral-soft);
+  color: var(--semantic-coral);
   box-shadow:
     inset 0 0 0 1px rgb(255 255 255 / 0.88),
-    0 8px 20px var(--accent-macos-soft);
+    0 8px 20px rgb(229 77 58 / 0.16);
 }
 
 .bry-filter-pill-active {
   background: rgb(255 255 255 / 0.72);
-  color: var(--accent-macos);
+  color: var(--accent);
   box-shadow:
     inset 0 0 0 1px rgb(255 255 255 / 0.88),
-    0 6px 16px var(--accent-macos-soft);
+    0 6px 16px var(--accent-soft);
 }
 
 .bry-role-pill {
@@ -676,7 +697,7 @@ h3 {
   gap: 8px;
   padding: 14px 28px;
   border-radius: var(--radius-pill);
-  background: var(--gradient-cta);
+  background: var(--accent);
   color: #fff;
   font-family: var(--font-label);
   font-size: 11px;
@@ -684,7 +705,7 @@ h3 {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   border: none;
-  box-shadow: 0 6px 20px rgb(244 114 182 / 0.32);
+  box-shadow: 0 6px 20px var(--accent-soft);
   cursor: pointer;
   transition:
     filter var(--dur-med) var(--ease-out-soft),
@@ -695,13 +716,13 @@ h3 {
 .bry-btn-primary:hover {
   filter: brightness(1.04);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgb(244 114 182 / 0.38);
+  box-shadow: 0 12px 28px var(--accent-soft);
 }
 
 .bry-btn-primary:active {
   transform: translateY(0) scale(0.98);
   filter: brightness(0.98);
-  box-shadow: 0 4px 14px rgb(244 114 182 / 0.28);
+  box-shadow: 0 4px 14px var(--accent-soft);
 }
 
 .bry-btn-secondary {
@@ -732,11 +753,11 @@ h3 {
 
 .bry-btn-secondary:hover {
   background: rgb(255 255 255 / 0.78);
-  color: var(--accent-macos);
+  color: var(--accent);
   transform: translateY(-1px);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.9),
-    0 8px 20px var(--accent-macos-soft);
+    0 8px 20px var(--accent-soft);
 }
 
 .bry-btn-secondary:active {
@@ -771,14 +792,15 @@ h3 {
   padding: 0 16px;
   min-height: 36px;
   border-radius: var(--radius-pill);
-  background: var(--accent-neon);
-  color: var(--accent-neon-text);
+  background: var(--semantic-coral-soft);
+  color: var(--semantic-coral);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
+  border: 1px solid rgb(229 77 58 / 0.22);
 }
 
 .bry-tag-neon-side {
@@ -807,27 +829,21 @@ h3 {
 }
 
 .bry-status-badge-alert {
-  background: linear-gradient(135deg, #ff8a4c 0%, #f472b6 100%);
-  color: #fff;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.28),
-    0 6px 16px rgb(244 114 182 / 0.22);
+  background: var(--semantic-coral-soft);
+  color: var(--semantic-coral);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5);
 }
 
 .bry-status-badge-live {
-  background: linear-gradient(135deg, rgb(255 255 255 / 0.86) 0%, #e8f2ff 100%);
-  color: var(--accent-macos);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.95),
-    0 6px 16px var(--accent-macos-soft);
+  background: var(--semantic-teal-soft);
+  color: var(--semantic-teal);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5);
 }
 
 .bry-status-badge-warn {
-  background: linear-gradient(135deg, #fff7e8 0%, #fde4c8 100%);
-  color: #9a6217;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.85),
-    0 5px 14px rgb(217 119 6 / 0.15);
+  background: var(--semantic-amber-soft);
+  color: var(--semantic-amber);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5);
 }
 
 .bry-status-badge:hover {
@@ -848,29 +864,11 @@ h3 {
   letter-spacing: -0.03em;
 }
 
-.pill-green {
-  background: var(--semantic-teal-soft);
-  color: var(--semantic-teal);
-}
-
-.pill-amber {
-  background: var(--semantic-amber-soft);
-  color: var(--semantic-amber);
-}
-
-.pill-coral {
-  background: var(--semantic-coral-soft);
-  color: var(--semantic-coral);
-}
-
 .pill-zone {
   padding: 6px 14px;
   border-radius: var(--radius-pill);
   background: var(--box-inner);
   border: 1px solid rgb(255 255 255 / 0.48);
-  box-shadow: var(--shadow-inset);
-  backdrop-filter: blur(10px) var(--glass-saturate);
-  -webkit-backdrop-filter: blur(10px) var(--glass-saturate);
   font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
@@ -878,6 +876,24 @@ h3 {
     background var(--dur-fast) var(--ease-premium),
     color var(--dur-fast) var(--ease-premium),
     box-shadow var(--dur-fast) var(--ease-premium);
+}
+
+.pill-green,
+.pill-zone.pill-green {
+  background: var(--semantic-teal-soft);
+  color: var(--semantic-teal);
+}
+
+.pill-amber,
+.pill-zone.pill-amber {
+  background: var(--semantic-amber-soft);
+  color: var(--semantic-amber);
+}
+
+.pill-coral,
+.pill-zone.pill-coral {
+  background: var(--semantic-coral-soft);
+  color: var(--semantic-coral);
 }
 
 .pill-map-cool,
@@ -888,18 +904,18 @@ h3 {
 }
 
 .pill-map-cool {
-  background: rgb(228 226 234 / 0.72);
-  color: var(--text-secondary);
+  background: var(--semantic-teal-soft);
+  color: var(--semantic-teal);
 }
 
 .pill-map-mid {
-  background: rgb(253 228 200 / 0.72);
-  color: #8a5c28;
+  background: var(--semantic-amber-soft);
+  color: var(--semantic-amber);
 }
 
 .pill-map-low {
-  background: rgb(245 196 188 / 0.72);
-  color: #9a4038;
+  background: var(--semantic-coral-soft);
+  color: var(--semantic-coral);
 }
 
 .bry-stock-bar {
@@ -917,15 +933,15 @@ h3 {
 }
 
 .bry-stock-fill-healthy {
-  background: linear-gradient(90deg, #c8c4d4 0%, #e4e2ea 100%);
+  background: var(--semantic-teal);
 }
 
 .bry-stock-fill-watch {
-  background: linear-gradient(90deg, #d4a574 0%, #fde4c8 100%);
+  background: var(--semantic-amber);
 }
 
 .bry-stock-fill-critical {
-  background: linear-gradient(90deg, #d9786a 0%, #f5c4bc 100%);
+  background: var(--semantic-coral);
 }
 
 .bry-zone-health-card {
@@ -935,19 +951,202 @@ h3 {
 .bry-event-row {
   display: grid;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   grid-template-columns: minmax(0, 1fr);
 }
 
+.bry-event-row--dense {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--box-bg-elevated);
+  border: 1px solid rgb(255 255 255 / 0.65);
+  border-radius: 14px;
+  box-shadow: var(--box-highlight), var(--shadow-row);
+  transition:
+    transform var(--dur-med) var(--ease-out-soft),
+    box-shadow var(--dur-med) var(--ease-out-soft),
+    background var(--dur-med) var(--ease-out-soft);
+}
+
+.bry-event-row--dense:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--box-highlight), var(--shadow-row-hover);
+}
+
+.bry-event-row--dense > * {
+  pointer-events: none;
+}
+
+.bry-event-row-focused {
+  box-shadow:
+    var(--box-highlight),
+    var(--shadow-row-hover),
+    inset 3px 0 0 var(--semantic-coral),
+    0 0 0 2px rgb(26 26 28 / 0.08);
+}
+
+.bry-event-icon {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid rgb(255 255 255 / 0.45);
+}
+
+.bry-event-icon--spike {
+  background: var(--semantic-coral-soft);
+  color: var(--semantic-coral);
+}
+
+.bry-event-icon--consumed {
+  background: var(--semantic-amber-soft);
+  color: var(--semantic-amber);
+}
+
+.bry-event-icon--restock {
+  background: var(--semantic-teal-soft);
+  color: var(--semantic-teal);
+}
+
+.bry-event-meta {
+  margin: 0;
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
 .bry-event-quantity {
-  min-width: 5.5rem;
+  min-width: 4.5rem;
 }
 
 @media (min-width: 640px) {
-  .bry-event-row {
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
-    gap: 1.25rem;
+  .bry-event-row:not(.bry-event-row--dense) {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 1rem;
   }
+}
+
+/* Dashboard split — equal-height cards, bottoms aligned */
+.bry-dashboard-split {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .bry-dashboard-split {
+    grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .bry-dashboard-map,
+  .bry-dashboard-split > .bry-stream-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    align-self: stretch;
+  }
+
+  .bry-dashboard-map .bry-dashboard-map-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bry-dashboard-map .venue-leaflet-map,
+  .bry-dashboard-map .leaflet-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100% !important;
+  }
+}
+
+/* Event stream panel — capped feed (~5 dense rows) then internal scroll */
+.bry-stream-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  min-height: 0;
+  min-width: 0;
+}
+
+.bry-stream-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.bry-stream-filter-row {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 0.5rem;
+}
+
+.bry-stream-filter-label {
+  margin: 0;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.bry-stream-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.bry-stream-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.bry-stream-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  /* Hard cap ≈ 5 dense rows — keep map column from growing with the buffer */
+  height: 20rem;
+  max-height: 20rem;
+  flex: 0 0 20rem;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  padding-right: 0.25rem;
+  scrollbar-gutter: stable;
+}
+
+.bry-stream-summary {
+  margin: 0;
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.bry-stream-buffer {
+  min-width: 4.5rem;
 }
 
 /* ── Venue map — schematic floor plan ── */
@@ -955,16 +1154,16 @@ h3 {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-inner);
-  background: rgb(255 255 255 / 0.2);
-  box-shadow:
-    var(--shadow-inset),
-    inset 0 0 0 1px rgb(255 255 255 / 0.55);
-  backdrop-filter: blur(var(--glass-blur-sm)) var(--glass-saturate);
-  -webkit-backdrop-filter: blur(var(--glass-blur-sm)) var(--glass-saturate);
+  background: var(--map-bg);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.55);
 }
 
 .bry-venue-map-canvas.bry-glass {
-  background: rgb(255 255 255 / 0.18);
+  background: var(--map-bg);
+  background-image: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.55);
 }
 
 .bry-venue-map-svg {
@@ -1013,8 +1212,8 @@ h3 {
   box-shadow:
     var(--box-highlight),
     var(--shadow-row-hover),
-    0 0 0 2px rgb(26 26 28 / 0.1);
-  border-left: 3px solid var(--row-accent, var(--text-primary));
+    inset 4px 0 0 var(--row-accent, var(--text-primary)),
+    0 0 0 2px rgb(26 26 28 / 0.08);
   transform: translateY(-1px);
 }
 

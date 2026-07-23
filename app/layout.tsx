@@ -23,14 +23,14 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "LiveEvent Radar",
   description:
-    "Digital Command Center — live event operations telemetry, zone stock, and incident tracking.",
+    "See which stands are running low — venue map, zone stock, and live stock events for brand activations.",
   other: {
     google: "notranslate",
   },
   openGraph: {
     title: "LiveEvent Radar",
     description:
-      "Live operations dashboard for brand activations — stock telemetry, venue map, and event stream.",
+      "Live ops for brand activations — zone stock, venue map, and stock events in one view.",
     type: "website",
   },
 };

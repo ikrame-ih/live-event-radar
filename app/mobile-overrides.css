@@ -38,12 +38,6 @@
     padding: 1rem;
   }
 
-  .bry-search-whisper {
-    margin-bottom: 1.25rem;
-    max-width: none;
-    padding: 0.75rem 1rem;
-  }
-
   .bry-venue-section-head {
     flex-direction: column;
     align-items: flex-start;
@@ -63,9 +57,13 @@
     padding: 1rem;
   }
 
+  .bry-zone-activity-section ul {
+    gap: 0.875rem;
+  }
+
   .bry-incident-row {
     gap: 0.625rem;
-    padding: 0.75rem 0.875rem;
+    padding: 0.875rem 1rem;
   }
 
   .bry-incident-row .bry-incident-metric {

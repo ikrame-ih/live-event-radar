@@ -2,8 +2,8 @@
 layout: home
 hero:
   name: LiveEvent Radar
-  text: Live operations telemetry for brand activations
-  tagline: Zone stock, venue heat maps, and a capped event stream — a glass UI Command Center with two coordinated routes in Next.js.
+  text: Live ops for brand activations
+  tagline: See which stands are running low — venue heat maps and stock events in a glass UI Command Center with two coordinated routes in Next.js.
   actions:
     - theme: brand
       text: Live demo
@@ -16,11 +16,11 @@ hero:
       link: /architecture
 features:
   - title: Command Center
-    details: Primary screen at / — KPIs, zone inventory, SVG venue map with stock heat tiers, and a synced activity feed.
-  - title: Telemetry depth
-    details: Secondary screen at /dashboard — Leaflet map (Teatinos, Málaga), filters, a capped event stream, and a worker hook placeholder for future off-thread summaries.
+    details: Primary screen at / — Live now KPIs, zone stock, SVG venue map with stock heat, and a What’s happening feed synced to the map.
+  - title: Live dashboard
+    details: Secondary screen at /dashboard — Leaflet map beside a capped, scrollable stock-events list (≈5 rows visible), filters, and a worker hook placeholder for future off-thread summaries.
   - title: Stable under load
-    details: Zustand buffer capped at 10,000 events, derived zone snapshots, optional WebSocket feed. 34 Vitest tests · 7 Playwright specs (3 viewports locally).
+    details: Zustand buffer capped at 10,000 events, derived zone snapshots, optional WebSocket feed. 35 Vitest tests · 7 Playwright specs (3 viewports locally).
 ---
 
 ## The problem
@@ -35,7 +35,7 @@ A browser-based **Digital Command Center** that feels like real ops telemetry:
 - **Stock model** with Healthy / Watch / Low tiers (65% / 35% thresholds) driving map colour in real time
 - **Two maps** — a schematic SVG on `/`, a geographic Leaflet map on `/dashboard`
 - **Shared state** — `telemetry-store` holds the capped event buffer on both routes; incidents and sidebar selection live in `useEventStore` on the Command Center
-- **Glass UI** — lavender shell, frosted panels, macOS-style active states, and a View Transitions crossfade (~180ms) between routes
+- **Glass UI** — warm lavender shell with coral ambient orbs, frosted panels, coral nav active states (Command Center · Live dashboard), and a View Transitions crossfade (~180ms) between routes
 
 Working promotions taught me that a dashboard only helps if the numbers stay trustworthy. Python from my degree plus ops experience on activations pushed me toward stable KPIs, capped buffers, and maps that show stock state — not decorative charts.
 
@@ -43,8 +43,8 @@ Working promotions taught me that a dashboard only helps if the numbers stay tru
 
 | Route            | Role                                                                                                 |
 | ---------------- | ---------------------------------------------------------------------------------------------------- |
-| **`/`**          | **Command Center** — KPIs, zone inventory, SVG venue map (stock heat), zone activity feed            |
-| **`/dashboard`** | **Telemetry** — Leaflet map (Teatinos, Málaga), filters, capped event stream, buffer KPI, worker hook placeholder |
+| **`/`**          | **Command Center** — Live now KPIs, zone stock, SVG venue map, What’s happening feed |
+| **`/dashboard`** | **Live dashboard** — Leaflet + scrolling stock events side by side, filters, stored-events KPI |
 
 Both routes read from **`telemetry-store`**. The Command Center also uses **`useEventStore`** for derived incidents and map/sidebar selection. Navigation uses a persistent `AppShell` and **View Transitions** via `TransitionLink` so the header and background never flash.
 

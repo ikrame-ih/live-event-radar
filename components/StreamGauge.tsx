@@ -17,7 +17,7 @@ export function StreamGauge({ value, max = 3 }: StreamGaugeProps) {
       aria-label={`${value} of ${max} active zones`}
     >
       <span className="bry-gauge-scanline" aria-hidden />
-      <div className="bry-glass absolute inset-3 rounded-full" />
+      <div className="absolute inset-3 rounded-full bg-white/55" />
       <svg
         className="absolute inset-0 -rotate-90"
         viewBox="0 0 88 88"
