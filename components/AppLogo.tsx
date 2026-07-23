@@ -20,7 +20,7 @@ export function AppLogo({ size = 28, className }: AppLogoProps) {
         cx="16"
         cy="16"
         r="11"
-        stroke="url(#lr-logo-grad)"
+        stroke="#e54d3a"
         strokeWidth="2"
         opacity="0.95"
       />
@@ -28,24 +28,11 @@ export function AppLogo({ size = 28, className }: AppLogoProps) {
         cx="16"
         cy="16"
         r="6"
-        stroke="url(#lr-logo-grad)"
+        stroke="#e54d3a"
         strokeWidth="1.5"
-        opacity="0.55"
+        opacity="0.45"
       />
-      <circle cx="16" cy="16" r="2.5" fill="#c8f542" />
-      <defs>
-        <linearGradient
-          id="lr-logo-grad"
-          x1="6"
-          y1="4"
-          x2="26"
-          y2="28"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#ff8a4c" />
-          <stop offset="1" stopColor="#f472b6" />
-        </linearGradient>
-      </defs>
+      <circle cx="16" cy="16" r="2.5" fill="#0d9b5c" />
     </svg>
   );
 }

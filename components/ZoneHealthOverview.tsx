@@ -38,12 +38,12 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
   )[0];
 
   return (
-    <section className="mt-6" aria-label="Zone inventory">
+    <section className="mt-6" aria-label="Zone stock">
       <div className="bry-section-head mb-4">
         <div>
-          <h2 className="bry-section-title">Zone inventory</h2>
+          <h2 className="bry-section-title">Zone stock</h2>
           <p className="bry-section-subtitle">
-            Stock and demand by zone
+            See which stands are running low
           </p>
         </div>
         <div className="flex flex-wrap gap-2 text-xs">

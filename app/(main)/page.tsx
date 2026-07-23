@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
 import { CommandCenterGaugePanel } from "@/components/command-center/CommandCenterGaugePanel";
 import { CommandCenterKpiHero } from "@/components/command-center/CommandCenterKpiHero";
 import { InteractiveMap } from "@/components/InteractiveMap";
-import { IncidentSidebar } from "@/components/IncidentSidebar";
+import { SessionTallyPanel } from "@/components/SessionTallyPanel";
 import { ZoneHealthOverview } from "@/components/ZoneHealthOverview";
 import { useCommandCenterSync } from "@/features/live-radar/hooks/use-command-center-sync";
 import { useLiveFeed } from "@/features/live-radar/hooks/use-live-feed";
@@ -37,14 +36,6 @@ export default function CommandCenter() {
 
   return (
     <main className="bry-shell bry-shell--page mx-auto max-w-(--content-max) p-6 sm:p-8 lg:p-12">
-      <div
-        className="bry-search-whisper mb-8 flex max-w-sm items-center gap-3 px-5 py-3.5 text-sm text-(--text-muted)"
-        aria-hidden="true"
-      >
-        <Search size={18} strokeWidth={1.5} />
-        <span>Search zones&hellip;</span>
-      </div>
-
       <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:gap-6">
         <CommandCenterKpiHero
           eventCount={eventCount}
@@ -71,12 +62,11 @@ export default function CommandCenter() {
             <div>
               <h2 className="bry-section-title">Venue map</h2>
               <p className="bry-section-subtitle">
-                Zone fill follows stock tiers — click a zone or activity row to
-                focus
+                Colors show how much stock is left — tap a zone to focus
               </p>
             </div>
           </div>
-          <div className="bry-venue-map-canvas bry-inner bry-glass overflow-hidden">
+          <div className="bry-venue-map-canvas overflow-hidden">
             <div className="min-h-[360px] sm:min-h-[420px] lg:min-h-[480px]">
               <InteractiveMap />
             </div>
@@ -86,16 +76,13 @@ export default function CommandCenter() {
         <section className="bry-zone-activity-section bry-box bry-row-enter p-5 sm:p-7">
           <div className="bry-section-head mb-4">
             <div>
-              <h2 className="bry-section-title">Zone activity</h2>
-              <p className="bry-section-subtitle sm:hidden">
-                Tap a row to highlight the zone on the map
-              </p>
-              <p className="bry-section-subtitle hidden sm:block">
-                Synced with the map — hover a row or click a zone
+              <h2 className="bry-section-title">Session tally</h2>
+              <p className="bry-section-subtitle">
+                Running totals since start — freeze when the event ends
               </p>
             </div>
           </div>
-          <IncidentSidebar />
+          <SessionTallyPanel snapshots={snapshots} />
         </section>
       </div>
     </main>

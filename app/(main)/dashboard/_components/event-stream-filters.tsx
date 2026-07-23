@@ -19,10 +19,10 @@ export function EventStreamFilters({
   onChange,
 }: EventStreamFiltersProps) {
   return (
-    <div className="flex flex-col gap-4">
-      <div className="bry-search-whisper flex min-h-12 items-center gap-3 px-5 py-3">
+    <div className="bry-stream-toolbar">
+      <div className="bry-search-whisper flex min-h-10 w-full items-center gap-2.5 px-3.5 py-2">
         <Search
-          size={18}
+          size={16}
           strokeWidth={1.5}
           className="shrink-0 text-(--text-muted)"
         />
@@ -32,16 +32,21 @@ export function EventStreamFilters({
         <input
           id="stream-search"
           type="search"
-          placeholder="Search zone or item…"
+          placeholder="Search by zone or product…"
           value={filters.search}
           onChange={(e) => onChange({ ...filters, search: e.target.value })}
           className="min-w-0 flex-1 bg-transparent text-sm text-(--text-primary) outline-none placeholder:text-(--text-muted)"
         />
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div
+        className="bry-stream-filter-pills"
+        role="group"
+        aria-label="Zone filter"
+      >
         <FilterPill
-          label="All zones"
+          label="All"
+          ariaLabel="All zones"
           active={filters.zone === "all"}
           onClick={() => onChange({ ...filters, zone: "all" })}
         />
@@ -56,9 +61,14 @@ export function EventStreamFilters({
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div
+        className="bry-stream-filter-pills"
+        role="group"
+        aria-label="Event type filter"
+      >
         <FilterPill
-          label="All events"
+          label="All"
+          ariaLabel="All events"
           active={filters.status === "all"}
           onClick={() => onChange({ ...filters, status: "all" })}
         />
@@ -94,7 +104,7 @@ function FilterPill({
       onClick={onClick}
       aria-pressed={active}
       aria-label={ariaLabel ?? label}
-      className={`bry-filter-pill inline-flex min-h-9 items-center rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-200 ease-(--ease-premium) ${
+      className={`bry-filter-pill inline-flex min-h-7 items-center rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide transition-all duration-200 ease-(--ease-premium) ${
         active
           ? "bry-filter-pill-active"
           : "bry-inset text-(--text-secondary) hover:-translate-y-px hover:text-(--text-primary)"

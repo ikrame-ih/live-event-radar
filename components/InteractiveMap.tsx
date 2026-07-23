@@ -9,6 +9,8 @@ import {
   STOCK_TIER_WATCH_MIN,
   type StockHeat,
 } from "@/features/live-radar/lib/zone-stock";
+import { STOCK_HEAT_COLORS } from "@/features/live-radar/lib/stock-heat-colors";
+import { useSessionStore } from "@/features/live-radar/state/session-store";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 
 const VB_WIDTH = 960;
@@ -41,30 +43,8 @@ const LEGEND_ROWS: { heat: StockHeat; label: string }[] = [
   { heat: "hot", label: `Low <${STOCK_TIER_WATCH_MIN}%` },
 ];
 
-/** Zone fills — contrast against #eceaf2, match legend */
-const ZONE_STYLE: Record<
-  StockHeat,
-  { fill: string; glow: string; stroke: string; stockColor: string }
-> = {
-  cool: {
-    fill: "#dcdae4",
-    glow: "#c8c4d4",
-    stroke: "#b8b4c4",
-    stockColor: "#5a5568",
-  },
-  mid: {
-    fill: "#fde4c8",
-    glow: "#f5d4a8",
-    stroke: "#d4a06a",
-    stockColor: "#8a5c28",
-  },
-  hot: {
-    fill: "#f5b8a8",
-    glow: "#f09888",
-    stroke: "#d9786a",
-    stockColor: "#9a4038",
-  },
-};
+/** Zone fills — shared palette with Leaflet markers */
+const ZONE_STYLE = STOCK_HEAT_COLORS;
 
 function zonePalette(heat: StockHeat) {
   return {
@@ -396,6 +376,8 @@ export function InteractiveMap() {
   const activeIncidentId = useEventStore((s) => s.activeIncidentId);
   const selectedIncidentId = useEventStore((s) => s.selectedIncidentId);
   const selectIncident = useEventStore((s) => s.selectIncident);
+  const sessionZone = useSessionStore((s) => s.selectedZone);
+  const selectSessionZone = useSessionStore((s) => s.selectZone);
   const events = useTelemetryStore((s) => s.events);
   const [now, setNow] = useState(() => Date.now());
 
@@ -418,16 +400,20 @@ export function InteractiveMap() {
     [incidents]
   );
 
-  const selectedZone = useMemo(() => {
+  const selectedZoneFromIncident = useMemo(() => {
     if (!selectedIncidentId) return null;
     return incidents.find((i) => i.id === selectedIncidentId)?.zone ?? null;
   }, [incidents, selectedIncidentId]);
 
+  const selectedZone = sessionZone ?? selectedZoneFromIncident;
+
   const hoveredZone = useMemo(() => {
     if (!activeIncidentId || activeIncidentId === selectedIncidentId)
       return null;
-    return incidents.find((i) => i.id === activeIncidentId)?.zone ?? null;
-  }, [activeIncidentId, incidents, selectedIncidentId]);
+    const zone = incidents.find((i) => i.id === activeIncidentId)?.zone ?? null;
+    if (zone && zone === selectedZone) return null;
+    return zone;
+  }, [activeIncidentId, incidents, selectedIncidentId, selectedZone]);
 
   const focusMode = Boolean(selectedZone);
 
@@ -464,10 +450,11 @@ export function InteractiveMap() {
 
   const handleZoneSelect = useCallback(
     (zoneLabel: string) => {
+      selectSessionZone(zoneLabel);
       const incident = incidentByZone.get(zoneLabel);
       if (incident) selectIncident(incident.id);
     },
-    [incidentByZone, selectIncident]
+    [incidentByZone, selectIncident, selectSessionZone]
   );
 
   function zoneHighlight(label: string): HighlightLevel {
@@ -482,7 +469,7 @@ export function InteractiveMap() {
       preserveAspectRatio="xMidYMid meet"
       className="bry-venue-map-svg h-full w-full"
       role="img"
-      aria-label="Venue schematic — tap a zone or use Zone activity to highlight"
+      aria-label="Venue floor plan — tap a zone or use Session tally to highlight"
     >
       <MapDefs />
 
@@ -514,7 +501,7 @@ export function InteractiveMap() {
             stock={stock}
             highlight={highlight}
             dimmed={dimmed}
-            interactive={incidentByZone.has(zone.label)}
+            interactive
             onSelect={() => handleZoneSelect(zone.label)}
           />
         );

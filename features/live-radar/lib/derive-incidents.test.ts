@@ -49,4 +49,25 @@ describe("deriveIncidents", () => {
     expect(result).toHaveLength(1);
     expect(result[0]?.id).toBe("zone-South Gate");
   });
+
+  it("orders rollups by severity then recency", () => {
+    const events = [
+      fakeEvent("Main Stage Walkway", -1, 100),
+      fakeEvent("South Gate", -1, 200),
+      fakeEvent("South Gate", -1, 300),
+      fakeEvent("South Gate", -1, 400),
+      fakeEvent("South Gate", -1, 500),
+      fakeEvent("Sampling Court", -2, 600),
+      fakeEvent("Sampling Court", -2, 700),
+    ];
+    const result = deriveIncidents(events);
+    expect(result.map((i) => i.severity)).toEqual([
+      "critical",
+      "warning",
+      "resolved",
+    ]);
+    expect(result[0]?.zone).toBe("Sampling Court");
+    expect(result[1]?.zone).toBe("South Gate");
+    expect(result[2]?.zone).toBe("Main Stage Walkway");
+  });
 });

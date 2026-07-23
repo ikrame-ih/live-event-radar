@@ -14,6 +14,8 @@ A coordinator opens a tablet. On a simplified venue heat map, a zone flashes a w
 
 The prediction doesn't need to be perfect on day one. The value is a UI that feels like **real ops telemetry** — nudging action before the gap becomes visible to guests.
 
+At the end of the shift, **Session tally** freezes consumed / restocked / net per zone into a shareable summary (the WhatsApp number that used to be missing).
+
 ## What I built (frontend scope)
 
 A **Next.js app** fed by consecutive events (mocked locally or streamed via WebSocket), with state that handles rapid updates without crashing — Zustand and a FIFO buffer capped at 10,000 events.
@@ -22,8 +24,8 @@ Two screens:
 
 | Route        | Role                                                                  |
 | ------------ | --------------------------------------------------------------------- |
-| `/`          | Digital Command Center — SVG venue map, zone inventory, activity feed |
-| `/dashboard` | Telemetry depth — Leaflet map, filters, capped event stream           |
+| `/`          | Digital Command Center — SVG venue map, zone stock, Session tally (freezeable) |
+| `/dashboard` | Live dashboard — Leaflet map, filters, scrolling stock events           |
 
 For ops teams that's faster awareness per zone and one dashboard instead of scattered messages. As an engineering demo it shows capped buffers, derived state, and dual-surface maps running entirely in the browser.
 
@@ -32,7 +34,7 @@ flowchart LR
   A[Consumption events] --> B[Browser buffer]
   B --> C[Zone snapshots]
   C --> D[Command Center map]
-  C --> E[Telemetry stream]
+  C --> E[Live dashboard feed]
   D --> F[Coordinator action]
 ```
 

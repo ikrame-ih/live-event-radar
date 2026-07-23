@@ -21,15 +21,19 @@ I worked brand activations as a hostess. Stock issues always showed up late — 
 
 ### Layout jump when KPI numbers changed
 
-Proportional web fonts make digit widths vary — "1" is narrower than "8", so live counters shift adjacent labels. I applied `font-variant-numeric: tabular-nums` (Tailwind: `tabular-nums`) to every live metric: KPI hero, gauge, zone cards, stream rows.
+Proportional web fonts make digit widths vary — "1" is narrower than "8", so live counters shift adjacent labels. I applied `font-variant-numeric: tabular-nums` via `.bry-metric` (and Tailwind `tabular-nums`) to every live metric: KPI hero, gauge, zone cards, activity rows, stream rows. Heading/UI roles are split in CSS (`--font-heading`, `--font-ui`, `--font-metric`) so section titles and digits stay consistent across `/` and `/dashboard`.
 
 ### Animating the buffer count without spamming React
 
-Storing animation progress in React state would re-render ~60 times per second for a purely visual tick. For **Events buffered** I animate with `requestAnimationFrame` and write to a DOM ref instead. React still owns the value; only the display layer runs outside the render cycle.
+Storing animation progress in React state would re-render ~60 times per second for a purely visual tick. For **Events received** I animate with `requestAnimationFrame` and write to a DOM ref instead. React still owns the value; only the display layer runs outside the render cycle.
 
 ### Route change flash
 
-Navigating between `/` and `/dashboard` used to remount everything including background and header. I moved both routes under `app/(main)/`, shared `AppShell`, and wired `TransitionLink` to the View Transitions API (~180ms crossfade). Header and background stay put.
+Navigating between `/` and `/dashboard` used to remount everything including background and header. I moved both routes under `app/(main)/`, shared `AppShell`, and wired `TransitionLink` to the View Transitions API (~180ms crossfade). Header and background stay put. The nav dock is **two icons** (Command Center · Live dashboard) — a third map-hash link duplicated what each page already shows.
+
+### Stock-events list stretching the map
+
+On `/dashboard` the event feed can be hundreds of rows. The feed list is locked to a fixed `20rem` height (~5 dense rows) with `overflow-y: scroll`. The map | stock-events split uses `align-items: stretch` so both cards share the same height (bottoms aligned); the Leaflet pane fills the extra space via `invalidateSize` on resize.
 
 ### One ingestion path for mock and live data
 

@@ -35,13 +35,13 @@ export function CommandCenterKpiHero({
         />
       </div>
       <div className="min-w-0 flex-1">
-        <h1 className="bry-caps mb-2">Live operations</h1>
+        <h1 className="bry-caps mb-2">Live now</h1>
         <AnimatedBufferCount
           value={eventCount}
           className="bry-stat-big bry-kpi-display font-mono"
         />
         <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
-          Events buffered
+          Events received
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <ConnectionStatusBadge

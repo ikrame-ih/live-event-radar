@@ -5,9 +5,9 @@
   <a href="https://live-event-radar.vercel.app"><img height="28" src="https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
 </p>
 
-**Frontend dashboard for brand activation demos** — zone stock, venue maps, and a capped event stream in a glass UI Command Center.
+**Frontend dashboard for brand activation demos** — zone stock, venue maps, Session tally, and a capped event stream in a glass UI Command Center.
 
-**Frontend-only** — no backend or external infra required for the default demo. A mock stream feeds the UI out of the box; an optional WebSocket URL can replace it without changing components. Both routes share one raw event buffer (`telemetry-store`); the Command Center derives incidents into a second store (`useEventStore`) for sidebar and map selection.
+**Frontend-only** — no backend or external infra required for the default demo. A mock stream feeds the UI out of the box; an optional WebSocket URL can replace it without changing components. Both routes share one raw event buffer (`telemetry-store`); the Command Center derives Session tally (`session-store`) and map incidents (`useEventStore`).
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
@@ -22,17 +22,18 @@
 
 ## Highlights
 
-- **Command Center (`/`)** — KPIs, zone inventory, SVG venue map with stock heat tiers, synced activity feed
-- **Telemetry (`/dashboard`)** — Leaflet map, filters, capped event stream, buffer KPI; worker file and hook are **placeholders only** (no active Web Worker today)
-- **Shared state** — `telemetry-store` holds the raw event buffer on both routes; `useEventStore` holds derived incidents and UI selection (sidebar, map focus) on the Command Center
-- **Engineering practices** — FIFO buffer cap (10k events), strict TypeScript, ESLint, 34 Vitest tests, Playwright E2E
+- **Command Center (`/`)** — Live now KPIs, zone stock cards, venue map, and Session tally (End event freezes totals; Resume / New session)
+- **Live dashboard (`/dashboard`)** — Leaflet map beside a fixed-height scrolling stock-events list (~5 rows / 20rem), filters, stored-events KPI; per-event row selection; worker file and hook are **placeholders only** (no active Web Worker today)
+- **Shared state** — `telemetry-store` holds the raw event buffer on both routes; `session-store` windows the tally; `useEventStore` holds derived incidents for map anchors on the Command Center
+- **Glass UI** — warm coral-ambient shell, two-icon nav (Command Center · Live dashboard), tabular metrics; see [visual system docs](https://ikrame-ih.github.io/live-event-radar/visual-system)
+- **Engineering practices** — FIFO buffer cap (10k events), strict TypeScript, ESLint, Vitest, Playwright E2E
 
 ## Preview
 
 <table>
   <tr>
     <td width="50%">
-      <img src="./docs/assets/readme/command-center-activity.png" alt="Command Center — zone stock, SVG map, activity feed" />
+      <img src="./docs/assets/readme/command-center-activity.png" alt="Command Center — zone stock, SVG map, Session tally" />
       <br /><sub><b>/</b> — Command Center</sub>
     </td>
     <td width="50%">
@@ -69,7 +70,7 @@ Open [http://localhost:3000](http://localhost:3000). No environment variables re
 | `npm run test:e2e`   | Playwright (desktop, tablet, phone) |
 | `npm run docs:build` | VitePress → GitHub Pages            |
 
-**CI (every push/PR):** lint · typecheck · unit tests · build. **E2E** runs on pushes to `main` with the **desktop** project only (7 specs). Locally, `npm run test:e2e` runs all three viewports (desktop, tablet, phone). Docs deploy to GitHub Pages on `main`.
+**CI (every push/PR):** lint · typecheck · unit tests · build. **E2E** runs on pushes to `main` with the **desktop** project only. Locally, `npm run test:e2e` runs all three viewports (desktop, tablet, phone). **Docs** deploy to GitHub Pages only on push to `main` (`.github/workflows/docs.yml`) — local `docs/` edits are not published until then.
 
 ## Stack
 

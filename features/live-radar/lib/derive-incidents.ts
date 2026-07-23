@@ -49,7 +49,7 @@ export function deriveIncidents(events: StockEvent[]): Incident[] {
 
     rollups.push({
       id: `zone-${zone}`,
-      title: spikes.length > 0 ? "High consumption" : "Zone activity",
+      title: spikes.length > 0 ? "High consumption" : "Stock update",
       zone,
       severity: resolveSeverity(zoneEvents.length, spikes.length),
       timestamp: latest.timestamp,
@@ -63,7 +63,17 @@ export function deriveIncidents(events: StockEvent[]): Incident[] {
     });
   }
 
-  return rollups.sort((a, b) => b.timestamp - a.timestamp);
+  const severityRank: Record<IncidentSeverity, number> = {
+    critical: 0,
+    warning: 1,
+    resolved: 2,
+  };
+
+  return rollups.sort((a, b) => {
+    const bySeverity = severityRank[a.severity] - severityRank[b.severity];
+    if (bySeverity !== 0) return bySeverity;
+    return b.timestamp - a.timestamp;
+  });
 }
 
 export function countByZone(

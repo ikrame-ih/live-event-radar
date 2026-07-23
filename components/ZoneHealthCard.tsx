@@ -7,13 +7,13 @@ import {
 function statusPillClass(status: ZoneStatus): string {
   switch (status) {
     case "critical":
-      return "pill-zone pill-map-low";
+      return "pill-zone pill-coral";
     case "watch":
-      return "pill-zone pill-map-mid";
+      return "pill-zone pill-amber";
     case "healthy":
-      return "pill-zone pill-map-cool";
+      return "pill-zone pill-green";
     default:
-      return "pill-zone pill-map-cool";
+      return "pill-zone pill-green";
   }
 }
 
@@ -46,7 +46,7 @@ export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
     <article className="bry-zone-health-card bry-box bry-row-enter flex flex-col justify-between gap-4 p-4 sm:p-5">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="truncate text-sm font-extrabold leading-tight">
+          <p className="bry-card-title truncate">
             {snapshot.zone}
           </p>
           <p className="truncate text-xs text-(--text-muted)">
@@ -63,7 +63,7 @@ export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
       <div className="mt-auto">
         <div className="mb-1 flex items-baseline justify-between gap-2">
           <span className="text-xs text-(--text-muted)">Stock</span>
-          <span className="font-mono text-sm font-bold tabular-nums">
+          <span className="bry-metric text-sm">
             {snapshot.stock}%
           </span>
         </div>
@@ -78,13 +78,13 @@ export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
       <ul className="space-y-1.5 border-t border-white/45 pt-3 text-xs">
         <li className="flex justify-between gap-2">
           <span className="text-(--text-muted)">Demand</span>
-          <span className="font-mono font-semibold tabular-nums">
+          <span className="bry-metric">
             {snapshot.demand30s} evt/30s
           </span>
         </li>
         <li className="flex justify-between gap-2">
           <span className="text-(--text-muted)">Spikes (15s)</span>
-          <span className="font-mono font-semibold tabular-nums">
+          <span className="bry-metric">
             {snapshot.spikes15s}
           </span>
         </li>
