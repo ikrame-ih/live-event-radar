@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { deriveSessionTally } from "@/features/live-radar/lib/derive-session-tally";
-import { ZONE_META, type ZoneSnapshot } from "@/features/live-radar/lib/zone-stock";
+import { formatSessionTallyShare } from "@/features/live-radar/lib/format-session-tally-share";
+import { ZONE_META } from "@/features/live-radar/lib/zone-stock";
+import type { ZoneSnapshot } from "@/features/live-radar/lib/zone-stock";
 import { useSessionStore } from "@/features/live-radar/state/session-store";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 
@@ -22,6 +24,10 @@ function formatElapsed(ms: number): string {
   return `${hours}h ${remMin}m`;
 }
 
+function formatNet(n: number): string {
+  return n > 0 ? `+${n}` : `${n}`;
+}
+
 export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
   const events = useTelemetryStore((s) => s.events);
   const startedAt = useSessionStore((s) => s.startedAt);
@@ -33,9 +39,9 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
   const selectZone = useSessionStore((s) => s.selectZone);
 
   const elapsedRef = useRef<HTMLSpanElement>(null);
+  const [copied, setCopied] = useState(false);
   const frozen = endedAt !== null;
 
-  // Elapsed clock via DOM — avoids hydration mismatch and setState-in-effect lint.
   useEffect(() => {
     const write = () => {
       if (!elapsedRef.current) return;
@@ -62,25 +68,50 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
     [snapshots]
   );
 
+  const rows = useMemo(
+    () =>
+      [...tally.zones].sort(
+        (a, b) => b.consumed - a.consumed || b.restocked - a.restocked
+      ),
+    [tally.zones]
+  );
+
+  const shareText = useMemo(
+    () =>
+      formatSessionTallyShare(tally, stockByZone, {
+        frozen,
+      }),
+    [tally, stockByZone, frozen]
+  );
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setCopied(false);
+    }
+  }
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="bry-stream-summary">
-            {tally.totals.consumed} out
-            <span aria-hidden="true"> · </span>
-            {tally.totals.restocked} in
-            <span aria-hidden="true"> · </span>
-            net {tally.totals.net > 0 ? "+" : ""}
-            {tally.totals.net}
-          </p>
-          <p className="mt-1 text-xs text-(--text-muted)">
+          <p className="mt-0 text-xs text-(--text-muted)">
             {frozen ? "Event ended" : "Running"}
             <span ref={elapsedRef} />
-            {frozen ? " frozen" : ""}
+            {frozen ? " — totals frozen for handoff" : ""}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            className="bry-btn-secondary"
+            onClick={() => void handleCopy()}
+          >
+            {copied ? "Copied" : "Copy for WhatsApp"}
+          </button>
           {frozen ? (
             <>
               <button
@@ -110,68 +141,101 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
         </div>
       </div>
 
+      <div className="bry-tally-hero" aria-label="Session totals">
+        <div className="bry-tally-hero-cell">
+          <p className="bry-tally-hero-label">Taken out</p>
+          <p className="bry-tally-hero-value bry-tally-hero-value--out">
+            {tally.totals.consumed}
+          </p>
+        </div>
+        <div className="bry-tally-hero-cell">
+          <p className="bry-tally-hero-label">Put back</p>
+          <p className="bry-tally-hero-value bry-tally-hero-value--in">
+            {tally.totals.restocked}
+          </p>
+        </div>
+        <div className="bry-tally-hero-cell">
+          <p className="bry-tally-hero-label">Net change</p>
+          <p className="bry-tally-hero-value bry-tally-hero-value--net">
+            {formatNet(tally.totals.net)}
+          </p>
+        </div>
+      </div>
+
+      <p className="bry-tally-share" role="status">
+        {shareText}
+      </p>
+
       {tally.totals.eventCount === 0 ? (
         <div
           className="bry-inner px-4 py-10 text-center text-sm text-(--text-muted)"
           role="status"
         >
-          Totals will appear as stock moves during the event.
+          Totals build as stock moves — End event freezes them for the
+          coordinator handoff.
         </div>
       ) : (
-        <ul className="flex list-none flex-col gap-3" aria-live="polite">
-          {tally.zones
-            .filter((row) => row.eventCount > 0)
-            .sort(
-              (a, b) =>
-                b.consumed - a.consumed || b.restocked - a.restocked
-            )
-            .map((row) => {
-              const isSelected = selectedZone === row.zone;
-              const stock = stockByZone.get(row.zone);
-              const short =
-                ZONE_META[row.zone]?.short ?? row.zone.split(" ")[0];
-              return (
-                <li key={row.zone}>
-                  <button
-                    type="button"
-                    aria-pressed={isSelected}
+        <div className="overflow-x-auto">
+          <table className="bry-tally-table">
+            <thead>
+              <tr>
+                <th scope="col">Zone</th>
+                <th scope="col">Out</th>
+                <th scope="col">In</th>
+                <th scope="col">Net</th>
+                <th scope="col">Now</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => {
+                const isSelected = selectedZone === row.zone;
+                const stock = stockByZone.get(row.zone);
+                const short =
+                  ZONE_META[row.zone]?.short ?? row.zone.split(" ")[0];
+                const shareOfOut =
+                  tally.totals.consumed > 0
+                    ? Math.round(
+                        (row.consumed / tally.totals.consumed) * 100
+                      )
+                    : 0;
+                return (
+                  <tr
+                    key={row.zone}
+                    aria-selected={isSelected}
+                    tabIndex={0}
                     onClick={() => selectZone(row.zone)}
-                    className={`bry-incident-row bry-row-capsule bry-row-enter flex w-full cursor-pointer items-center gap-3 px-4 py-4 text-left ${
-                      isSelected ? "bry-incident-row-selected" : ""
-                    }`}
-                    style={
-                      isSelected
-                        ? {
-                            ["--row-accent" as string]:
-                              "var(--semantic-coral)",
-                          }
-                        : undefined
-                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        selectZone(row.zone);
+                      }
+                    }}
                   >
-                    <div className="min-w-0 flex-1">
-                      <p className="bry-card-title truncate">{row.zone}</p>
-                      <p className="mt-0.5 text-xs text-(--text-muted)">
+                    <td>
+                      <p className="bry-card-title m-0 truncate">{row.zone}</p>
+                      <p className="m-0 mt-0.5 text-xs text-(--text-muted)">
                         {short}
-                        {stock != null ? ` · stock now ${stock}%` : ""}
+                        {shareOfOut > 0 ? (
+                          <span className="bry-tally-share-of">
+                            {shareOfOut}% of session out
+                          </span>
+                        ) : null}
                       </p>
-                    </div>
-                    <div className="shrink-0 text-right">
-                      <p className="bry-metric text-sm text-(--semantic-coral)">
-                        −{row.consumed}
-                      </p>
-                      <p className="bry-metric text-xs text-(--semantic-teal)">
-                        +{row.restocked}
-                      </p>
-                      <p className="mt-0.5 text-[11px] text-(--text-muted)">
-                        net {row.net > 0 ? "+" : ""}
-                        {row.net}
-                      </p>
-                    </div>
-                  </button>
-                </li>
-              );
-            })}
-        </ul>
+                    </td>
+                    <td className="bry-tally-num">−{row.consumed}</td>
+                    <td className="bry-tally-num bry-tally-num--muted">
+                      +{row.restocked}
+                    </td>
+                    <td className="bry-tally-num">{formatNet(row.net)}</td>
+                    <td className="bry-tally-num bry-tally-num--muted">
+                      {stock != null ? `${stock}%` : "—"}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

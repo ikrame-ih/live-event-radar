@@ -30,7 +30,7 @@ export function VenueZoneMarker({
       center={[lat, lng]}
       radius={radius}
       pathOptions={{
-        color: selected ? "#e54d3a" : "#f3f2f6",
+        color: selected ? "var(--accent)" : "#f3f2f6",
         weight: selected ? 3 : 2,
         fillColor: color,
         fillOpacity: dimmed ? 0.35 : selected ? 0.95 : 0.85,
