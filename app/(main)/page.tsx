@@ -66,8 +66,8 @@ export default function CommandCenter() {
               </p>
             </div>
           </div>
-          <div className="bry-venue-map-canvas overflow-hidden">
-            <div className="min-h-[360px] sm:min-h-[420px] lg:min-h-[480px]">
+          <div className="bry-venue-map-canvas">
+            <div className="bry-venue-map-stage min-h-[380px] sm:min-h-[440px] lg:min-h-[500px]">
               <InteractiveMap />
             </div>
           </div>

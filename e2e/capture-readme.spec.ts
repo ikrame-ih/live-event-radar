@@ -36,7 +36,7 @@ test("capture README screenshots", async ({ page }) => {
     page.getByRole("heading", { name: "Session tally" })
   ).toBeVisible();
   await settleLiveUi(page);
-  await expect(page.locator(".bry-incident-row").first()).toBeVisible({
+  await expect(page.locator(".bry-tally-table tbody tr").first()).toBeVisible({
     timeout: 20_000,
   });
 

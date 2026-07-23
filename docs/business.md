@@ -14,7 +14,7 @@ A coordinator opens a tablet. On a simplified venue heat map, a zone flashes a w
 
 The prediction doesn't need to be perfect on day one. The value is a UI that feels like **real ops telemetry** — nudging action before the gap becomes visible to guests.
 
-At the end of the shift, **Session tally** freezes Taken out / Put back / Net per zone (plus share of session out and live stock %) into a **Copy for WhatsApp** handoff — the shared number that used to live only in chat threads.
+At the end of the shift, **Session tally** freezes Taken out / Put back / Net per zone (plus share of session out and live stock %) into a **Copy** handoff — the shared number that used to live only in chat threads.
 
 ## What I built (frontend scope)
 

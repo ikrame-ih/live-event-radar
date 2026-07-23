@@ -46,7 +46,7 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
             See which stands are running low
           </p>
         </div>
-        <div className="flex flex-wrap gap-2 text-xs">
+        <div className="flex flex-wrap items-center justify-end gap-2 text-xs">
           <span className="pill-zone font-semibold tabular-nums">
             Restock in {formatRestockCountdown(restockMs)}
           </span>

@@ -21,7 +21,7 @@ Map fill follows three bands — Healthy (≥ 65%, teal), Watch (35–64%, amber
 
 **Shell:** `app/_components/app-shell.tsx`, `components/AppHeader.tsx` (Home · Live dashboard nav only), `components/TransitionLink.tsx`, `components/ConnectionStatusBadge.tsx`, `components/AnimatedBufferCount.tsx` (rAF count-up, bypasses React per frame)
 
-**Command Center (`/`):** `app/(main)/page.tsx`, `ZoneHealthOverview.tsx` (Zone stock), `InteractiveMap.tsx`, `SessionTallyPanel.tsx` (Taken out / Put back / Net ledger + Copy for WhatsApp), `derive-session-tally.ts`, `session-store.ts`, `StreamGauge.tsx`. `deriveIncidents` still feeds map anchors via `useEventStore`.
+**Command Center (`/`):** `app/(main)/page.tsx`, `ZoneHealthOverview.tsx` (Zone stock), `InteractiveMap.tsx`, `SessionTallyPanel.tsx` (Taken out / Put back / Net ledger + Copy), `derive-session-tally.ts`, `session-store.ts`, `StreamGauge.tsx`. `deriveIncidents` still feeds map anchors via `useEventStore`.
 
 **Live dashboard (`/dashboard`):** `dashboard-live.tsx` (map | Stock events, equal-height cards; feed fixed at 20rem / ~5 rows), `VenueLeafletMap.tsx`, `event-stream-filters.tsx`, `event-stream-list.tsx` (per-event selection)
 

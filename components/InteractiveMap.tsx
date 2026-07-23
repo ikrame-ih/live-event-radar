@@ -14,13 +14,15 @@ import { useSessionStore } from "@/features/live-radar/state/session-store";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 
 const VB_WIDTH = 960;
-const VB_HEIGHT = 580;
-const AVENUE_Y = 280;
+const VB_HEIGHT = 510;
+const AVENUE_Y = 255;
 
 type ZonePolygon = {
   id: string;
   label: string;
   points: string;
+  cx: number;
+  cy: number;
 };
 
 type HighlightLevel = "selected" | "hover" | "none";
@@ -29,21 +31,20 @@ const ZONE_LABEL_LAYOUT: Record<
   string,
   { cx: number; cy: number; title: string; width: number }
 > = {
-  "South Gate": { cx: 150, cy: 415, title: "South Gate", width: 128 },
-  "Sampling Court": { cx: 470, cy: 285, title: "Sampling Court", width: 148 },
-  "Main Stage Walkway": { cx: 800, cy: 360, title: "Main Stage", width: 128 },
+  "South Gate": { cx: 168, cy: 318, title: "South Gate", width: 132 },
+  "Sampling Court": { cx: 470, cy: 248, title: "Sampling Court", width: 152 },
+  "Main Stage Walkway": { cx: 772, cy: 261, title: "Main Stage", width: 132 },
 };
 
-const LEGEND_ROWS: { heat: StockHeat; label: string }[] = [
-  { heat: "cool", label: `Healthy ${STOCK_TIER_HEALTHY_MIN}%+` },
+const LEGEND_ROWS: { heat: StockHeat; short: string }[] = [
+  { heat: "cool", short: `${STOCK_TIER_HEALTHY_MIN}%+` },
   {
     heat: "mid",
-    label: `Watch ${STOCK_TIER_WATCH_MIN}–${STOCK_TIER_HEALTHY_MIN - 1}%`,
+    short: `${STOCK_TIER_WATCH_MIN}–${STOCK_TIER_HEALTHY_MIN - 1}`,
   },
-  { heat: "hot", label: `Low <${STOCK_TIER_WATCH_MIN}%` },
+  { heat: "hot", short: `<${STOCK_TIER_WATCH_MIN}` },
 ];
 
-/** Zone fills — shared palette with Leaflet markers */
 const ZONE_STYLE = STOCK_HEAT_COLORS;
 
 function zonePalette(heat: StockHeat) {
@@ -73,23 +74,89 @@ function VerticalGradient({
 function MapDefs() {
   return (
     <defs>
-      <VerticalGradient id="map-bg-grad" top="#f6f5f9" bottom="#eceaf2" />
-      <VerticalGradient id="zone-grad-cool" top="#eeecf2" bottom="#dcdae4" />
-      <VerticalGradient id="zone-grad-mid" top="#fff0e0" bottom="#fde4c8" />
-      <VerticalGradient id="zone-grad-hot" top="#fdd5cc" bottom="#f5b8a8" />
-      <filter id="zone-card-shadow" x="-8%" y="-8%" width="116%" height="116%">
+      {/* Atmosphere: warm coral wash → cool lavender */}
+      <linearGradient id="map-bg-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#fbf3f0" />
+        <stop offset="48%" stopColor="#f4f0f7" />
+        <stop offset="100%" stopColor="#ebe6f2" />
+      </linearGradient>
+      <radialGradient id="map-orb-coral" cx="18%" cy="22%" r="45%">
+        <stop offset="0%" stopColor="rgb(229 77 58 / 0.14)" />
+        <stop offset="100%" stopColor="rgb(229 77 58 / 0)" />
+      </radialGradient>
+      <radialGradient id="map-orb-lavender" cx="82%" cy="78%" r="50%">
+        <stop offset="0%" stopColor="rgb(120 100 180 / 0.12)" />
+        <stop offset="100%" stopColor="rgb(120 100 180 / 0)" />
+      </radialGradient>
+
+      {/* Soft glass zone fills — heat tint under white plate */}
+      <VerticalGradient id="zone-grad-cool" top="#e8f5ee" bottom="#cfe8db" />
+      <VerticalGradient id="zone-grad-mid" top="#fff4e6" bottom="#fde0bd" />
+      <VerticalGradient id="zone-grad-hot" top="#fdecea" bottom="#f5c4bc" />
+
+      <filter id="zone-card-shadow" x="-12%" y="-12%" width="124%" height="124%">
         <feDropShadow
           dx="0"
-          dy="4"
-          stdDeviation="8"
+          dy="6"
+          stdDeviation="10"
           floodColor="#504678"
-          floodOpacity="0.1"
+          floodOpacity="0.14"
         />
       </filter>
-      <filter id="legend-shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="3" stdDeviation="5" floodOpacity="0.08" />
+      <filter id="zone-lift-shadow" x="-16%" y="-16%" width="132%" height="132%">
+        <feDropShadow
+          dx="0"
+          dy="10"
+          stdDeviation="14"
+          floodColor="#504678"
+          floodOpacity="0.18"
+        />
+      </filter>
+      <filter id="glass-plate-shadow" x="-4%" y="-4%" width="108%" height="108%">
+        <feDropShadow
+          dx="0"
+          dy="8"
+          stdDeviation="16"
+          floodColor="#504678"
+          floodOpacity="0.08"
+        />
+      </filter>
+      <filter id="legend-shadow" x="-20%" y="-40%" width="140%" height="180%">
+        <feDropShadow dx="0" dy="3" stdDeviation="6" floodOpacity="0.07" />
       </filter>
     </defs>
+  );
+}
+
+function MapAtmosphere() {
+  return (
+    <g aria-hidden="true">
+      <rect width={VB_WIDTH} height={VB_HEIGHT} fill="url(#map-bg-grad)" />
+      <rect width={VB_WIDTH} height={VB_HEIGHT} fill="url(#map-orb-coral)" />
+      <rect width={VB_WIDTH} height={VB_HEIGHT} fill="url(#map-orb-lavender)" />
+      {/* Glass plate — height tracks floor plan + ENTRY, not empty footer */}
+      <rect
+        x={28}
+        y={24}
+        width={VB_WIDTH - 56}
+        height={454}
+        rx={28}
+        fill="rgb(255 255 255 / 0.42)"
+        stroke="rgb(255 255 255 / 0.72)"
+        strokeWidth={1}
+        filter="url(#glass-plate-shadow)"
+      />
+      <rect
+        x={28}
+        y={24}
+        width={VB_WIDTH - 56}
+        height={454}
+        rx={28}
+        fill="none"
+        stroke="rgb(80 70 120 / 0.06)"
+        strokeWidth={1}
+      />
+    </g>
   );
 }
 
@@ -106,48 +173,50 @@ function ZoneLabels({
 }) {
   const palette = zonePalette(heat);
   const layout = ZONE_LABEL_LAYOUT[zone.label] ?? {
-    cx: 0,
-    cy: 0,
+    cx: zone.cx,
+    cy: zone.cy,
     title: zone.label,
     width: 128,
   };
-  const y0 = layout.cy - 14;
+  const chipH = 46;
+  const chipY = layout.cy - chipH / 2;
+  const selected = highlight === "selected";
 
   return (
     <g pointerEvents="none">
       <rect
         x={layout.cx - layout.width / 2}
-        y={y0 - 20}
+        y={chipY}
         width={layout.width}
-        height={42}
-        rx={14}
-        fill="rgb(255 255 255 / 0.92)"
-        stroke={
-          highlight === "selected" ? palette.stroke : "rgb(255 255 255 / 0.85)"
-        }
-        strokeWidth={highlight === "selected" ? 2 : 1}
+        height={chipH}
+        rx={16}
+        fill="rgb(255 255 255 / 0.9)"
+        stroke={selected ? "var(--accent)" : "rgb(255 255 255 / 0.95)"}
+        strokeWidth={selected ? 1.5 : 1}
         filter="url(#zone-card-shadow)"
       />
       <text
         x={layout.cx}
-        y={y0}
+        y={layout.cy - 8}
         fill="var(--text-primary)"
         fontSize={12}
         fontFamily="var(--font-heading), sans-serif"
         fontWeight={800}
-        letterSpacing="-0.01em"
+        letterSpacing="-0.02em"
         textAnchor="middle"
+        dominantBaseline="central"
       >
         {layout.title}
       </text>
       <text
         x={layout.cx}
-        y={y0 + 18}
+        y={layout.cy + 10}
         fill={palette.stockColor}
-        fontSize={11}
+        fontSize={12}
         fontFamily="var(--font-metric), sans-serif"
-        fontWeight={600}
+        fontWeight={700}
         textAnchor="middle"
+        dominantBaseline="central"
       >
         {stock}%
       </text>
@@ -170,29 +239,32 @@ function ZonePolygons({
 }) {
   return (
     <>
+      {/* Soft bloom under the stand */}
       <polygon
         points={zone.points}
         fill={palette.glow}
-        opacity={heat === "hot" ? 0.55 : heat === "mid" ? 0.5 : 0.35}
+        opacity={heat === "hot" ? 0.45 : heat === "mid" ? 0.38 : 0.28}
         stroke="none"
+        className={heat === "hot" ? "bry-map-zone-bloom--hot" : undefined}
       />
+      {/* Heat body */}
       <polygon
         points={zone.points}
         fill={palette.fillUrl}
+        fillOpacity={0.92}
         stroke={palette.stroke}
-        strokeWidth={isSelected ? 3 : isHovered ? 2.5 : 2}
-        strokeOpacity={1}
-        className={isSelected ? "bry-map-zone-stroke-selected" : undefined}
+        strokeWidth={isSelected ? 2.75 : isHovered ? 2.25 : 1.75}
+        strokeOpacity={0.95}
+        filter={isSelected ? "url(#zone-lift-shadow)" : "url(#zone-card-shadow)"}
       />
-      {isSelected && (
-        <polygon
-          points={zone.points}
-          fill="none"
-          stroke="var(--text-primary)"
-          strokeWidth={1.5}
-          strokeOpacity={0.25}
-        />
-      )}
+      {/* Glass sheen */}
+      <polygon
+        points={zone.points}
+        fill="rgb(255 255 255 / 0.28)"
+        stroke="rgb(255 255 255 / 0.55)"
+        strokeWidth={1}
+        pointerEvents="none"
+      />
     </>
   );
 }
@@ -217,23 +289,26 @@ function ZoneLayer({
   const isSelected = highlight === "selected";
   const isHovered = highlight === "hover";
 
+  const className = [
+    "bry-map-zone",
+    isSelected ? "bry-map-zone--selected" : "",
+    dimmed ? "bry-map-zone--dimmed" : "",
+    heat === "hot" ? "bry-map-zone--hot" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <g
-      className="bry-map-zone"
-      opacity={dimmed ? 0.5 : 1}
+      className={className}
       style={{
-        transition: "opacity var(--dur-med) var(--ease-premium)",
         cursor: interactive ? "pointer" : "default",
       }}
       onClick={interactive ? onSelect : undefined}
       role={interactive ? "button" : undefined}
       tabIndex={interactive ? 0 : undefined}
-      aria-label={
-        interactive
-          ? `${zone.label}, stock ${stock}%, ${heat}`
-          : `${zone.label}, stock ${stock}%, ${heat} — no active incident`
-      }
-      aria-disabled={interactive ? undefined : true}
+      aria-label={`${zone.label}, stock ${stock}%`}
+      aria-pressed={isSelected || undefined}
       onKeyDown={
         interactive
           ? (event) => {
@@ -257,117 +332,71 @@ function ZoneLayer({
   );
 }
 
+/** HTML legend — flex alignment beats hand-tuned SVG chip math */
 function StockLegend() {
   return (
-    <g transform="translate(16, 16)" filter="url(#legend-shadow)">
-      <rect
-        x={0}
-        y={0}
-        width={148}
-        height={102}
-        rx={16}
-        fill="rgb(255 255 255 / 0.94)"
-      />
-      <rect
-        x={0}
-        y={0}
-        width={148}
-        height={102}
-        rx={16}
-        fill="none"
-        stroke="rgb(255 255 255 / 0.85)"
-        strokeWidth={1}
-      />
-      <text
-        x={14}
-        y={20}
-        fill="var(--text-muted)"
-        fontSize={9}
-        fontWeight={800}
-        letterSpacing="0.1em"
-        fontFamily="var(--font-label), sans-serif"
-      >
-        STOCK LEGEND
-      </text>
-      {LEGEND_ROWS.map((row, i) => {
-        const cy = 38 + i * 22;
-        return (
-          <g key={row.label}>
-            <rect
-              x={14}
-              y={cy - 8}
-              width={16}
-              height={16}
-              rx={5}
-              fill={`url(#zone-grad-${row.heat === "cool" ? "cool" : row.heat === "mid" ? "mid" : "hot"})`}
-              stroke={ZONE_STYLE[row.heat].stroke}
-              strokeWidth={1.5}
-            />
-            <text
-              x={38}
-              y={cy + 4}
-              fill="var(--text-secondary)"
-              fontSize={9}
-              fontWeight={500}
-              fontFamily="var(--font-ui), sans-serif"
-            >
-              {row.label}
-            </text>
-          </g>
-        );
-      })}
-    </g>
+    <ul className="bry-map-legend" aria-label="Stock legend">
+      {LEGEND_ROWS.map((row) => (
+        <li key={row.heat} className="bry-map-legend-chip">
+          <span
+            className={`bry-map-legend-swatch bry-map-legend-swatch--${row.heat}`}
+            aria-hidden
+          />
+          <span className="bry-map-legend-label">{row.short}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
 function MapEntryExitLabels() {
   return (
-    <>
-      <g>
+    <g aria-hidden="true">
+      <g transform={`translate(122, 444)`}>
         <rect
-          x={108}
-          y={518}
-          width={88}
+          width={92}
           height={26}
-          rx={10}
-          fill="rgb(255 255 255 / 0.92)"
+          rx={13}
+          fill="rgb(255 255 255 / 0.82)"
+          stroke="rgb(255 255 255 / 0.95)"
         />
         <text
-          x={152}
-          y={535}
-          fill="var(--text-muted)"
-          fontSize={9}
-          fontFamily="var(--font-label), sans-serif"
+          x={46}
+          y={13}
+          fill="var(--text-primary)"
+          fontSize={10}
+          fontFamily="var(--font-heading), sans-serif"
           fontWeight={800}
-          letterSpacing="0.08em"
+          letterSpacing="0.12em"
           textAnchor="middle"
+          dominantBaseline="central"
         >
-          ▲ ENTRY
+          ENTRY
         </text>
       </g>
-      <g>
+      <g transform={`translate(862, ${AVENUE_Y - 13})`}>
         <rect
-          x={868}
-          y={268}
-          width={76}
+          width={70}
           height={26}
-          rx={10}
-          fill="rgb(255 255 255 / 0.92)"
+          rx={13}
+          fill="rgb(255 255 255 / 0.82)"
+          stroke="rgb(255 255 255 / 0.95)"
         />
         <text
-          x={906}
-          y={285}
-          fill="var(--text-muted)"
-          fontSize={9}
-          fontFamily="var(--font-label), sans-serif"
+          x={35}
+          y={13}
+          fill="var(--text-primary)"
+          fontSize={10}
+          fontFamily="var(--font-heading), sans-serif"
           fontWeight={800}
-          letterSpacing="0.08em"
+          letterSpacing="0.12em"
           textAnchor="middle"
+          dominantBaseline="central"
         >
-          EXIT ▶
+          EXIT
         </text>
       </g>
-    </>
+    </g>
   );
 }
 
@@ -422,17 +451,23 @@ export function InteractiveMap() {
       {
         id: "south-gate",
         label: "South Gate",
-        points: "40,300 260,300 260,530 40,530",
+        points: "78,210 258,210 258,426 78,426",
+        cx: 168,
+        cy: 318,
       },
       {
         id: "sampling-court",
         label: "Sampling Court",
-        points: "290,80 650,80 650,480 290,480",
+        points: "310,70 630,70 630,426 310,426",
+        cx: 470,
+        cy: 248,
       },
       {
         id: "main-stage-walkway",
         label: "Main Stage Walkway",
-        points: "680,120 920,120 920,480 680,480",
+        points: "682,96 862,96 862,426 682,426",
+        cx: 772,
+        cy: 261,
       },
     ],
     []
@@ -440,10 +475,10 @@ export function InteractiveMap() {
 
   const paths = useMemo(
     () => [
-      { id: "main-avenue", d: `M 30,${AVENUE_Y} L 930,${AVENUE_Y}` },
-      { id: "south-connector", d: `M 150,${AVENUE_Y} L 150,540` },
-      { id: "stage-corridor", d: "M 670,120 L 670,490" },
-      { id: "court-entry", d: `M 290,${AVENUE_Y} L 290,80 L 650,80` },
+      { id: "main-avenue", d: `M 64,${AVENUE_Y} L 862,${AVENUE_Y}` },
+      { id: "south-connector", d: `M 168,${AVENUE_Y} L 168,444` },
+      { id: "stage-corridor", d: "M 656,96 L 656,426" },
+      { id: "court-entry", d: `M 310,${AVENUE_Y} L 310,70 L 630,70` },
     ],
     []
   );
@@ -464,52 +499,53 @@ export function InteractiveMap() {
   }
 
   return (
-    <svg
-      viewBox={`0 0 ${VB_WIDTH} ${VB_HEIGHT}`}
-      preserveAspectRatio="xMidYMid meet"
-      className="bry-venue-map-svg h-full w-full"
-      role="img"
-      aria-label="Venue floor plan — tap a zone or use Session tally to highlight"
-    >
-      <MapDefs />
+    <div className="bry-venue-map-frame">
+      <svg
+        viewBox={`0 0 ${VB_WIDTH} ${VB_HEIGHT}`}
+        preserveAspectRatio="xMidYMid meet"
+        className="bry-venue-map-svg"
+        role="img"
+        aria-label="Venue floor plan — tap a zone or use Session tally to highlight"
+      >
+        <MapDefs />
+        <MapAtmosphere />
 
-      <rect width={VB_WIDTH} height={VB_HEIGHT} fill="url(#map-bg-grad)" />
-
-      {paths.map((p) => (
-        <path
-          key={p.id}
-          d={p.d}
-          stroke="var(--map-path)"
-          strokeWidth={5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-          opacity={0.85}
-        />
-      ))}
-
-      {zones.map((zone) => {
-        const snap = snapshotByZone.get(zone.label);
-        const stock = snap?.stock ?? 100;
-        const highlight = zoneHighlight(zone.label);
-        const dimmed = focusMode && highlight === "none";
-
-        return (
-          <ZoneLayer
-            key={zone.id}
-            zone={zone}
-            stock={stock}
-            highlight={highlight}
-            dimmed={dimmed}
-            interactive
-            onSelect={() => handleZoneSelect(zone.label)}
+        {paths.map((p) => (
+          <path
+            key={p.id}
+            className="bry-map-path"
+            d={p.d}
+            stroke="var(--map-path)"
+            strokeWidth={p.id === "main-avenue" ? 3 : 2.25}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+            opacity={0.55}
           />
-        );
-      })}
+        ))}
 
+        {zones.map((zone) => {
+          const snap = snapshotByZone.get(zone.label);
+          const stock = snap?.stock ?? 100;
+          const highlight = zoneHighlight(zone.label);
+          const dimmed = focusMode && highlight === "none";
+
+          return (
+            <ZoneLayer
+              key={zone.id}
+              zone={zone}
+              stock={stock}
+              highlight={highlight}
+              dimmed={dimmed}
+              interactive
+              onSelect={() => handleZoneSelect(zone.label)}
+            />
+          );
+        })}
+
+        <MapEntryExitLabels />
+      </svg>
       <StockLegend />
-
-      <MapEntryExitLabels />
-    </svg>
+    </div>
   );
 }

@@ -50,7 +50,7 @@ export function DashboardVenueMap({
             {focusedZone ? ` · focused: ${focusedZone}` : ""}
           </p>
         </div>
-        <div className="flex flex-wrap justify-end gap-1.5">
+        <div className="flex flex-wrap items-center justify-end gap-1.5">
           {snapshots.map((snap) => (
             <span
               key={snap.zone}
