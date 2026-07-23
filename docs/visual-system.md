@@ -19,7 +19,7 @@ The `.bry-*` prefix in `globals.css` marks internal design classes:
 - **Gauge** — double ring + glow sweep on `StreamGauge`; scan accent disabled under `prefers-reduced-motion`
 - **Map** — polygon fills driven by stock tier; legend aligned with `zone-stock.ts` / `stock-heat-colors.ts`
 - **Zone stock** — inventory cards with plain-language status (“See which stands are running low”)
-- **Session tally** — running consumed / restocked / net per zone; End event freezes the window; row click focuses the SVG map
+- **Session tally** — ledger of Taken out / Put back / Net + per-zone table (share of out, stock now); End event freezes; Copy for WhatsApp; row select uses soft accent wash (no coral rail) and focuses the SVG map
 - **Stock events (`/dashboard`)** — split layout (map | feed); equal-height cards (bottoms aligned); dense rows; feed locked to **20rem (~5 rows)** with internal scroll; search by zone or product; selection is per event row (not whole zone)
 
 ## Typography

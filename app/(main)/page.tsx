@@ -78,7 +78,7 @@ export default function CommandCenter() {
             <div>
               <h2 className="bry-section-title">Session tally</h2>
               <p className="bry-section-subtitle">
-                Running totals since start — freeze when the event ends
+                Session out / in / net — freeze and copy for the handoff
               </p>
             </div>
           </div>
