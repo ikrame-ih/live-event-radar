@@ -1,16 +1,33 @@
-export type InMsg = { type: "ECHO"; text: string };
-export type OutMsg = { type: "ECHO"; text: string };
+/// <reference lib="webworker" />
 
-type WorkerScope = {
-  onmessage: ((event: MessageEvent<InMsg>) => void) | null;
-  postMessage: (message: OutMsg) => void;
-};
+import { computeZoneThroughput } from "../lib/zone-throughput";
+import type { AnalyticsInMsg, AnalyticsOutMsg } from "./analytics-messages";
 
-const scope = self as unknown as WorkerScope;
+/**
+ * Analytics worker — windowed throughput only (not an echo stub).
+ *
+ * Receives a short sample of recent events, not the whole buffer.
+ * Uses the same `computeZoneThroughput` covered by unit tests.
+ */
+const scope = self as unknown as DedicatedWorkerGlobalScope;
 
-// Placeholder — proves worker wiring before heavier math moves here.
-scope.onmessage = (event: MessageEvent<InMsg>) => {
-  if (event.data.type === "ECHO") {
-    scope.postMessage({ type: "ECHO", text: event.data.text }); // skipcq: JS-S1014 -- dedicated worker; Worker API has no targetOrigin
+scope.onmessage = (event: MessageEvent<AnalyticsInMsg>) => {
+  const msg = event.data;
+  if (!msg || msg.type !== "ANALYZE_WINDOW") {
+    post({ type: "ERROR", message: "unknown message" });
+    return;
+  }
+
+  try {
+    const summary = computeZoneThroughput(msg.events, msg.now, msg.windowMs);
+    post({ type: "THROUGHPUT", summary });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "analytics failed";
+    post({ type: "ERROR", message });
   }
 };
+
+function post(message: AnalyticsOutMsg): void {
+  // skipcq: JS-S1014 — DedicatedWorkerGlobalScope.postMessage has no targetOrigin.
+  scope.postMessage(message);
+}

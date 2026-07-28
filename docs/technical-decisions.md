@@ -1,6 +1,6 @@
-# Technical decisions
+﻿# Technical decisions
 
-Notes on why the app is built this way — and a few real problems I ran into while building it.
+Notes on why the app is built this way — and a few real problems I ran into while building it. For structured problem → options → choice → trade-off writeups, see [Engineering decisions — design trade-offs and rationale](/engineering-decisions).
 
 ## Why this problem
 
@@ -41,7 +41,7 @@ Mock simulator and WebSocket both call `appendEvent()`. `parseStockEvent` guards
 
 ### Web Worker scope
 
-`analytics.worker.ts` is ready, but the dashboard hook still echoes on the main thread — keeps the demo simple while preserving the E2E marker. When wired, the worker should receive lightweight summaries only, not the full 10,000-event buffer. Sending the whole array across threads would undo the memory cap.
+The worker runs windowed throughput / hotspot math on a **short sample** of recent events (not the whole buffer), with ~250ms debounce. Pure logic lives in `computeZoneThroughput` so Vitest can cover it without Worker APIs. ETA and session tally stay on the main thread — they are cheap and tied to what the UI renders. Details: [Engineering decisions — design trade-offs and rationale](/engineering-decisions).
 
 ### README media on GitHub
 
@@ -57,12 +57,12 @@ Inline `<video>` with repo-relative paths doesn't play on github.com (CSP). Stat
 
 ## What I'd add with a real backend
 
-Authenticated WebSocket or SSE with signed tokens (nothing secret in `NEXT_PUBLIC_*`), server-side aggregation for multi-venue campaigns, persistent incident export, rate limiting surfaced in the connection badge.
+A small authenticated feed (WebSocket or SSE), server-side aggregation if multiple venues mattered, and clearer rate-limit feedback on the connection badge. Nothing secret in `NEXT_PUBLIC_*`.
 
-The client is already structured for that: typed events, capped FIFO buffer, derived snapshots, connection state in the UI.
+The client is already shaped for that path: typed events, capped buffer, derived snapshots, connection state in the UI. That is a **possible next step**, not something this portfolio demo claims to ship.
 
 ## Background that shaped this build
 
 Working promotions taught me that a dashboard only helps if the numbers stay trustworthy. Python from my degree plus ops experience on activations pushed me toward stable KPIs, capped buffers, and maps that show stock state — not decorative charts.
 
-Related: [Architecture](/architecture) · [Pipeline](/pipeline) · [Current state](/current-state)
+Related: [Engineering decisions — design trade-offs and rationale](/engineering-decisions) · [Architecture](/architecture) · [Pipeline](/pipeline) · [Current state](/current-state)

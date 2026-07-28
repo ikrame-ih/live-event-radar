@@ -12,8 +12,7 @@ A coordinator opens a tablet. On a simplified venue heat map, a zone flashes a w
 
 > _High consumption: this stand may run empty in roughly X minutes (estimate)._
 
-The prediction doesn't need to be perfect on day one. The value is a UI that feels like **real ops telemetry** — nudging action before the gap becomes visible to guests.
-
+That estimate is the **Minutes to empty** heuristic on Zone stock (recent pace, not ML). When another zone has spare stock, a single **Suggested move** nudges redistribution before guests see an empty counter.
 At the end of the shift, **Session tally** freezes Taken out / Put back / Net per zone (plus share of session out and live stock %) into a **Copy** handoff — the shared number that used to live only in chat threads.
 
 ## What I built (frontend scope)

@@ -1408,6 +1408,12 @@ h3 {
   color: var(--accent);
 }
 
+/* Ops nudge under Zone stock — one recommendation, not a tip list. */
+.bry-ops-suggestion {
+  border: 1px solid color-mix(in srgb, var(--semantic-coral) 28%, transparent);
+  background: color-mix(in srgb, var(--semantic-coral) 8%, var(--box-bg-soft));
+}
+
 .bry-tally-share {
   margin: 0;
   padding: 0.75rem 1rem;
@@ -1418,6 +1424,8 @@ h3 {
   line-height: 1.45;
   color: var(--text-secondary);
   white-space: pre-wrap;
+  max-height: 14rem;
+  overflow: auto;
 }
 
 .bry-tally-table {
