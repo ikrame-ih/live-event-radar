@@ -16,11 +16,11 @@ hero:
       link: /architecture
 features:
   - title: Command Center
-    details: Primary screen at / — Live now KPIs, zone stock, SVG venue map with stock heat, and a What’s happening feed synced to the map.
+    details: Primary screen at / — Live now KPIs, zone stock with Minutes-to-empty, SVG venue map, Session tally handoff, and a single restock suggestion when a zone is under pressure.
   - title: Live dashboard
-    details: Secondary screen at /dashboard — Leaflet map beside a capped, scrollable stock-events list (≈5 rows visible), filters, and a worker hook placeholder for future off-thread summaries.
-  - title: Stable under load
-    details: Zustand buffer capped at 10,000 events, derived zone snapshots, optional WebSocket feed. 35 Vitest tests · 7 Playwright specs (3 viewports locally).
+    details: Secondary screen at /dashboard — Leaflet map beside a capped, scrollable stock-events list (≈5 rows visible), filters, and a small Web Worker panel for recent zone rates.
+  - title: Bounded client buffer
+    details: Ring-buffered Zustand store capped at 10,000 events, derived zone snapshots, optional WebSocket feed, and a small append check under synthetic bursts. Vitest + coverage · Playwright on PRs.
 ---
 
 ## The problem
@@ -33,8 +33,10 @@ A browser-based **Digital Command Center** that feels like real ops telemetry:
 
 - **Mock stream** at ~0.5 events/s with spike bursts and a single-zone crew restock every 60s
 - **Stock model** with Healthy / Watch / Low tiers (65% / 35% thresholds) driving map colour in real time
+- **Minutes to empty** + one **restock suggestion** so the UI helps decide, not only display
 - **Two maps** — a schematic SVG on `/`, a geographic Leaflet map on `/dashboard`
-- **Shared state** — `telemetry-store` holds the capped event buffer on both routes; incidents and sidebar selection live in `useEventStore` on the Command Center
+- **Shared state** — ring-buffered `telemetry-store` on both routes; incidents live in `useEventStore` on the Command Center
+- **Web Worker** — sampled-window throughput / hotspots on `/dashboard`
 - **Glass UI** — warm lavender shell with coral ambient orbs, frosted panels, coral nav active states (Command Center · Live dashboard), and a View Transitions crossfade (~180ms) between routes
 
 Working promotions taught me that a dashboard only helps if the numbers stay trustworthy. Python from my degree plus ops experience on activations pushed me toward stable KPIs, capped buffers, and maps that show stock state — not decorative charts.
@@ -59,9 +61,11 @@ Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · Zustand · Lucide · 
 If you want the architecture detail:
 
 - [Technical decisions](/technical-decisions) — stack rationale, bugs I hit, accessibility, backend next steps
+- [Engineering decisions — design trade-offs and rationale](/engineering-decisions)
 - [Business](/business) — the ops problem this solves
 - [Architecture](/architecture) — data path and how the repo evolved
-- [Pipeline](/pipeline) — hooks, stores, worker placeholder, derivation
+- [Pipeline](/pipeline) — hooks, stores, worker, derivation
+- [Benchmarks](/benchmarks) — ring buffer under burst rates
 
 Also: [Current state](/current-state) · [Visual system](/visual-system)
 

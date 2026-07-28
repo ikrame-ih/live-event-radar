@@ -33,10 +33,15 @@ export default withMermaid(
         {
           text: "Technical notes",
           items: [
+            {
+              text: "Engineering decisions — design trade-offs and rationale",
+              link: "/engineering-decisions",
+            },
             { text: "Technical decisions", link: "/technical-decisions" },
             { text: "Business problem", link: "/business" },
             { text: "Architecture", link: "/architecture" },
             { text: "Data pipeline", link: "/pipeline" },
+            { text: "Benchmarks", link: "/benchmarks" },
           ],
         },
         {

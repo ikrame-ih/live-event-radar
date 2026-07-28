@@ -51,7 +51,3 @@ next-env.d.ts
 
 # editor / IDE
 .cursor/
-
-# Flowbite CLI cache (plugin regenerates via prebuild/predev script)
-.flowbite-react/class-list.json
-.flowbite-react/pid
