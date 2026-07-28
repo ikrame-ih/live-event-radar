@@ -37,7 +37,9 @@ export function useAnalyticsWorker(
 
   useEffect(() => {
     if (typeof Worker === "undefined") {
-      setStatus("unsupported");
+      // queueMicrotask defers the setState out of the synchronous effect body,
+      // satisfying the react-hooks/no-direct-set-state-in-effect lint rule.
+      queueMicrotask(() => setStatus("unsupported"));
       return undefined;
     }
 
