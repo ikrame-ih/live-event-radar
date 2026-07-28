@@ -3,11 +3,12 @@
 <p align="left">
   <a href="https://github.com/ikrame-ih/live-event-radar/actions/workflows/ci.yml"><img height="28" src="https://img.shields.io/github/actions/workflow/status/ikrame-ih/live-event-radar/ci.yml?branch=main&style=for-the-badge" alt="CI" /></a>
   <a href="https://live-event-radar.vercel.app"><img height="28" src="https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
+  <a href="https://ikrame-ih.github.io/live-event-radar/"><img height="28" src="https://img.shields.io/badge/Docs-GitHub_Pages-222?style=for-the-badge" alt="Docs" /></a>
 </p>
 
-**Frontend dashboard for brand activation demos** — zone stock, venue maps, Session tally, and a capped event stream in a glass UI Command Center.
+**A frontend tool for activation ops** — helps coordinators spot stands that may run out of stock before the usual WhatsApp scramble.
 
-**Frontend-only** — no backend or external infra required for the default demo. A mock stream feeds the UI out of the box; an optional WebSocket URL can replace it without changing components. Both routes share one raw event buffer (`telemetry-store`); the Command Center derives Session tally (`session-store`) and map incidents (`useEventStore`).
+It is a **realistic operational scenario** built as a Next.js demo: zone stock, venue maps, a Session tally you can copy/export, and a capped client-side event stream. No backend is required for the default mock feed; an optional WebSocket URL can replace the simulator.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
@@ -20,13 +21,53 @@
 | **Documentation**             | [GitHub Pages docs](https://ikrame-ih.github.io/live-event-radar/)                     |
 | **Source**                    | [github.com/ikrame-ih/live-event-radar](https://github.com/ikrame-ih/live-event-radar) |
 
-## Highlights
+## The problem
 
-- **Command Center (`/`)** — Live now KPIs, zone stock cards, venue map, and Session tally (End event freezes totals; Resume / New session)
-- **Live dashboard (`/dashboard`)** — Leaflet map beside a fixed-height scrolling stock-events list (~5 rows / 20rem), filters, stored-events KPI; per-event row selection; worker file and hook are **placeholders only** (no active Web Worker today)
-- **Shared state** — `telemetry-store` holds the raw event buffer on both routes; `session-store` windows the tally; `useEventStore` holds derived incidents for map anchors on the Command Center
-- **Glass UI** — warm coral-ambient shell, two-icon nav (Command Center · Live dashboard), tabular metrics; see [visual system docs](https://ikrame-ih.github.io/live-event-radar/visual-system)
-- **Engineering practices** — FIFO buffer cap (10k events), strict TypeScript, ESLint, Vitest, Playwright E2E
+On brand activations, stock problems often show up late. A stand runs dry mid-afternoon; the coordinator only hears through chat or a manual count. There is no shared live picture of which zones are draining fastest.
+
+LiveEvent Radar explores that problem in the browser: one Command Center for “what needs attention now,” plus a Live dashboard for the raw stream.
+
+## What you get
+
+| Surface | Role |
+| ------- | ---- |
+| **`/` Command Center** | KPIs, zone stock, heuristic **Minutes to empty**, optional restock hint, SVG venue map, Session tally (freeze / copy / CSV) |
+| **`/dashboard`** | Leaflet map + scrolling stock events, filters, and a small **client-side analytics** panel (Web Worker over a short sample window) |
+
+Both routes share one capped ring buffer (`telemetry-store`). The ETA is a **recent-pace heuristic**, not a predictive model.
+
+## 60-second demo path
+
+Open the [live demo](https://live-event-radar.vercel.app):
+
+1. Land on **`/`**. Watch **Zone stock** and **Minutes to empty** update as the simulator runs.
+2. If a zone is under pressure, look for the **Suggested move** banner (one donor → one needy zone).
+3. In **Session tally**, try **Copy** or **Export CSV**, then **End event** to freeze totals.
+4. Switch to **`/dashboard`**. Same buffer, different job: map + event list + **Zone throughput** (worker sample).
+5. Things worth noticing as a reviewer: buffer cap, connection badge, tabular numbers that do not jump, View Transitions between routes.
+
+## Frontend architecture (short)
+
+```
+mock timer or optional WebSocket
+  → parseStockEvent
+  → ring buffer (cap 10k)
+  → derive snapshots / ETA / session tally (main thread)
+  → sample recent window → Web Worker throughput summary (/dashboard)
+```
+
+Interesting decisions (detail in docs):
+
+- **Ring buffer** instead of an ever-growing array — operators care about recent flow, not unlimited history.
+- **Worker for one job only** (windowed rates / hotspots), not for every derivation.
+- **Two maps on purpose** — SVG schematic for glanceability; Leaflet for venue context.
+
+## Trade-offs and limitations
+
+- Default data is **simulated**; live WebSocket is optional and unauthenticated in this demo.
+- **Minutes to empty** assumes the last ~60s pace continues; it ignores upcoming restocks and is not SKU-accurate.
+- The append **bench** checks that the buffer stays capped under synthetic bursts — it is **not** a browser FPS or production load test.
+- No auth, multi-venue backend, or multi-tenant model in this repo (on purpose).
 
 ## Preview
 
@@ -37,13 +78,11 @@
       <br /><sub><b>/</b> — Command Center</sub>
     </td>
     <td width="50%">
-      <img src="./docs/assets/readme/telemetry-dashboard.png" alt="Telemetry dashboard — Leaflet map and event stream" />
-      <br /><sub><b>/dashboard</b> — Telemetry</sub>
+      <img src="./docs/assets/readme/telemetry-dashboard.png" alt="Live dashboard — Leaflet map and event stream" />
+      <br /><sub><b>/dashboard</b> — Live dashboard</sub>
     </td>
   </tr>
 </table>
-
-Try the **[live demo](https://live-event-radar.vercel.app)**. Architecture notes on [GitHub Pages](https://ikrame-ih.github.io/live-event-radar/).
 
 ## Quick start
 
@@ -60,21 +99,23 @@ Open [http://localhost:3000](http://localhost:3000). No environment variables re
 
 ## Scripts
 
-| Command              | Purpose                             |
-| -------------------- | ----------------------------------- |
-| `npm run dev`        | Dev server                          |
-| `npm run build`      | Production build                    |
-| `npm run lint`       | ESLint                              |
-| `npm run typecheck`  | TypeScript (`tsc --noEmit`)         |
-| `npm run test:run`   | Vitest unit tests                   |
-| `npm run test:e2e`   | Playwright (desktop, tablet, phone) |
-| `npm run docs:build` | VitePress → GitHub Pages            |
+| Command                 | Purpose                                      |
+| ----------------------- | -------------------------------------------- |
+| `npm run dev`           | Dev server                                   |
+| `npm run build`         | Production build                             |
+| `npm run lint`          | ESLint                                       |
+| `npm run typecheck`     | TypeScript (`tsc --noEmit`)                  |
+| `npm run test:run`      | Vitest unit tests                            |
+| `npm run test:coverage` | Vitest + V8 coverage                         |
+| `npm run bench`         | Ring-buffer append check (synthetic bursts)  |
+| `npm run test:e2e`      | Playwright (desktop, tablet, phone)          |
+| `npm run docs:build`    | VitePress → GitHub Pages                     |
 
-**CI (every push/PR):** lint · typecheck · unit tests · build. **E2E** runs on pushes to `main` with the **desktop** project only. Locally, `npm run test:e2e` runs all three viewports (desktop, tablet, phone). **Docs** deploy to GitHub Pages only on push to `main` (`.github/workflows/docs.yml`) — local `docs/` edits are not published until then.
+**CI (every push/PR):** lint · typecheck · coverage · bench · `npm audit` (high+) · build · desktop E2E. Docs deploy to GitHub Pages on push to `main`.
 
 ## Stack
 
-Next.js 16 · React 19 · TypeScript · Tailwind v4 · Zustand · Leaflet · Vitest · Playwright
+Next.js 16 · React 19 · TypeScript · Tailwind v4 · Zustand · Leaflet · Web Workers · Vitest · Playwright
 
 ## Environment
 
@@ -92,29 +133,23 @@ Copy `.env.example` → `.env.local` when using a live WebSocket feed.
 ```
 app/                  # Next.js routes + AppShell
 components/           # Shared UI
-features/live-radar/  # Stream, hooks, derivation, worker placeholder
-store/                # UI/domain state, incident selection
-docs/                 # VitePress site + README assets
+features/live-radar/  # Stream, hooks, derivation, ring buffer, worker
+store/                # Incident selection for the Command Center map
+docs/                 # Case study + engineering notes
 e2e/                  # Playwright specs
 ```
 
-## Code quality
+## Possible next steps
 
-| Tool           | Role                                                                                      |
-| -------------- | ----------------------------------------------------------------------------------------- |
-| **ESLint**     | Next.js core-web-vitals + TypeScript (local + CI)                                         |
-| **DeepSource** | Additional static analysis on commits/PRs — bug risks, security patterns, maintainability |
-| **Vitest**     | Unit tests for parsing, stores, hooks, derivation                                         |
-| **Playwright** | Smoke tests for Command Center and `/dashboard` (desktop in CI; all viewports locally)    |
-
-DeepSource is separate from ESLint: it flags broader patterns and posts a GitHub check when the repo is connected. Setup, metric gates, and false-positive handling: [docs/development/deepsource.md](./docs/development/deepsource.md) (also on [GitHub Pages](https://ikrame-ih.github.io/live-event-radar/development/deepsource)).
+If this grew beyond a portfolio demo: a small authenticated feed (WebSocket or SSE), server-side aggregation for multiple venues, and clearer rate-limit feedback in the connection badge. The client event shape and capped buffer are already compatible with that path.
 
 ## Documentation
 
+- [Engineering decisions — design trade-offs and rationale](https://ikrame-ih.github.io/live-event-radar/engineering-decisions)
+- [Benchmarks](https://ikrame-ih.github.io/live-event-radar/benchmarks) — what the append check does (and does not) claim
 - [Technical decisions](https://ikrame-ih.github.io/live-event-radar/technical-decisions)
 - [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture)
 - [Data pipeline](https://ikrame-ih.github.io/live-event-radar/pipeline)
-- [DeepSource setup](./docs/development/deepsource.md)
 
 ## License
 

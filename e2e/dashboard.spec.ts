@@ -10,6 +10,12 @@ test.describe("LiveEvent Radar — Command Center (root)", () => {
     await expect(
       page.getByRole("heading", { name: "Venue map" })
     ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Zone stock" })
+    ).toBeVisible();
+    await expect(page.getByText("Minutes to empty").first()).toBeVisible({
+      timeout: 15_000,
+    });
   });
 
   test("session tally populates after stream runs", async ({ page }) => {
@@ -22,13 +28,16 @@ test.describe("LiveEvent Radar — Command Center (root)", () => {
     await expect(
       tally.getByRole("button", { name: "Copy" })
     ).toBeVisible();
+    await expect(
+      tally.getByRole("button", { name: "Export CSV" })
+    ).toBeVisible();
     await expect(tally.getByText("Taken out")).toBeVisible();
 
     // Wait for mock stream (~0.5 evt/s) to produce zone rows
     await expect(tally.locator(".bry-tally-table tbody tr").first()).toBeVisible(
       { timeout: 15_000 }
     );
-    await expect(tally.getByText(/session tally/i).first()).toBeVisible();
+    await expect(tally.getByText(/ops handoff|session tally/i).first()).toBeVisible();
   });
 
   test("tally zone row toggles selection on repeat click", async ({ page }) => {
@@ -85,11 +94,18 @@ test.describe("LiveEvent Radar — /dashboard (live dashboard)", () => {
       .toBeGreaterThan(before);
   });
 
-  test("worker echo hook exposes sr-only marker", async ({ page }) => {
+  test("worker throughput panel reports live status", async ({ page }) => {
     await page.goto("/dashboard");
+    const panel = page.locator("[data-worker-throughput]");
+    await expect(panel).toBeVisible();
+    await expect(panel).toHaveAttribute("data-worker-status", /ready|booting/);
     await expect(
-      page.locator('[data-worker-echo="live-event-radar"]')
-    ).toBeAttached();
+      panel.getByRole("heading", { name: "Zone throughput" })
+    ).toBeVisible();
+    // Worker sample arrives after mock events + debounced postMessage.
+    await expect(panel.getByText(/Sampled \d+ events/i)).toBeVisible({
+      timeout: 15_000,
+    });
   });
 
   test("stock event rows populate after mock runs", async ({ page }) => {

@@ -36,7 +36,7 @@ export type DeriveSessionTallyOptions = {
  * Consumed = sum(|q|) for q < 0 · Restocked = sum(q) for q > 0 · Net = restocked − consumed
  */
 export function deriveSessionTally(
-  events: StockEvent[],
+  events: readonly StockEvent[],
   options: DeriveSessionTallyOptions
 ): SessionTally {
   const end = options.endedAt ?? options.now ?? Number.MAX_SAFE_INTEGER;

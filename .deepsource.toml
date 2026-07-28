@@ -9,7 +9,6 @@ exclude_patterns = [
   "docs/**",
   "docs/.vitepress/dist/**",
   "docs/.vitepress/cache/**",
-  ".flowbite-react/**",
   "next-env.d.ts",
   "package-lock.json",
   "**/*.mjs",
@@ -22,7 +21,6 @@ exclude_patterns = [
   "e2e/**",
   "**/*.test.ts",
   "**/*.test.tsx",
-  "features/live-radar/workers/**",
 ]
 
 [[analyzers]]
