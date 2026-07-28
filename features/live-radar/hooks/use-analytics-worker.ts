@@ -12,7 +12,6 @@ import type { AnalyticsInMsg, AnalyticsOutMsg } from "../workers/analytics-messa
 export type AnalyticsWorkerStatus = "booting" | "ready" | "error" | "unsupported";
 
 function initialWorkerStatus(): AnalyticsWorkerStatus {
-  if (typeof Worker === "undefined") return "unsupported";
   return "booting";
 }
 
@@ -37,7 +36,10 @@ export function useAnalyticsWorker(
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (typeof Worker === "undefined") return undefined;
+    if (typeof Worker === "undefined") {
+      setStatus("unsupported");
+      return undefined;
+    }
 
     let cancelled = false;
     try {
