@@ -60,7 +60,7 @@ export function DashboardLive() {
               </p>
             </div>
             <div className="bry-stream-buffer shrink-0 text-right">
-              <p className="bry-caps text-[10px]">Stored</p>
+              <p className="bry-caps text-[11px]">Stored</p>
               <AnimatedBufferCount
                 value={events.length}
                 className="bry-metric text-xl font-extrabold sm:text-2xl"

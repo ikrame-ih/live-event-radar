@@ -17,13 +17,10 @@ export function AppHeader({ roleLabel = "Coordinator" }: AppHeaderProps) {
   return (
     <header className="bry-app-header bry-page-content mb-7 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
       <div className="col-start-1 flex min-w-0 items-center gap-3">
-        <TransitionLink
-          href="/"
-          className="flex min-w-0 items-center gap-2.5 text-base tracking-tight"
-        >
+        <div className="flex min-w-0 items-center gap-2.5 text-base tracking-tight">
           <AppLogo size={28} className="shrink-0" />
           <span className="bry-brand-mark truncate text-base">LiveEvent Radar</span>
-        </TransitionLink>
+        </div>
         <span className="bry-role-pill hidden shrink-0 sm:inline">
           {roleLabel}
         </span>

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import {
   zoneStatusCaption,
   type ZoneSnapshot,
@@ -54,7 +55,7 @@ export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
           </p>
         </div>
         <span
-          className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${statusPillClass(snapshot.status)}`}
+          className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${statusPillClass(snapshot.status)}`}
         >
           {zoneStatusCaption(snapshot)}
         </span>
@@ -70,7 +71,11 @@ export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
         <div className="bry-stock-bar" aria-hidden>
           <div
             className={`bry-stock-fill ${stockBarClass(snapshot.status)}`}
-            style={{ width: `${snapshot.stock}%` }}
+            style={
+              {
+                "--stock-pct": snapshot.stock / 100,
+              } as CSSProperties
+            }
           />
         </div>
       </div>

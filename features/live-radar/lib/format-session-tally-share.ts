@@ -7,17 +7,20 @@ import { ZONE_META } from "./zone-stock";
 export function formatSessionTallyShare(
   tally: SessionTally,
   stockByZone: Map<string, number>,
-  options?: { frozen?: boolean; at?: Date }
+  options?: { frozen?: boolean; at?: Date | null }
 ): string {
-  const at = options?.at ?? new Date();
-  const time = at.toLocaleTimeString("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  const at = options?.at;
+  const time =
+    at != null
+      ? ` · ${at.toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })}`
+      : "";
   const status = options?.frozen ? "ENDED" : "LIVE";
   const lines = [
-    `LiveEvent Radar — session tally (${status} · ${time})`,
+    `LiveEvent Radar — session tally (${status}${time})`,
     `Total: ${tally.totals.consumed} out · ${tally.totals.restocked} in · net ${formatNet(tally.totals.net)}`,
     "",
     ...tally.zones.map((row) => {

@@ -21,6 +21,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://live-event-radar.vercel.app"),
   title: "LiveEvent Radar",
   description:
     "See which stands are running low — venue map, zone stock, and live stock events for brand activations.",
@@ -32,6 +33,13 @@ export const metadata: Metadata = {
     description:
       "Live ops for brand activations — zone stock, venue map, and stock events in one view.",
     type: "website",
+    url: "/",
+  },
+  twitter: {
+    card: "summary",
+    title: "LiveEvent Radar",
+    description:
+      "Live ops for brand activations — zone stock, venue map, and stock events in one view.",
   },
 };
 

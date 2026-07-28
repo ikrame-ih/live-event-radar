@@ -1,6 +1,10 @@
 import { CircleMarker, Popup, Tooltip } from "react-leaflet";
-import type { ZoneSnapshot } from "@/features/live-radar/lib/zone-stock";
-import { zoneStatusCaption } from "@/features/live-radar/lib/zone-stock";
+import { stockHeatTextColor } from "@/features/live-radar/lib/stock-heat-colors";
+import {
+  stockHeat,
+  zoneStatusCaption,
+  type ZoneSnapshot,
+} from "@/features/live-radar/lib/zone-stock";
 
 type VenueZoneMarkerProps = {
   zone: string;
@@ -56,7 +60,6 @@ export function VenueZoneMarker({
 function VenueZonePopup({
   zone,
   stock,
-  color,
   snapshot,
 }: {
   zone: string;
@@ -64,10 +67,11 @@ function VenueZonePopup({
   color: string;
   snapshot: ZoneSnapshot | undefined;
 }) {
+  const statusColor = stockHeatTextColor(stockHeat(stock));
   return (
     <div className="text-sm leading-relaxed">
       <p className="font-bold">{zone}</p>
-      <p className="text-[var(--text-muted)]">Live venue</p>
+      <p className="text-[var(--text-secondary)]">Live venue</p>
       <p className="mt-2">
         Stock: <strong>{stock}%</strong>
       </p>
@@ -82,7 +86,7 @@ function VenueZonePopup({
           Last: {snapshot.lastItem} ({snapshot.lastQuantity})
         </p>
       )}
-      <p className="mt-1 font-semibold" style={{ color }}>
+      <p className="mt-1 font-semibold" style={{ color: statusColor }}>
         {snapshot ? zoneStatusCaption(snapshot) : "Healthy"}
       </p>
     </div>
