@@ -18,9 +18,12 @@ jobs:
 
       # Node 22 avoids the Node 20 Actions runtime deprecation warning.
       # Cache omitted on purpose: a stale npm cache can make `npm ci` fail in ~2s.
+      # npm-version must match the local version (npm 11) that generated package-lock.json;
+      # a mismatch causes npm ci to fail in ~2s before any package is downloaded.
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          npm-version: 11
 
       - run: npm ci
       - run: npm run lint
@@ -52,6 +55,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          npm-version: 11
 
       - run: npm ci
       - run: npx playwright install chromium --with-deps
