@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { deriveSessionTally } from "@/features/live-radar/lib/derive-session-tally";
 import { formatSessionTallyShare } from "@/features/live-radar/lib/format-session-tally-share";
 import { ZONE_META } from "@/features/live-radar/lib/zone-stock";
@@ -28,6 +28,22 @@ function formatNet(n: number): string {
   return n > 0 ? `+${n}` : `${n}`;
 }
 
+/** Client clock for share text — null on server to avoid hydration mismatch. */
+function useShareClock(frozen: boolean, endedAt: number | null): Date | null {
+  const liveBucket = useSyncExternalStore(
+    (onStoreChange) => {
+      if (frozen) return () => undefined;
+      const id = window.setInterval(onStoreChange, 30_000);
+      return () => window.clearInterval(id);
+    },
+    () => Math.floor(Date.now() / 30_000),
+    () => null
+  );
+  if (liveBucket == null) return null;
+  if (frozen && endedAt != null) return new Date(endedAt);
+  return new Date(liveBucket * 30_000);
+}
+
 export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
   const events = useTelemetryStore((s) => s.events);
   const startedAt = useSessionStore((s) => s.startedAt);
@@ -40,9 +56,8 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
 
   const elapsedRef = useRef<HTMLSpanElement>(null);
   const [copied, setCopied] = useState(false);
-  /** Stable until mount — avoids hydration text mismatch from live clock. */
-  const [shareAt, setShareAt] = useState<Date | null>(null);
   const frozen = endedAt !== null;
+  const shareAt = useShareClock(frozen, endedAt);
 
   useEffect(() => {
     const write = () => {
@@ -55,13 +70,6 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
     const id = window.setInterval(write, 1000);
     return () => window.clearInterval(id);
   }, [startedAt, endedAt, frozen]);
-
-  useEffect(() => {
-    setShareAt(new Date());
-    if (frozen) return undefined;
-    const id = window.setInterval(() => setShareAt(new Date()), 30_000);
-    return () => window.clearInterval(id);
-  }, [frozen]);
 
   const tally = useMemo(
     () =>
@@ -89,7 +97,7 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
     () =>
       formatSessionTallyShare(tally, stockByZone, {
         frozen,
-        // null until client mount — keeps SSR HTML identical to first paint
+        // null on server / first paint — keeps SSR HTML identical
         at: shareAt,
       }),
     [tally, stockByZone, frozen, shareAt]
