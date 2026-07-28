@@ -28,24 +28,29 @@
 
   --text-primary: #141416;
   --text-secondary: #4a4558;
-  --text-muted: #7a7488;
+  /* ≥4.5:1 on --page-bg (#efe8ea) for WCAG AA / WAVE contrast */
+  --text-muted: #5c5668;
 
-  /* Single product accent — cool ops blue (no peach / neon rivals) */
-  --accent: #0a84ff;
-  --accent-soft: rgb(10 132 255 / 0.18);
+  /* Single product accent — cool ops blue (≥4.5:1 with white text) */
+  --accent: #005fcc;
+  --accent-soft: rgb(0 95 204 / 0.18);
   --accent-macos: var(--accent);
   --accent-macos-soft: var(--accent-soft);
   --gradient-cta: var(--accent);
   --gradient-start: var(--accent);
-  --gradient-end: #3b9eff;
+  --gradient-end: #3b82db;
 
-  /* Unified stock tiers: OK / watch / critical */
-  --semantic-teal: #0d9b5c;
+  /* Unified stock tiers: OK / watch / critical — text on soft fills ≥4.5:1 */
+  --semantic-teal: #066043;
   --semantic-teal-soft: #d5ebe0;
-  --semantic-coral: #e54d3a;
+  --semantic-coral: #b42318;
   --semantic-coral-soft: #fdecea;
-  --semantic-amber: #d97706;
+  --semantic-amber: #92400e;
   --semantic-amber-soft: #fef3e0;
+  /* Brighter map / marker accents (decorative, not body text) */
+  --map-stroke-cool: #0d9b5c;
+  --map-stroke-mid: #d97706;
+  --map-stroke-low: #e54d3a;
 
   --radius-shell: 40px;
   --radius-box: 32px;
@@ -69,11 +74,11 @@
   --dur-slow: 0.6s;
 
   --gauge-track: rgb(255 255 255 / 0.28);
-  --gauge-glow: 0 0 40px rgb(10 132 255 / 0.22);
+  --gauge-glow: 0 0 40px rgb(0 95 204 / 0.22);
 
-  --glow-teal: 0 0 0 3px rgb(13 155 92 / 0.15);
-  --glow-coral: 0 0 0 3px rgb(229 77 58 / 0.15);
-  --glow-amber: 0 0 0 3px rgb(217 119 6 / 0.15);
+  --glow-teal: 0 0 0 3px rgb(6 96 67 / 0.15);
+  --glow-coral: 0 0 0 3px rgb(180 35 24 / 0.15);
+  --glow-amber: 0 0 0 3px rgb(146 64 14 / 0.15);
 
   --map-bg: #eceaf2;
   --map-grid: rgb(170 165 185 / 0.28);
@@ -82,14 +87,14 @@
   --map-zone-fill: var(--semantic-teal-soft);
   --map-heat-mid: var(--semantic-amber-soft);
   --map-heat-high: var(--semantic-coral-soft);
-  --map-zone-stroke-cool: var(--semantic-teal);
-  --map-zone-stroke-mid: var(--semantic-amber);
-  --map-zone-stroke-low: var(--semantic-coral);
+  --map-zone-stroke-cool: var(--map-stroke-cool);
+  --map-zone-stroke-mid: var(--map-stroke-mid);
+  --map-zone-stroke-low: var(--map-stroke-low);
   --map-zone-glow-focus: rgb(255 255 255 / 0.78);
   --map-zone-ring-focus: rgb(20 20 22 / 0.14);
-  --map-pin-critical: var(--semantic-coral);
-  --map-pin-warning: var(--semantic-amber);
-  --map-pin-resolved: var(--semantic-teal);
+  --map-pin-critical: var(--map-stroke-low);
+  --map-pin-warning: var(--map-stroke-mid);
+  --map-pin-resolved: var(--map-stroke-cool);
 
   /* Typography roles — UI body · heading titles · display KPIs · metric digits · label caps
      Loaded via next/font: Inter, Montserrat, Plus Jakarta. Local if installed: SF Pro, Proxima Nova */
@@ -119,20 +124,20 @@
   --ops-accent-muted: #fef3e0;
   --ops-text-primary: #1a1a1c;
   --ops-text-muted: #5a5568;
-  --ops-text-subtle: #8a8498;
+  --ops-text-subtle: #5c5668;
   --ops-heat-low: var(--semantic-teal-soft);
   --ops-heat-mid: var(--semantic-amber-soft);
   --ops-heat-high: var(--semantic-coral);
   --ops-heat-empty: #eceaf2;
-  --ops-zone-a: #0d9b5c;
-  --ops-zone-b: #d97706;
+  --ops-zone-a: #066043;
+  --ops-zone-b: #92400e;
   --ops-zone-c: #5a5568;
   --ops-shadow: var(--shadow-box);
   --ops-canvas-bg: #eceaf2;
   --ops-canvas-grid: rgb(170 165 185 / 0.4);
   --ops-canvas-path: #d5d2de;
   --ops-canvas-title: #5a5568;
-  --ops-canvas-subtitle: #8a8498;
+  --ops-canvas-subtitle: #5c5668;
   --ops-canvas-text-on-heat: #1a1a1c;
   --ops-canvas-text-on-cool: #1a1a1c;
   --ops-canvas-stand-fill-hot: rgb(229 77 58 / 0.15);
@@ -567,8 +572,8 @@ h3 {
   inset: 10px;
   border-radius: 9999px;
   content: "";
-  background: radial-gradient(circle, rgb(10 132 255 / 0.2), transparent 62%);
-  filter: blur(8px);
+  background: radial-gradient(circle, rgb(0 95 204 / 0.22), transparent 62%);
+  opacity: 0.65;
   animation: gauge-glow-pulse 2.6s ease-in-out infinite;
   pointer-events: none;
 }
@@ -581,6 +586,7 @@ h3 {
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   height: 45%;
   z-index: 2;
   pointer-events: none;
@@ -588,19 +594,20 @@ h3 {
   background: linear-gradient(
     0deg,
     transparent 0%,
-    rgb(10 132 255 / 0.16) 45%,
+    rgb(0 95 204 / 0.16) 45%,
     transparent 100%
   );
+  will-change: transform;
   animation: bry-gauge-scan 12s linear infinite;
 }
 
 @keyframes bry-gauge-scan {
   0%,
   72% {
-    top: -55%;
+    transform: translateY(-120%);
   }
   100% {
-    top: 105%;
+    transform: translateY(240%);
   }
 }
 
@@ -655,7 +662,7 @@ h3 {
   color: var(--semantic-coral);
   box-shadow:
     inset 0 0 0 1px rgb(255 255 255 / 0.88),
-    0 8px 20px rgb(229 77 58 / 0.16);
+    0 8px 20px rgb(180 35 24 / 0.16);
 }
 
 .bry-filter-pill-active {
@@ -675,7 +682,7 @@ h3 {
   backdrop-filter: blur(var(--glass-blur-sm)) var(--glass-saturate);
   -webkit-backdrop-filter: blur(var(--glass-blur-sm)) var(--glass-saturate);
   font-family: var(--font-label);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -712,20 +719,20 @@ h3 {
   box-shadow: 0 6px 20px var(--accent-soft);
   cursor: pointer;
   transition:
-    filter var(--dur-med) var(--ease-out-soft),
+    background var(--dur-med) var(--ease-out-soft),
     box-shadow var(--dur-med) var(--ease-out-soft),
     transform var(--dur-med) var(--ease-out-soft);
 }
 
 .bry-btn-primary:hover {
-  filter: brightness(1.04);
+  background: color-mix(in srgb, var(--accent) 92%, #fff);
   transform: translateY(-2px);
   box-shadow: 0 12px 28px var(--accent-soft);
 }
 
 .bry-btn-primary:active {
   transform: translateY(0) scale(0.98);
-  filter: brightness(0.98);
+  background: color-mix(in srgb, var(--accent) 88%, #000);
   box-shadow: 0 4px 14px var(--accent-soft);
 }
 
@@ -742,7 +749,7 @@ h3 {
     0 3px 10px rgb(60 50 90 / 0.08);
   color: var(--text-secondary);
   font-family: var(--font-label);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -804,7 +811,7 @@ h3 {
   text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
-  border: 1px solid rgb(229 77 58 / 0.22);
+  border: 1px solid rgb(180 35 24 / 0.22);
 }
 
 .bry-tag-neon-side {
@@ -819,7 +826,7 @@ h3 {
   padding: 8px 16px;
   border-radius: var(--radius-pill);
   font-family: var(--font-label);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -932,8 +939,12 @@ h3 {
 
 .bry-stock-fill {
   height: 100%;
+  width: 100%;
   border-radius: var(--radius-pill);
-  transition: width var(--dur-med) var(--ease-premium);
+  transform-origin: left center;
+  transform: scaleX(var(--stock-pct, 1));
+  transition: transform var(--dur-med) var(--ease-premium);
+  will-change: transform;
 }
 
 .bry-stock-fill-healthy {
@@ -1039,7 +1050,7 @@ h3 {
 .bry-event-meta {
   margin: 0;
   font-family: var(--font-label);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1368,7 +1379,7 @@ h3 {
 .bry-tally-hero-label {
   margin: 0;
   font-family: var(--font-label);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1418,7 +1429,7 @@ h3 {
 .bry-tally-table th {
   padding: 0.5rem 0.65rem;
   font-family: var(--font-label);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -1481,7 +1492,7 @@ h3 {
 .bry-tally-share-of {
   display: block;
   margin-top: 0.15rem;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -1538,7 +1549,7 @@ h3 {
 }
 
 .venue-leaflet-map .leaflet-control-attribution {
-  font-size: 10px;
+  font-size: 11px;
   background: rgb(243 242 246 / 0.92);
 }
 
@@ -1603,12 +1614,10 @@ h3 {
 @keyframes gauge-glow-pulse {
   0%,
   100% {
-    opacity: 0.5;
-    filter: blur(8px);
+    opacity: 0.45;
   }
   50% {
     opacity: 0.85;
-    filter: blur(12px);
   }
 }
 

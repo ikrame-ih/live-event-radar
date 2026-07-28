@@ -23,14 +23,15 @@ export function AppShell({ children }: AppShellProps) {
       <div id="main-content" className="bry-page-content-area">
         {children}
       </div>
-      <footer className="mt-12 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 pb-4 text-xs text-(--text-muted)">
+      <footer className="mt-12 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 pb-4 text-xs text-(--text-secondary)">
         <span>Ikrame Ibn Hayoun</span>
         <span aria-hidden>·</span>
         <a
           href="https://ikrame-ih.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-(--text-secondary) transition-colors"
+          aria-label="Portfolio (opens in a new tab)"
+          className="underline-offset-2 hover:underline hover:text-(--text-primary) transition-colors"
         >
           Portfolio
         </a>
@@ -39,7 +40,8 @@ export function AppShell({ children }: AppShellProps) {
           href="https://github.com/ikrame-ih"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-(--text-secondary) transition-colors"
+          aria-label="GitHub (opens in a new tab)"
+          className="underline-offset-2 hover:underline hover:text-(--text-primary) transition-colors"
         >
           GitHub
         </a>
@@ -48,7 +50,8 @@ export function AppShell({ children }: AppShellProps) {
           href="https://www.linkedin.com/in/ikrame-ih/"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-(--text-secondary) transition-colors"
+          aria-label="LinkedIn (opens in a new tab)"
+          className="underline-offset-2 hover:underline hover:text-(--text-primary) transition-colors"
         >
           LinkedIn
         </a>

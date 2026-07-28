@@ -40,6 +40,8 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
 
   const elapsedRef = useRef<HTMLSpanElement>(null);
   const [copied, setCopied] = useState(false);
+  /** Stable until mount — avoids hydration text mismatch from live clock. */
+  const [shareAt, setShareAt] = useState<Date | null>(null);
   const frozen = endedAt !== null;
 
   useEffect(() => {
@@ -53,6 +55,13 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
     const id = window.setInterval(write, 1000);
     return () => window.clearInterval(id);
   }, [startedAt, endedAt, frozen]);
+
+  useEffect(() => {
+    setShareAt(new Date());
+    if (frozen) return undefined;
+    const id = window.setInterval(() => setShareAt(new Date()), 30_000);
+    return () => window.clearInterval(id);
+  }, [frozen]);
 
   const tally = useMemo(
     () =>
@@ -80,8 +89,10 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
     () =>
       formatSessionTallyShare(tally, stockByZone, {
         frozen,
+        // null until client mount — keeps SSR HTML identical to first paint
+        at: shareAt,
       }),
-    [tally, stockByZone, frozen]
+    [tally, stockByZone, frozen, shareAt]
   );
 
   async function handleCopy() {
