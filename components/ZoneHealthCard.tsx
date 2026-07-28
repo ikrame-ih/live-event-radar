@@ -1,5 +1,9 @@
 import type { CSSProperties } from "react";
 import {
+  formatEtaLabel,
+  type MinutesUntilEmpty,
+} from "@/features/live-radar/lib/estimate-minutes-until-empty";
+import {
   zoneStatusCaption,
   type ZoneSnapshot,
   type ZoneStatus,
@@ -40,16 +44,17 @@ function formatLastEvent(snapshot: ZoneSnapshot): string {
 
 type ZoneHealthCardProps = {
   snapshot: ZoneSnapshot;
+  eta: MinutesUntilEmpty;
 };
 
-export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
+export function ZoneHealthCard({ snapshot, eta }: ZoneHealthCardProps) {
+  const urgent = eta.minutes !== null && eta.minutes <= 20;
+
   return (
     <article className="bry-zone-health-card bry-box bry-row-enter flex flex-col justify-between gap-4 p-4 sm:p-5">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="bry-card-title truncate">
-            {snapshot.zone}
-          </p>
+          <p className="bry-card-title truncate">{snapshot.zone}</p>
           <p className="truncate text-xs text-(--text-muted)">
             {snapshot.subtitle}
           </p>
@@ -64,9 +69,7 @@ export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
       <div className="mt-auto">
         <div className="mb-1 flex items-baseline justify-between gap-2">
           <span className="text-xs text-(--text-muted)">Stock</span>
-          <span className="bry-metric text-sm">
-            {snapshot.stock}%
-          </span>
+          <span className="bry-metric text-sm">{snapshot.stock}%</span>
         </div>
         <div className="bry-stock-bar" aria-hidden>
           <div
@@ -81,6 +84,15 @@ export function ZoneHealthCard({ snapshot }: ZoneHealthCardProps) {
       </div>
 
       <ul className="space-y-1.5 border-t border-white/45 pt-3 text-xs">
+        <li className="bry-zone-stat-row">
+          <span className="text-(--text-muted)">Minutes to empty</span>
+          <span
+            className={`bry-metric bry-zone-stat-value ${urgent ? "text-(--semantic-coral)" : ""}`}
+            title="Heuristic from the last 60s consumption pace — not a guarantee."
+          >
+            {formatEtaLabel(eta)}
+          </span>
+        </li>
         <li className="bry-zone-stat-row">
           <span className="text-(--text-muted)">Demand</span>
           <span className="bry-metric bry-zone-stat-value">

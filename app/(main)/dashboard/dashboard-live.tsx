@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatedBufferCount } from "@/components/AnimatedBufferCount";
 import { ConnectionStatusBadge } from "@/components/ConnectionStatusBadge";
+import { WorkerThroughputPanel } from "@/components/WorkerThroughputPanel";
 import { useAnalyticsWorker } from "@/features/live-radar/hooks/use-analytics-worker";
 import { useLiveFeed } from "@/features/live-radar/hooks/use-live-feed";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
@@ -24,9 +25,15 @@ export function DashboardLive() {
   const events = useTelemetryStore((s) => s.events);
   const [filters, setFilters] = useState<StreamFilters>(defaultFilters);
   const [focusedZone, setFocusedZone] = useState<string | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, []);
 
   const { wsUrl, simulatorOnly, wsStatus } = useLiveFeed();
-  const workerEcho = useAnalyticsWorker("live-event-radar");
+  const { summary, status: workerStatus } = useAnalyticsWorker(events, now);
 
   const maxLabel = Intl.NumberFormat("en-US").format(MAX_EVENTS);
 
@@ -81,11 +88,7 @@ export function DashboardLive() {
         </section>
       </div>
 
-      {workerEcho && (
-        <span className="sr-only" data-worker-echo={workerEcho}>
-          {workerEcho}
-        </span>
-      )}
+      <WorkerThroughputPanel summary={summary} status={workerStatus} />
     </main>
   );
 }

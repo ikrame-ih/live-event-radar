@@ -1,46 +1,47 @@
-# Current project state (Jun 2026)
+# Current project state (Jul 2026)
 
 Snapshot of what's shipped and where things live. App is complete; live on Vercel, docs on GitHub Pages.
 
 ## Routes
 
-| Route        | Purpose                                                                        |
-| ------------ | ------------------------------------------------------------------------------ |
-| `/`          | Command Center — Live now KPIs, zone stock, SVG map, Session tally             |
-| `/dashboard` | Live dashboard — Leaflet venue map, filters, scrolling stock events, stored-events KPI |
+| Route        | Purpose                                                                                          |
+| ------------ | ------------------------------------------------------------------------------------------------ |
+| `/`          | Command Center — KPIs, zone stock + ETA, suggestion, SVG map, Session tally (Copy / CSV)         |
+| `/dashboard` | Live dashboard — Leaflet map, filters, scrolling stock events, Worker throughput panel           |
 
-Both share `telemetry-store`. Neither redirects. Layout lives under `app/(main)/` with a persistent `AppShell` so the header and background stay mounted.
+Both share ring-buffered `telemetry-store`. Layout lives under `app/(main)/` with a persistent `AppShell`.
 
 ## Stock model
 
 Zones: `South Gate` · `Sampling Court` · `Main Stage Walkway`
 
-Map fill follows three bands — Healthy (≥ 65%, teal), Watch (35–64%, amber), Low (< 35%, coral). Session tally accumulates consumed / restocked / net per zone for the session window (End event freezes; Resume / New session reopen or reset). Stock events on `/dashboard` select by event key (one row), with zone focus only for the map. Details in [Visual system](/visual-system).
+Map fill follows three bands — Healthy (≥ 65%, teal), Watch (35–64%, amber), Low (< 35%, coral). **Minutes to empty** uses the last ~60s consumption pace (heuristic; see engineering decisions). Session tally freezes with End event; handoff text includes ETA + optional suggested move.
 
 ## Key files
 
-**Shell:** `app/_components/app-shell.tsx`, `components/AppHeader.tsx` (Home · Live dashboard nav only), `components/TransitionLink.tsx`, `components/ConnectionStatusBadge.tsx`, `components/AnimatedBufferCount.tsx` (rAF count-up, bypasses React per frame)
+**Shell:** `app/_components/app-shell.tsx`, `components/AppHeader.tsx`, `TransitionLink.tsx`, `ConnectionStatusBadge.tsx`, `AnimatedBufferCount.tsx`
 
-**Command Center (`/`):** `app/(main)/page.tsx`, `ZoneHealthOverview.tsx` (Zone stock), `InteractiveMap.tsx`, `SessionTallyPanel.tsx` (Taken out / Put back / Net ledger + Copy), `derive-session-tally.ts`, `session-store.ts`, `StreamGauge.tsx`. `deriveIncidents` still feeds map anchors via `useEventStore`.
+**Command Center (`/`):** `page.tsx`, `ZoneHealthOverview.tsx` / `ZoneHealthCard.tsx` (ETA), `OpsSuggestionBanner.tsx`, `InteractiveMap.tsx`, `SessionTallyPanel.tsx` (Copy + Export CSV), `StreamGauge.tsx`. `deriveIncidents` feeds map anchors via `useEventStore`.
 
-**Live dashboard (`/dashboard`):** `dashboard-live.tsx` (map | Stock events, equal-height cards; feed fixed at 20rem / ~5 rows), `VenueLeafletMap.tsx`, `event-stream-filters.tsx`, `event-stream-list.tsx` (per-event selection)
+**Live dashboard (`/dashboard`):** `dashboard-live.tsx`, `WorkerThroughputPanel.tsx`, Leaflet map, event stream filters/list
 
-**Stream bootstrap:** `features/live-radar/hooks/use-live-feed.ts` — shared env read + WebSocket + simulator on both routes.
-
-`useStockWebSocket` exposes `idle | connecting | open | closed | error` — the connection badge reads that on both routes.
-
-**Maps:** SVG schematic on `/` (zone fills from `stockHeat`); Leaflet + OpenStreetMap on `/dashboard`. Entry at south connector (`▲ ENTRY`), exit at avenue end (`EXIT ▶`).
+**Ingest & analytics:** `ring-buffer.ts`, `telemetry-store.ts`, `use-live-feed.ts`, `use-analytics-worker.ts`, `analytics.worker.ts`, `zone-throughput.ts`, `estimate-minutes-until-empty.ts`, `suggest-restock.ts`
 
 ## Tests & CI
 
-Unit: `npm run test:run` (Vitest). E2E: `npm run test:e2e` (specs × 3 viewports locally; CI runs desktop only). GitHub Actions runs lint, typecheck, unit tests, and build on every PR; Playwright (desktop) on pushes to `main`. Docs deploy to GitHub Pages **only on push to `main`**. [DeepSource](https://app.deepsource.com/gh/ikrame-ih/live-event-radar/) static analysis runs on push/PR when the repo is activated.
+| Command | Role |
+| ------- | ---- |
+| `npm run test:run` | Vitest unit |
+| `npm run test:coverage` | Vitest + lcov (uploaded in CI) |
+| `npm run bench` | Ring append harness |
+| `npm run test:e2e` | Playwright (3 viewports local; desktop in CI on every PR/push) |
+
+Dependabot weekly for npm. Docs deploy to GitHub Pages **only on push to `main`**.
 
 | Surface  | URL                                                                                    |
 | -------- | -------------------------------------------------------------------------------------- |
 | Live app | [live-event-radar.vercel.app](https://live-event-radar.vercel.app)                     |
 | Source   | [github.com/ikrame-ih/live-event-radar](https://github.com/ikrame-ih/live-event-radar) |
-| Docs     | GitHub Pages (this site) — deploys on **push to `main`** via `.github/workflows/docs.yml` (local doc edits are not live until then) |
+| Docs     | This GitHub Pages site                                                                 |
 
-Private build notes live in Obsidian — a superset of what's published here.
-
-Related: [Technical decisions](/technical-decisions) · [Pipeline](/pipeline)
+Related: [Engineering decisions — design trade-offs and rationale](/engineering-decisions) · [Benchmarks](/benchmarks) · [Pipeline](/pipeline)

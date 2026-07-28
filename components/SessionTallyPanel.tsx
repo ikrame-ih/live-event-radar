@@ -2,7 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { deriveSessionTally } from "@/features/live-radar/lib/derive-session-tally";
-import { formatSessionTallyShare } from "@/features/live-radar/lib/format-session-tally-share";
+import { estimateMinutesUntilEmpty } from "@/features/live-radar/lib/estimate-minutes-until-empty";
+import {
+  formatOpsHandoff,
+  formatSessionTallyCsv,
+} from "@/features/live-radar/lib/format-ops-handoff";
+import { suggestRestockMove } from "@/features/live-radar/lib/suggest-restock";
 import { ZONE_META } from "@/features/live-radar/lib/zone-stock";
 import type { ZoneSnapshot } from "@/features/live-radar/lib/zone-stock";
 import { useSessionStore } from "@/features/live-radar/state/session-store";
@@ -58,6 +63,9 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
   const [copied, setCopied] = useState(false);
   const frozen = endedAt !== null;
   const shareAt = useShareClock(frozen, endedAt);
+  // Prefer the share clock; fall back to session bounds — never Date.now() in render
+  // (React purity lint + stable SSR/client markup).
+  const now = shareAt?.getTime() ?? endedAt ?? startedAt;
 
   useEffect(() => {
     const write = () => {
@@ -85,6 +93,19 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
     [snapshots]
   );
 
+  const etas = useMemo(
+    () =>
+      snapshots.map((snap) =>
+        estimateMinutesUntilEmpty(snap.zone, snap.stock, events, now)
+      ),
+    [snapshots, events, now]
+  );
+
+  const suggestion = useMemo(
+    () => suggestRestockMove(snapshots, etas),
+    [snapshots, etas]
+  );
+
   const rows = useMemo(
     () =>
       [...tally.zones].sort(
@@ -95,12 +116,19 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
 
   const shareText = useMemo(
     () =>
-      formatSessionTallyShare(tally, stockByZone, {
-        frozen,
-        // null on server / first paint — keeps SSR HTML identical
-        at: shareAt,
-      }),
-    [tally, stockByZone, frozen, shareAt]
+      formatOpsHandoff(
+        events,
+        snapshots,
+        { startedAt, endedAt },
+        {
+          frozen,
+          // null on server / first paint — keeps SSR HTML identical
+          at: shareAt,
+          etas,
+          suggestion,
+        }
+      ),
+    [events, snapshots, startedAt, endedAt, frozen, shareAt, etas, suggestion]
   );
 
   async function handleCopy() {
@@ -111,6 +139,22 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
     } catch {
       setCopied(false);
     }
+  }
+
+  function handleExportCsv() {
+    const csv = formatSessionTallyCsv(
+      events,
+      snapshots,
+      { startedAt, endedAt },
+      etas
+    );
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `live-event-radar-tally-${Date.now()}.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -130,6 +174,13 @@ export function SessionTallyPanel({ snapshots }: SessionTallyPanelProps) {
             onClick={() => void handleCopy()}
           >
             {copied ? "Copied" : "Copy"}
+          </button>
+          <button
+            type="button"
+            className="bry-btn-secondary"
+            onClick={handleExportCsv}
+          >
+            Export CSV
           </button>
           {frozen ? (
             <>

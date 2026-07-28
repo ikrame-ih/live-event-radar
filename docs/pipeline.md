@@ -1,18 +1,23 @@
 # Client-side data pipeline
 
-Goal: handle a continuous stock event stream without unbounded memory, UI jank, or a blocked main thread.
+Goal: handle a continuous stock event stream without unbounded memory, UI jank, or cloning the entire buffer into a Worker.
 
 ## Modules
 
-| Module              | Path                               | Role                                                |
+| Module | Path | Role |
 | ------------------- | ---------------------------------- | --------------------------------------------------- |
-| Simulator           | `hooks/use-simulator-stream.ts`    | ~0.5 events/s, spike bursts, crew restock every 60s |
-| WebSocket           | `hooks/use-stock-websocket.ts`     | Live feed when `NEXT_PUBLIC_WS_URL` is set          |
-| Command Center sync | `hooks/use-command-center-sync.ts` | Derives incidents → `useEventStore` for `/`         |
-| Zone stock          | `lib/zone-stock.ts`                | Stock %, tier, idle recovery                        |
-| Mock generator      | `mock/mock-event-generator.ts`     | Spike-heavy consumption patterns                    |
-| Store               | `state/telemetry-store.ts`         | FIFO buffer, cap 10,000                             |
-| Worker              | `hooks/use-analytics-worker.ts`    | Main-thread placeholder echo on `/dashboard` (worker file ready for future wiring) |
+| Simulator | `hooks/use-simulator-stream.ts` | ~0.5 events/s, spike bursts, crew restock every 60s |
+| WebSocket | `hooks/use-stock-websocket.ts` | Live feed when `NEXT_PUBLIC_WS_URL` is set |
+| Command Center sync | `hooks/use-command-center-sync.ts` | Derives incidents → `useEventStore` for `/` |
+| Zone stock | `lib/zone-stock.ts` | Stock %, tier, idle recovery |
+| ETA | `lib/estimate-minutes-until-empty.ts` | Heuristic minutes-to-empty from recent pace |
+| Restock hint | `lib/suggest-restock.ts` | Single donor→needy suggestion |
+| Mock generator | `mock/mock-event-generator.ts` | Spike-heavy consumption patterns |
+| Ring buffer | `lib/ring-buffer.ts` | O(1) capped FIFO slots |
+| Store | `state/telemetry-store.ts` | Publishes immutable snapshots from the ring |
+| Throughput | `lib/zone-throughput.ts` | Pure aggregation used by tests + worker |
+| Worker hook | `hooks/use-analytics-worker.ts` | Debounced sample → Worker → hotspot summary |
+| Worker | `workers/analytics.worker.ts` | Off-thread `computeZoneThroughput` |
 
 ## Event type
 
@@ -27,17 +32,11 @@ export type StockEvent = {
 
 ## Store
 
-Everything enters through `appendEvent`. When the buffer passes 10,000 events, the oldest row is dropped:
+Everything enters through `appendEvent` / `appendEvents`. The module-level `RingBuffer` owns mutable slots; Zustand stores `{ events, revision }` snapshots for React:
 
 ```typescript
 const MAX_EVENTS = 10_000;
-
-function trimEvents(events: StockEvent[], next: StockEvent): StockEvent[] {
-  const merged = [...events, next];
-  return merged.length > MAX_EVENTS
-    ? merged.slice(merged.length - MAX_EVENTS)
-    : merged;
-}
+// ring.push is O(1); toArray() materializes oldest→newest for subscribers
 ```
 
 Same entry point for simulator, WebSocket, or a future API.
@@ -53,23 +52,28 @@ Built so stock tiers become visible within a short demo:
 
 ## Derivation
 
-Raw events aren't rendered directly. Two functions compute what the UI needs:
-
 ```mermaid
 flowchart TB
   events["telemetry-store.events"]
   incidents["deriveIncidents()"]
   snapshots["deriveZoneSnapshots(events, now)"]
+  eta["estimateMinutesUntilEmpty"]
+  sample["selectWorkerSample"]
+  worker["computeZoneThroughput"]
   cmd["Command Center"]
   dash["/dashboard"]
 
   events --> incidents --> cmd
   events --> snapshots --> cmd
+  snapshots --> eta --> cmd
   events --> snapshots --> dash
+  events --> sample --> worker --> dash
 ```
 
-- **`deriveIncidents`** — groups by zone over 30s, pushes summaries into `useEventStore`
-- **`deriveZoneSnapshots`** — stock %, demand trend, heat tier for both maps
+- **`deriveIncidents`** — groups by zone over 30s for map anchors
+- **`deriveZoneSnapshots`** — stock %, demand trend, heat tier
+- **`estimateMinutesUntilEmpty`** — decision aid (documented heuristic limits)
+- **Worker** — relative hotspots from a trailing window sample only
 
 ## WebSocket
 
@@ -77,8 +81,12 @@ flowchart TB
 
 ## Web Worker
 
-`analytics.worker.ts` is a stub that echoes input — the hook currently runs on the main thread so the dashboard stays simple while the worker file and E2E marker remain ready for heavier math later. The main thread never sends the full 10,000-event buffer across the thread boundary; that would defeat the cap.
+Implemented for real analytics (not an echo stub):
 
-Effect cleanups stop intervals and close sockets on unmount.
+1. Main thread builds a trailing sample via `selectWorkerSample` (time window + hard cap).
+2. Worker runs `computeZoneThroughput` and returns rates / hotspot flags.
+3. `/dashboard` renders **Zone throughput**.
 
-Related: [Architecture](/architecture) · [Current state](/current-state)
+Effect cleanups stop intervals, close sockets, and terminate the worker on unmount.
+
+Related: [Architecture](/architecture) · [Engineering decisions — design trade-offs and rationale](/engineering-decisions) · [Benchmarks](/benchmarks) · [Current state](/current-state)
