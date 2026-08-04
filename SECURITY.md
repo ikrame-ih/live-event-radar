@@ -35,3 +35,7 @@ Instead:
 
 - Never put API keys, tokens, or passwords in `NEXT_PUBLIC_*` environment variables — they are embedded in the browser bundle.
 - When connecting a real feed, use `wss://` and authenticate on the server, not in client-only secrets.
+
+## CI dependency audit
+
+`npm audit --audit-level=high` runs on every PR but is **soft-fail** (`continue-on-error`). Reason: transitive advisories in the Next.js / PostCSS toolchain that are not actionable in this frontend-only demo without pinning the whole framework. Blocking merges on those would freeze the portfolio CI without a real app-code fix. Direct dependencies are still reviewed when Dependabot opens PRs.

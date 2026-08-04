@@ -30,7 +30,8 @@ jobs:
       - run: npm run typecheck
       - run: npm run test:coverage
       - run: npm run bench
-      # Informational only — transitive Next/postcss highs should not block merge.
+      # Soft-fail on purpose — transitive Next/postcss highs; see SECURITY.md.
+      # Making this blocking would freeze PRs without an app-level fix path.
       - name: Dependency audit (high+)
         continue-on-error: true
         run: npm audit --audit-level=high

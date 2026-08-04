@@ -2,6 +2,7 @@
 
 <p align="left">
   <a href="https://github.com/ikrame-ih/live-event-radar/actions/workflows/ci.yml"><img height="28" src="https://img.shields.io/github/actions/workflow/status/ikrame-ih/live-event-radar/ci.yml?branch=main&style=for-the-badge" alt="CI" /></a>
+  <a href="https://github.com/ikrame-ih/live-event-radar/actions/workflows/ci.yml"><img height="28" src="https://img.shields.io/badge/coverage-87%25_lines-brightgreen?style=for-the-badge" alt="Coverage ~87% lines" /></a>
   <a href="https://live-event-radar.vercel.app"><img height="28" src="https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
   <a href="https://ikrame-ih.github.io/live-event-radar/"><img height="28" src="https://img.shields.io/badge/Docs-GitHub_Pages-222?style=for-the-badge" alt="Docs" /></a>
 </p>
@@ -123,7 +124,7 @@ Open [http://localhost:3000](http://localhost:3000). No environment variables re
 | `npm run test:e2e`      | Playwright (desktop, tablet, phone)          |
 | `npm run docs:build`    | VitePress → GitHub Pages                     |
 
-**CI (every push/PR):** lint · typecheck · coverage · bench · `npm audit` (high+) · build · desktop E2E. Docs deploy to GitHub Pages on push to `main`.
+**CI (every push/PR):** lint · typecheck · coverage · bench · `npm audit` (high+, soft-fail — see SECURITY.md) · build · desktop E2E. Docs deploy to GitHub Pages on push to `main`. Coverage badge ≈ Vitest line coverage on `features/live-radar` + `store` (regenerate with `npm run test:coverage`).
 
 ## Stack
 

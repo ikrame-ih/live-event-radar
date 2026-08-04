@@ -1,34 +1,29 @@
-#!/usr/bin/env bash
-# Optional history cleanup for LiveEvent Radar (solo portfolio repo).
-# Review each step before running. Requires: git-filter-repo
-#
-# This script is intentionally NOT run by CI. You run it once locally, then:
+#!/bin/sh
+# One-shot history hygiene for this solo portfolio repo.
+# Does NOT change file contents except removing the accidental `tatus` path.
+# After running:
 #   git push --force-with-lease origin main
-#   git push origin --delete portfolio/engineering-depth
+#
+# Requires Git for Windows bash. Do not run from CI.
 
 set -euo pipefail
+export FILTER_BRANCH_SQUELCH_WARNING=1
 
-echo "1) Delete local portfolio branch if present"
-git branch -D portfolio/engineering-depth 2>/dev/null || true
+echo "==> Purging path 'tatus' from all commits"
+git filter-branch -f --index-filter \
+  'git rm --cached --ignore-unmatch tatus' \
+  --prune-empty --tag-name-filter cat -- --all
 
-echo "2) Purge accidental 'tatus' blob from all history"
-git filter-repo --invert-paths --path tatus --force
+echo "==> Unifying author/committer names to Ikrame Ibn Hayoun"
+git filter-branch -f --env-filter '
+CORRECT_NAME="Ikrame Ibn Hayoun"
+CORRECT_EMAIL="ikihga2223@gmail.com"
+export GIT_AUTHOR_NAME="$CORRECT_NAME"
+export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+export GIT_COMMITTER_NAME="$CORRECT_NAME"
+export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+' --tag-name-filter cat -- --branches --tags
 
-echo "3) Rewrite portfolio-optics commit messages (edit the map as needed)"
-# Example using filter-repo message callback — adjust hashes after step 2.
-# Prefer interactive: git rebase and reword offending commits instead if the
-# history is small enough.
-
-cat <<'EOF'
-
-Manual reword targets (find new SHAs after filter-repo):
-  - "Raise portfolio depth: ..." → "feat: move throughput math to a Web Worker and cap the buffer with a ring"
-  - "docs: enable Mermaid and align README with recruiter case study" → "docs: enable Mermaid and link README to the case study"
-  - Merge PR bodies that repeat "portfolio depth"
-
-Then:
-  git push --force-with-lease origin main
-  git push origin --delete portfolio/engineering-depth
-
-.gitmailmap already unifies author display names for git log.
-EOF
+echo "==> Done. Inspect with: git log --format=\"%an <%ae> | %s\" -15"
+echo "    Then: git push --force-with-lease origin main"
+echo "    Optional cleanup: git for-each-ref --format=\"%(refname)\" refs/original/ | xargs -n1 git update-ref -d"
