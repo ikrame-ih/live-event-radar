@@ -23,7 +23,7 @@ jobs:
       # Node 22 avoids the Node 20 Actions runtime deprecation warning.
       # Cache omitted: a stale npm cache can make `npm ci` fail.
       # npm 11 must match the local version that generated package-lock.json.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
