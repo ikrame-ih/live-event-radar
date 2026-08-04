@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import type { StockEvent } from "@/features/live-radar/types";
 import { estimateMinutesUntilEmpty } from "@/features/live-radar/lib/estimate-minutes-until-empty";
 import {
@@ -9,6 +9,7 @@ import {
 } from "@/features/live-radar/lib/restock-countdown";
 import { suggestRestockMove } from "@/features/live-radar/lib/suggest-restock";
 import { ZONE_META, type ZoneSnapshot } from "@/features/live-radar/lib/zone-stock";
+import { useNow } from "@/features/live-radar/hooks/use-now";
 import { ZoneHealthCard } from "@/components/ZoneHealthCard";
 import { OpsSuggestionBanner } from "@/components/OpsSuggestionBanner";
 
@@ -18,18 +19,15 @@ type Props = {
 };
 
 export function ZoneHealthOverview({ snapshots, events }: Props) {
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(id);
-  }, []);
+  const now = useNow();
 
   const etas = useMemo(
     () =>
-      snapshots.map((snap) =>
-        estimateMinutesUntilEmpty(snap.zone, snap.stock, events, now)
-      ),
+      now
+        ? snapshots.map((snap) =>
+            estimateMinutesUntilEmpty(snap.zone, snap.stock, events, now)
+          )
+        : [],
     [snapshots, events, now]
   );
 
@@ -38,7 +36,7 @@ export function ZoneHealthOverview({ snapshots, events }: Props) {
     [snapshots, etas]
   );
 
-  const restockMs = msUntilNextRestock(events, now);
+  const restockMs = now ? msUntilNextRestock(events, now) : 0;
   const avgStock =
     snapshots.length > 0
       ? Math.round(

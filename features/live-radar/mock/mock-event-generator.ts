@@ -20,7 +20,7 @@ function normalQuantity(roll: number): number {
 }
 
 /** Tuned so watch/low tiers show up during a short demo */
-export function mockStockEvent(): StockEvent {
+export function mockStockEvent(at = Date.now()): StockEvent {
   const roll = Math.random();
   const zone = pickZone();
 
@@ -29,7 +29,7 @@ export function mockStockEvent(): StockEvent {
       zone,
       item: pickItem(),
       quantity: spikeQuantity(roll),
-      timestamp: Date.now(),
+      timestamp: at,
     };
   }
 
@@ -37,13 +37,13 @@ export function mockStockEvent(): StockEvent {
     zone,
     item: pickItem(),
     quantity: normalQuantity(roll),
-    timestamp: Date.now(),
+    timestamp: at,
   };
 }
 
 /** One zone per pulse — partial refill, not a full reset */
-export function mockRestockPulse(): StockEvent[] {
-  const timestamp = Date.now();
+export function mockRestockPulse(at = Date.now()): StockEvent[] {
+  const timestamp = at;
   const zone = pickZone();
   return [
     {
@@ -53,4 +53,24 @@ export function mockRestockPulse(): StockEvent[] {
       timestamp,
     },
   ];
+}
+
+/**
+ * Backdated history so the UI opens mid-event (Watch/Low tiers visible).
+ * ~3 minutes of ticks at SIMULATOR_TICK_MS spacing, plus a couple of restocks.
+ */
+export function mockSeedHistory(
+  now = Date.now(),
+  durationMs = 180_000,
+  tickMs = 2000
+): StockEvent[] {
+  const events: StockEvent[] = [];
+  for (let t = now - durationMs; t < now; t += tickMs) {
+    events.push(mockStockEvent(t));
+    // Occasional restock pulse roughly every 60s in the seed window
+    if ((t - (now - durationMs)) % 60_000 < tickMs) {
+      events.push(...mockRestockPulse(t + 1));
+    }
+  }
+  return events;
 }

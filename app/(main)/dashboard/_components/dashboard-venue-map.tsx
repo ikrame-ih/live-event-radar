@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { deriveZoneSnapshots } from "@/features/live-radar/lib/zone-stock";
+import { useNow } from "@/features/live-radar/hooks/use-now";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 
 const VenueLeafletMap = dynamic(
@@ -25,15 +26,10 @@ export function DashboardVenueMap({
   focusedZone = null,
 }: DashboardVenueMapProps) {
   const events = useTelemetryStore((s) => s.events);
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(Date.now()), 2000);
-    return () => window.clearInterval(id);
-  }, []);
+  const now = useNow();
 
   const snapshots = useMemo(
-    () => deriveZoneSnapshots(events, now),
+    () => (now ? deriveZoneSnapshots(events, now) : []),
     [events, now]
   );
 

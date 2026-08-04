@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AnimatedBufferCount } from "@/components/AnimatedBufferCount";
 import { ConnectionStatusBadge } from "@/components/ConnectionStatusBadge";
 import { WorkerThroughputPanel } from "@/components/WorkerThroughputPanel";
 import { useAnalyticsWorker } from "@/features/live-radar/hooks/use-analytics-worker";
 import { useLiveFeed } from "@/features/live-radar/hooks/use-live-feed";
+import { useNow } from "@/features/live-radar/hooks/use-now";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 import { MAX_EVENTS } from "@/features/live-radar/constants";
 import {
@@ -25,12 +26,7 @@ export function DashboardLive() {
   const events = useTelemetryStore((s) => s.events);
   const [filters, setFilters] = useState<StreamFilters>(defaultFilters);
   const [focusedZone, setFocusedZone] = useState<string | null>(null);
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(id);
-  }, []);
+  const now = useNow();
 
   const { wsUrl, simulatorOnly, wsStatus } = useLiveFeed();
   const { summary, status: workerStatus } = useAnalyticsWorker(events, now);

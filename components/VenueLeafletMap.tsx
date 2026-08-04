@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { ZONE_NAMES } from "@/features/live-radar/lib/derive-incidents";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/features/live-radar/lib/zone-geo";
 import { deriveZoneSnapshots, stockHeat } from "@/features/live-radar/lib/zone-stock";
 import { stockHeatMarkerColor } from "@/features/live-radar/lib/stock-heat-colors";
+import { useNow } from "@/features/live-radar/hooks/use-now";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 import { VenueZoneMarker } from "@/components/VenueZoneMarker";
 import "leaflet/dist/leaflet.css";
@@ -45,15 +46,10 @@ export function VenueLeafletMap({
   fill?: boolean;
 }) {
   const events = useTelemetryStore((state) => state.events);
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(Date.now()), 2000);
-    return () => window.clearInterval(id);
-  }, []);
+  const now = useNow();
 
   const snapshots = useMemo(
-    () => deriveZoneSnapshots(events, now),
+    () => (now ? deriveZoneSnapshots(events, now) : []),
     [events, now]
   );
   const snapshotByZone = useMemo(

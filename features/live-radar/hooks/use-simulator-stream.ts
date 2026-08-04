@@ -1,7 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
-import { mockRestockPulse, mockStockEvent } from "../mock/mock-event-generator";
+import { useEffect, useRef } from "react";
+import {
+  mockRestockPulse,
+  mockSeedHistory,
+  mockStockEvent,
+} from "../mock/mock-event-generator";
 import { REPLENISH_INTERVAL_MS } from "../lib/zone-stock";
 import { SIMULATOR_TICK_MS } from "../constants";
 import { useTelemetryStore } from "../state/telemetry-store";
@@ -17,10 +21,18 @@ export function useSimulatorStream({
   simulatorOnly,
 }: SimulatorStreamConfig) {
   const appendEvent = useTelemetryStore((s) => s.appendEvent);
+  const appendEvents = useTelemetryStore((s) => s.appendEvents);
+  const seededRef = useRef(false);
 
   useEffect(() => {
     const useNetwork = Boolean(wsUrl) && !simulatorOnly;
     if (useNetwork) return undefined;
+
+    // Prefill once so the first paint already shows drained zones / ETA.
+    if (!seededRef.current && useTelemetryStore.getState().events.length === 0) {
+      seededRef.current = true;
+      appendEvents(mockSeedHistory(Date.now(), 180_000, SIMULATOR_TICK_MS));
+    }
 
     const tick = window.setInterval(
       () => appendEvent(mockStockEvent()),
@@ -34,5 +46,5 @@ export function useSimulatorStream({
       window.clearInterval(tick);
       window.clearInterval(restock);
     };
-  }, [appendEvent, simulatorOnly, wsUrl]);
+  }, [appendEvent, appendEvents, simulatorOnly, wsUrl]);
 }

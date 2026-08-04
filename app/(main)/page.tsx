@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { CommandCenterGaugePanel } from "@/components/command-center/CommandCenterGaugePanel";
 import { CommandCenterKpiHero } from "@/components/command-center/CommandCenterKpiHero";
 import { InteractiveMap } from "@/components/InteractiveMap";
@@ -8,6 +8,7 @@ import { SessionTallyPanel } from "@/components/SessionTallyPanel";
 import { ZoneHealthOverview } from "@/components/ZoneHealthOverview";
 import { useCommandCenterSync } from "@/features/live-radar/hooks/use-command-center-sync";
 import { useLiveFeed } from "@/features/live-radar/hooks/use-live-feed";
+import { useNow } from "@/features/live-radar/hooks/use-now";
 import { deriveZoneSnapshots } from "@/features/live-radar/lib/zone-stock";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 import { useEventStore } from "@/store/useEventStore";
@@ -17,13 +18,9 @@ export default function CommandCenter() {
   const events = useTelemetryStore((s) => s.events);
   const incidents = useEventStore((s) => s.incidents);
 
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(id);
-  }, []);
+  const now = useNow();
   const snapshots = useMemo(
-    () => deriveZoneSnapshots(events, now),
+    () => (now ? deriveZoneSnapshots(events, now) : []),
     [events, now]
   );
   const criticalCount = incidents.filter(
