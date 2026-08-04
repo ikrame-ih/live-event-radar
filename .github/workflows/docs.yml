@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Node 22 avoids the Node 20 Actions runtime deprecation warning.
       # Cache omitted: a stale npm cache can make `npm ci` fail.

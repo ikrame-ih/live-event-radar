@@ -14,7 +14,7 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Node 22 avoids the Node 20 Actions runtime deprecation warning.
       # Cache omitted on purpose: a stale npm cache can make `npm ci` fail in ~2s.
@@ -51,7 +51,7 @@ jobs:
     # Smoke E2E on every PR + main push so UI regressions cannot hide until merge.
     # Full multi-viewport suite remains a local `npm run test:e2e` command.
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v4
         with:
