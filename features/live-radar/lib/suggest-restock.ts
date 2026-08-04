@@ -14,12 +14,10 @@ const DONOR_MIN_STOCK = 65;
 const DONOR_MIN_ETA_OR_NULL = 45;
 
 /**
- * One actionable redistribution hint for coordinators.
+ * One redistribution hint for coordinators.
  *
- * Product intent: replace the late WhatsApp "we're out" with an earlier nudge
- * grounded in live stock + ETA — still a heuristic, not warehouse optimization.
- *
- * Returns at most one suggestion so the UI stays decisive (depth > feature pile).
+ * Grounded in live stock + ETA — a heuristic nudge, not warehouse optimization.
+ * At most one suggestion so a wall of tips doesn't get ignored mid-event.
  */
 export function suggestRestockMove(
   snapshots: readonly ZoneSnapshot[],
@@ -64,7 +62,7 @@ export function suggestRestockMove(
   // Move enough to lift the needy zone toward the watch band without stripping the donor.
   const deficit = Math.max(0, 55 - target.snap.stock);
   const donorHeadroom = Math.max(0, donor.stock - DONOR_MIN_STOCK);
-  const units = Math.max(5, Math.min(20, deficit, donorHeadroom));
+  const units = Math.min(20, deficit, donorHeadroom);
   if (units < 5) return null;
 
   const etaText =

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useCallback, useState, useEffect } from "react";
+import { useMemo, useCallback } from "react";
 import { useEventStore } from "@/store/useEventStore";
 import {
   deriveZoneSnapshots,
@@ -10,6 +10,8 @@ import {
   type StockHeat,
 } from "@/features/live-radar/lib/zone-stock";
 import { STOCK_HEAT_COLORS } from "@/features/live-radar/lib/stock-heat-colors";
+import { useNow } from "@/features/live-radar/hooks/use-now";
+import type { ZoneName } from "@/features/live-radar/lib/derive-incidents";
 import { useSessionStore } from "@/features/live-radar/state/session-store";
 import { useTelemetryStore } from "@/features/live-radar/state/telemetry-store";
 
@@ -19,7 +21,7 @@ const AVENUE_Y = 255;
 
 type ZonePolygon = {
   id: string;
-  label: string;
+  label: ZoneName;
   points: string;
   cx: number;
   cy: number;
@@ -408,15 +410,10 @@ export function InteractiveMap() {
   const sessionZone = useSessionStore((s) => s.selectedZone);
   const selectSessionZone = useSessionStore((s) => s.selectZone);
   const events = useTelemetryStore((s) => s.events);
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(id);
-  }, []);
+  const now = useNow();
 
   const snapshots = useMemo(
-    () => deriveZoneSnapshots(events, now),
+    () => (now ? deriveZoneSnapshots(events, now) : []),
     [events, now]
   );
   const snapshotByZone = useMemo(
@@ -504,7 +501,7 @@ export function InteractiveMap() {
         viewBox={`0 0 ${VB_WIDTH} ${VB_HEIGHT}`}
         preserveAspectRatio="xMidYMid meet"
         className="bry-venue-map-svg"
-        role="img"
+        role="group"
         aria-label="Venue floor plan — tap a zone or use Session tally to highlight"
       >
         <MapDefs />

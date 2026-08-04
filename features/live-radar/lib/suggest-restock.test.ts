@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 import type { MinutesUntilEmpty } from "./estimate-minutes-until-empty";
 import { suggestRestockMove } from "./suggest-restock";
 import type { ZoneSnapshot } from "./zone-stock";
+import type { ZoneName } from "./derive-incidents";
 
-function snap(zone: string, stock: number, status: ZoneSnapshot["status"] = "healthy"): ZoneSnapshot {
+function snap(zone: ZoneName, stock: number, status: ZoneSnapshot["status"] = "healthy"): ZoneSnapshot {
   return {
     zone,
     stock,
@@ -58,6 +59,23 @@ describe("suggestRestockMove", () => {
         eta("South Gate", 15),
         eta("Sampling Court", 5),
         eta("Main Stage Walkway", 12),
+      ]
+    );
+    expect(suggestion).toBeNull();
+  });
+
+  it("returns null when the only donor has zero headroom (exactly at min stock)", () => {
+    // Donor at DONOR_MIN_STOCK (65) has headroom 0 — must not invent a 5-unit move.
+    const suggestion = suggestRestockMove(
+      [
+        snap("South Gate", 65),
+        snap("Sampling Court", 20, "critical"),
+        snap("Main Stage Walkway", 50, "watch"),
+      ],
+      [
+        eta("South Gate", 90),
+        eta("Sampling Court", 6),
+        eta("Main Stage Walkway", 30),
       ]
     );
     expect(suggestion).toBeNull();

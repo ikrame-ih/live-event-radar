@@ -53,7 +53,6 @@ export function useStockWebSocket(url: string | undefined): WsConnectionStatus {
     return () => {
       done = true;
       ws.close();
-      setStatus(null);
     };
   }, [appendEvent, url, urlError]);
 
