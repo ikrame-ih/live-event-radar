@@ -27,7 +27,7 @@ export function AppShell({ children }: AppShellProps) {
         <span>Ikrame Ibn Hayoun</span>
         <span aria-hidden>·</span>
         <a
-          href="https://ikrame-ih.vercel.app/"
+          href="https://ikrame.dev/"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Portfolio (opens in a new tab)"

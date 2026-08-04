@@ -2,7 +2,7 @@
 
 <p align="left">
   <a href="https://github.com/ikrame-ih/live-event-radar/actions/workflows/ci.yml"><img height="28" src="https://img.shields.io/github/actions/workflow/status/ikrame-ih/live-event-radar/ci.yml?branch=main&style=for-the-badge" alt="CI" /></a>
-  <a href="https://github.com/ikrame-ih/live-event-radar/actions/workflows/ci.yml"><img height="28" src="https://img.shields.io/badge/coverage-87%25_lines-brightgreen?style=for-the-badge" alt="Coverage ~87% lines" /></a>
+  <a href="https://github.com/ikrame-ih/live-event-radar/actions/workflows/ci.yml"><img height="28" src="https://img.shields.io/badge/tests-Vitest_%2B_Playwright-222?style=for-the-badge" alt="Vitest and Playwright in CI" /></a>
   <a href="https://live-event-radar.vercel.app"><img height="28" src="https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
   <a href="https://ikrame-ih.github.io/live-event-radar/"><img height="28" src="https://img.shields.io/badge/Docs-GitHub_Pages-222?style=for-the-badge" alt="Docs" /></a>
 </p>
@@ -178,4 +178,4 @@ MIT — see [LICENSE](./LICENSE). Vulnerability reports: [SECURITY.md](./SECURIT
 
 ## Author
 
-**Ikrame Ibn Hayoun** — [Portfolio](https://ikrame-ih.vercel.app/) · [GitHub](https://github.com/ikrame-ih) · [LinkedIn](https://www.linkedin.com/in/ikrame-ih/)
+**Ikrame Ibn Hayoun** — [Portfolio](https://ikrame.dev/) · [GitHub](https://github.com/ikrame-ih) · [LinkedIn](https://www.linkedin.com/in/ikrame-ih/)
