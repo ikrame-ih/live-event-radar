@@ -111,38 +111,9 @@
     "SF Pro Display", -apple-system, var(--font-inter), var(--font-montserrat),
     sans-serif;
 
-  /* Legacy /dashboard */
+  /* Fallback for @theme */
   --background: #d4cfe0;
   --foreground: #1a1a1c;
-  --ops-bg: #d4cfe0;
-  --ops-surface: #f3f2f6;
-  --ops-surface-muted: #eceaf2;
-  --ops-border: #dcd9e4;
-  --ops-border-strong: #c8c4d4;
-  --ops-accent: #e54d3a;
-  --ops-accent-soft: #fdecea;
-  --ops-accent-muted: #fef3e0;
-  --ops-text-primary: #1a1a1c;
-  --ops-text-muted: #5a5568;
-  --ops-text-subtle: #5c5668;
-  --ops-heat-low: var(--semantic-teal-soft);
-  --ops-heat-mid: var(--semantic-amber-soft);
-  --ops-heat-high: var(--semantic-coral);
-  --ops-heat-empty: #eceaf2;
-  --ops-zone-a: #066043;
-  --ops-zone-b: #92400e;
-  --ops-zone-c: #5a5568;
-  --ops-shadow: var(--shadow-box);
-  --ops-canvas-bg: #eceaf2;
-  --ops-canvas-grid: rgb(170 165 185 / 0.4);
-  --ops-canvas-path: #d5d2de;
-  --ops-canvas-title: #5a5568;
-  --ops-canvas-subtitle: #5c5668;
-  --ops-canvas-text-on-heat: #1a1a1c;
-  --ops-canvas-text-on-cool: #1a1a1c;
-  --ops-canvas-stand-fill-hot: rgb(229 77 58 / 0.15);
-  --ops-canvas-stand-fill-cool: rgb(26 26 26 / 0.05);
-  --ops-canvas-stand-stroke: rgb(140 135 155 / 0.35);
 }
 
 @theme inline {
@@ -256,17 +227,6 @@ h3 {
 .bry-page-shell > * {
   position: relative;
   z-index: 1;
-}
-
-.dashboard-shell {
-  background-color: var(--ops-bg);
-}
-
-.ops-card {
-  border: none;
-  background-color: var(--box-bg);
-  border-radius: var(--radius-box);
-  box-shadow: var(--shadow-box);
 }
 
 .bry-shell {
@@ -641,8 +601,7 @@ h3 {
 .bry-btn-secondary:focus-visible,
 .bry-row-capsule:focus-visible,
 .bry-filter-pill:focus-visible,
-.bry-map-zone:focus-visible,
-.bry-incident-row:focus-visible {
+.bry-map-zone:focus-visible {
   outline: 3px solid var(--accent-soft);
   outline-offset: 3px;
 }
@@ -1320,45 +1279,6 @@ h3 {
   filter: url(#zone-lift-shadow);
 }
 
-.bry-map-zone-glow-selected,
-.bry-map-zone-glow-hover,
-.bry-map-zone-glow-hot,
-.bry-map-pin-ring-selected {
-  /* legacy hooks — glow removed in favour of card shadows */
-}
-
-/* ── Zone activity row states — capsule lift ── */
-.bry-incident-icon {
-  background: var(--box-inner);
-  border: 1px solid rgb(255 255 255 / 0.45);
-  box-shadow: var(--shadow-inset);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.bry-incident-icon-selected {
-  background: var(--box-inset);
-  box-shadow: var(--shadow-inset);
-}
-
-.bry-incident-row-active {
-  background: var(--box-bg-soft);
-  box-shadow: var(--box-highlight), var(--shadow-row);
-}
-
-.bry-incident-row-selected {
-  background: var(--accent-soft);
-  box-shadow: var(--box-highlight), var(--shadow-row-hover);
-}
-
-.bry-incident-row-selected,
-.bry-incident-row-active {
-  transition:
-    transform var(--dur-fast) var(--ease-premium),
-    box-shadow var(--dur-fast) var(--ease-premium),
-    background var(--dur-fast) var(--ease-premium);
-}
-
 /* Session tally ledger */
 .bry-tally-hero {
   display: grid;
@@ -1662,10 +1582,6 @@ h3 {
     animation: none;
   }
 
-  .bry-map-zone-glow-selected,
-  .bry-map-zone-glow-hover,
-  .bry-map-zone-glow-hot,
-  .bry-map-pin-ring-selected,
   .bry-map-zone--hot .bry-map-zone-bloom--hot {
     animation: none;
   }

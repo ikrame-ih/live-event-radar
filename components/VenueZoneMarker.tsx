@@ -49,7 +49,6 @@ export function VenueZoneMarker({
         <VenueZonePopup
           zone={zone}
           stock={stock}
-          color={color}
           snapshot={snapshot}
         />
       </Popup>
@@ -64,7 +63,6 @@ function VenueZonePopup({
 }: {
   zone: string;
   stock: number;
-  color: string;
   snapshot: ZoneSnapshot | undefined;
 }) {
   const statusColor = stockHeatTextColor(stockHeat(stock));

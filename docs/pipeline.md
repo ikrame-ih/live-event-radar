@@ -81,7 +81,7 @@ flowchart TB
 
 ## Web Worker
 
-Implemented for real analytics (not an echo stub):
+Runs windowed throughput / hotspot math off the main thread:
 
 1. Main thread builds a trailing sample via `selectWorkerSample` (time window + hard cap).
 2. Worker runs `computeZoneThroughput` and returns rates / hotspot flags.
@@ -89,4 +89,4 @@ Implemented for real analytics (not an echo stub):
 
 Effect cleanups stop intervals, close sockets, and terminate the worker on unmount.
 
-Related: [Architecture](/architecture) · [Engineering decisions — design trade-offs and rationale](/engineering-decisions) · [Benchmarks](/benchmarks) · [Current state](/current-state)
+See also [Architecture](/architecture) and [Benchmarks](/benchmarks).

@@ -17,10 +17,12 @@ describe("RingBuffer", () => {
     expect(ring.length).toBe(3);
   });
 
-  it("latest returns a trailing window", () => {
-    const ring = new RingBuffer<number>(5);
-    ring.pushMany([1, 2, 3, 4, 5, 6]);
-    expect(ring.latest(2)).toEqual([5, 6]);
+  it("clear empties the buffer", () => {
+    const ring = new RingBuffer<number>(3);
+    ring.pushMany([1, 2, 3]);
+    ring.clear();
+    expect(ring.toArray()).toEqual([]);
+    expect(ring.length).toBe(0);
   });
 
   it("rejects invalid capacity", () => {

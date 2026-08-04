@@ -57,16 +57,4 @@ export class RingBuffer<T> {
     }
     return out;
   }
-
-  /** Newest `count` items, oldest→newest within that window. */
-  latest(count: number): T[] {
-    if (count <= 0 || this.size === 0) return [];
-    const take = Math.min(count, this.size);
-    const start = this.size - take;
-    const out = new Array<T>(take);
-    for (let i = 0; i < take; i++) {
-      out[i] = this.slots[(this.head + start + i) % this.capacity] as T;
-    }
-    return out;
-  }
 }

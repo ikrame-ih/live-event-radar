@@ -36,4 +36,4 @@ Run on a developer machine while writing this page. Absolute timings vary; the u
 - The worker only receives a short sample window, not the whole buffer.
 - `appendEvents` exists so tests can publish batches without one React snapshot per event.
 
-Related: [Engineering decisions — design trade-offs and rationale](/engineering-decisions) · [Pipeline](/pipeline)
+More on the buffer: [Decisions & challenges](/decisions) · [Pipeline](/pipeline)

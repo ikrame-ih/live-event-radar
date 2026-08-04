@@ -18,9 +18,8 @@ function initialWorkerStatus(): AnalyticsWorkerStatus {
 /**
  * Offloads windowed throughput / hotspot math to a Worker.
  *
- * Kept narrow on purpose: ETA and session tally stay on the main thread
- * (cheap and tied to render). Debounce (~250ms) so synthetic bursts do not
- * flood postMessage.
+ * ETA and session tally stay on the main thread (cheap and tied to render).
+ * Debounce (~250ms) so synthetic bursts do not flood postMessage.
  */
 export function useAnalyticsWorker(
   events: readonly StockEvent[],
@@ -37,8 +36,7 @@ export function useAnalyticsWorker(
 
   useEffect(() => {
     if (typeof Worker === "undefined") {
-      // queueMicrotask defers the setState out of the synchronous effect body,
-      // satisfying the react-hooks/no-direct-set-state-in-effect lint rule.
+      // Defer so React doesn't warn about sync setState in the effect body.
       queueMicrotask(() => setStatus("unsupported"));
       return undefined;
     }
@@ -49,7 +47,6 @@ export function useAnalyticsWorker(
         new URL("../workers/analytics.worker.ts", import.meta.url)
       );
       workerRef.current = worker;
-      // Status flips from message/error callbacks only (no sync setState in this effect).
       worker.onmessage = (event: MessageEvent<AnalyticsOutMsg>) => {
         if (cancelled) return;
         const data = event.data;

@@ -13,9 +13,7 @@ type HandoffOptions = {
 };
 
 /**
- * Coordinator handoff text — designed to paste into WhatsApp/Slack.
- * Replaces the unused earlier `formatShiftSummary` with session + ETA context
- * so the copy action matches the product story ("info arrived too late in chat").
+ * Coordinator handoff text — paste into WhatsApp/Slack with session + ETA context.
  */
 export function formatOpsHandoff(
   events: readonly StockEvent[],

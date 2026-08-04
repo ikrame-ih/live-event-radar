@@ -4,10 +4,7 @@ type OpsSuggestionBannerProps = {
   suggestion: RestockSuggestion;
 };
 
-/**
- * Single decisive ops nudge — intentionally not a list of tips.
- * Depth over feature count: one recommended move tied to live stock + ETA.
- */
+/** One restock nudge tied to live stock + ETA — a single move, not a tip list. */
 export function OpsSuggestionBanner({ suggestion }: OpsSuggestionBannerProps) {
   return (
     <aside

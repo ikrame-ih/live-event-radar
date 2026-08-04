@@ -70,4 +70,4 @@ Zone health **status** labels use tighter rules (30% / 55% stock plus spike coun
 
 Tokens and base CSS came first, then `AppShell` / `AppHeader`, the gauge hero, row capsules, filters and map chrome, mobile overrides (`mobile-overrides.css`), and a QA pass (build + Vitest + Playwright). Later: coral ambient + nav, typography utilities, dashboard split with capped stream scroll, two-icon nav, plain-language section copy (Zone stock, Session tally, Stock events, Live dashboard), and Session tally with End event freeze.
 
-Related: [Current state](/current-state) · [Architecture](/architecture)
+Tokens and layout notes live alongside [Architecture](/architecture) · [Decisions](/decisions).

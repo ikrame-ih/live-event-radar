@@ -4,9 +4,8 @@ import { computeZoneThroughput } from "../lib/zone-throughput";
 import type { AnalyticsInMsg, AnalyticsOutMsg } from "./analytics-messages";
 
 /**
- * Analytics worker — windowed throughput only (not an echo stub).
+ * Analytics worker — windowed throughput on a short sample of recent events.
  *
- * Receives a short sample of recent events, not the whole buffer.
  * Uses the same `computeZoneThroughput` covered by unit tests.
  */
 const scope = self as unknown as DedicatedWorkerGlobalScope;

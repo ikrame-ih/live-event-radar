@@ -61,15 +61,6 @@
     gap: 0.875rem;
   }
 
-  .bry-incident-row {
-    gap: 0.625rem;
-    padding: 0.875rem 1rem;
-  }
-
-  .bry-incident-row .bry-incident-metric {
-    min-width: 4.5rem;
-  }
-
   .bry-zone-health-card {
     padding: 0.875rem;
   }

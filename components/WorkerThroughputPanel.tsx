@@ -6,10 +6,7 @@ type Props = {
   status: AnalyticsWorkerStatus;
 };
 
-/**
- * Surfaces worker output on /dashboard — small client-side analytics panel,
- * not a full monitoring console.
- */
+/** Zone rates from the analytics worker on a short sample window. */
 export function WorkerThroughputPanel({ summary, status }: Props) {
   return (
     <section
