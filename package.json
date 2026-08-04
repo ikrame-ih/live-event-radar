@@ -19,7 +19,8 @@
     "test:e2e:install": "playwright install chromium",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "mock:ws": "node server/mock-ws-server.mjs"
   },
   "dependencies": {
     "leaflet": "^1.9.4",

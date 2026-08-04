@@ -1,0 +1,7 @@
+# Map multiple historical author names onto one canonical identity.
+# Does not rewrite history by itself — use with git log / GitHub Contributors.
+
+Ikrame Ibn Hayoun <ikihga2223@gmail.com>
+ikihga2223-create <ikihga2223@gmail.com>
+Ikrame I.H. <ikihga2223@gmail.com>
+ikrame-ih <ikihga2223@gmail.com>
