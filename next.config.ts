@@ -5,11 +5,15 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      // Next.js App Router still emits inline bootstrapping scripts; a nonce
+      // pipeline would remove 'unsafe-inline'. 'unsafe-eval' is omitted —
+      // production builds do not need it.
+      "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://*.tile.openstreetmap.org",
       "font-src 'self' data:",
-      "connect-src 'self' ws: wss: https:",
+      // Optional live feed: ws/wss any host; HTTPS limited to same-origin + OSM tiles CDN paths via img-src.
+      "connect-src 'self' ws: wss:",
       "worker-src 'self' blob:",
       "frame-ancestors 'none'",
       "base-uri 'self'",

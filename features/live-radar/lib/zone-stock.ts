@@ -1,5 +1,9 @@
 import type { StockEvent } from "../types";
-import { ZONE_NAMES, countByZone } from "./derive-incidents";
+import {
+  ZONE_NAMES,
+  type ZoneName,
+  countByZone,
+} from "./derive-incidents";
 
 export const STOCK_MAX = 100;
 export const REPLENISH_INTERVAL_MS = 60_000;
@@ -13,7 +17,7 @@ const RECOVERY_PER_SEC = 1;
 export type ZoneStatus = "healthy" | "watch" | "critical";
 
 export type ZoneSnapshot = {
-  zone: string;
+  zone: ZoneName;
   stock: number;
   demand30s: number;
   spikes15s: number;
@@ -24,7 +28,7 @@ export type ZoneSnapshot = {
 };
 
 export const ZONE_META: Record<
-  string,
+  ZoneName,
   { short: string; subtitle: string; stands: number }
 > = {
   "South Gate": { short: "SG", subtitle: "Entry · 3 stands", stands: 3 },
@@ -94,7 +98,7 @@ function applyIdleRecovery(
 }
 
 function snapshotForZone(
-  zone: string,
+  zone: ZoneName,
   events: StockEvent[],
   stock: Map<string, number>,
   lastByZone: Map<string, StockEvent>,
@@ -119,7 +123,7 @@ function snapshotForZone(
     lastItem: last?.item ?? null,
     lastQuantity: last?.quantity ?? null,
     status: resolveStatus(level, spikes15s),
-    subtitle: ZONE_META[zone]?.subtitle ?? zone,
+    subtitle: ZONE_META[zone].subtitle,
   };
 }
 

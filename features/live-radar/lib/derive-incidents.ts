@@ -7,8 +7,10 @@ export const ZONE_NAMES = [
   "Main Stage Walkway",
 ] as const;
 
+export type ZoneName = (typeof ZONE_NAMES)[number];
+
 /** Incident anchor — bottom-right of each zone polygon */
-export const ZONE_ANCHORS: Record<string, { x: number; y: number }> = {
+export const ZONE_ANCHORS: Record<ZoneName, { x: number; y: number }> = {
   "South Gate": { x: 210, y: 500 },
   "Sampling Court": { x: 600, y: 448 },
   "Main Stage Walkway": { x: 860, y: 448 },

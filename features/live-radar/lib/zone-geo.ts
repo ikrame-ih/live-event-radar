@@ -1,8 +1,10 @@
+import type { ZoneName } from "./derive-incidents";
+
 /** Teatinos campus area, Málaga — demo activation footprint. */
 export const VENUE_CENTER = { lat: 36.7165, lng: -4.4735 } as const;
 
 export const ZONE_GEO: Record<
-  string,
+  ZoneName,
   { lat: number; lng: number; short: string }
 > = {
   "South Gate": { lat: 36.7149, lng: -4.4764, short: "SG" },

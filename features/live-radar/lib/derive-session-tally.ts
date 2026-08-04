@@ -1,8 +1,8 @@
-import { ZONE_NAMES } from "./derive-incidents";
+import { ZONE_NAMES, type ZoneName } from "./derive-incidents";
 import type { StockEvent } from "../types";
 
 export type ZoneSessionTally = {
-  zone: string;
+  zone: ZoneName;
   consumed: number;
   restocked: number;
   net: number;

@@ -6,6 +6,7 @@ import {
   STOCK_TIER_HEALTHY_MIN,
   STOCK_TIER_WATCH_MIN,
   zoneStatusCaption,
+  type ZoneSnapshot,
 } from "./zone-stock";
 
 describe("deriveZoneSnapshots", () => {
@@ -85,14 +86,14 @@ describe("deriveZoneSnapshots", () => {
 
 describe("zoneStatusCaption", () => {
   it("shows demand label when stock is full but spikes are high", () => {
-    const snap = {
+    const snap: ZoneSnapshot = {
       zone: "Sampling Court",
       stock: 100,
       demand30s: 12,
       spikes15s: 3,
       lastItem: "Soda",
       lastQuantity: -2,
-      status: "critical" as const,
+      status: "critical",
       subtitle: "Activation · 6 stands",
     };
     expect(zoneStatusCaption(snap)).toBe("High demand");
