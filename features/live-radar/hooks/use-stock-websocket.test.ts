@@ -3,7 +3,7 @@
  */
 import { renderHook, act } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { useTelemetryStore } from "../state/telemetry-store";
+import { resetTelemetryStore, useTelemetryStore } from "../state/telemetry-store";
 import { useStockWebSocket } from "./use-stock-websocket";
 
 type MockWebSocket = {
@@ -18,7 +18,7 @@ type MockWebSocket = {
 let lastSocket: MockWebSocket | null = null;
 
 beforeEach(() => {
-  useTelemetryStore.setState({ events: [] });
+  resetTelemetryStore();
   lastSocket = null;
 
   vi.stubGlobal(
@@ -83,5 +83,41 @@ describe("useStockWebSocket", () => {
 
     expect(useTelemetryStore.getState().events).toHaveLength(1);
     expect(useTelemetryStore.getState().events[0]?.zone).toBe("South Gate");
+  });
+
+  it("drops malformed JSON and invalid event shapes without closing", () => {
+    renderHook(() => useStockWebSocket("wss://example.com/stream"));
+
+    act(() => {
+      lastSocket?.onopen?.();
+      lastSocket?.onmessage?.({ data: "not-json{" });
+      lastSocket?.onmessage?.({
+        data: JSON.stringify({ zone: "South Gate" }),
+      });
+      lastSocket?.onmessage?.({
+        data: JSON.stringify({
+          zone: "South Gate",
+          item: "Soda",
+          quantity: -1,
+          timestamp: 2,
+        }),
+      });
+    });
+
+    expect(useTelemetryStore.getState().events).toHaveLength(1);
+    expect(lastSocket?.close).not.toHaveBeenCalled();
+  });
+
+  it("closes the socket on unmount without throwing", () => {
+    const { unmount } = renderHook(() =>
+      useStockWebSocket("wss://example.com/stream")
+    );
+
+    act(() => {
+      lastSocket?.onopen?.();
+    });
+
+    expect(() => unmount()).not.toThrow();
+    expect(lastSocket?.close).toHaveBeenCalled();
   });
 });
