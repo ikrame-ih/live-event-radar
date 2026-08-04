@@ -12,10 +12,9 @@ export default withMermaid(
       nav: [
         { text: "Case study", link: "/" },
         { text: "Architecture", link: "/architecture" },
+        { text: "Decisions", link: "/decisions" },
         { text: "Pipeline", link: "/pipeline" },
-        { text: "Current state", link: "/current-state" },
-        { text: "Visual system", link: "/visual-system" },
-        { text: "Business", link: "/business" },
+        { text: "Lessons", link: "/lessons-learned" },
         {
           text: "Live demo",
           link: "https://live-event-radar.vercel.app",
@@ -28,26 +27,19 @@ export default withMermaid(
       sidebar: [
         {
           text: "Overview",
-          items: [{ text: "Case study", link: "/" }],
+          items: [
+            { text: "Case study", link: "/" },
+            { text: "Lessons learned", link: "/lessons-learned" },
+            { text: "Business problem", link: "/business" },
+          ],
         },
         {
           text: "Technical notes",
           items: [
-            {
-              text: "Engineering decisions — design trade-offs and rationale",
-              link: "/engineering-decisions",
-            },
-            { text: "Technical decisions", link: "/technical-decisions" },
-            { text: "Business problem", link: "/business" },
             { text: "Architecture", link: "/architecture" },
+            { text: "Decisions & challenges", link: "/decisions" },
             { text: "Data pipeline", link: "/pipeline" },
             { text: "Benchmarks", link: "/benchmarks" },
-          ],
-        },
-        {
-          text: "Further reading",
-          items: [
-            { text: "Current state", link: "/current-state" },
             { text: "Visual system", link: "/visual-system" },
           ],
         },

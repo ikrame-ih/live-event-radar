@@ -38,13 +38,25 @@ Both routes share one capped ring buffer (`telemetry-store`). The ETA is a **rec
 
 ## 60-second demo path
 
-Open the [live demo](https://live-event-radar.vercel.app):
+Open the [live demo](https://live-event-radar.vercel.app) (or watch the walkthrough notes below):
 
-1. Land on **`/`**. Watch **Zone stock** and **Minutes to empty** update as the simulator runs.
+1. Land on **`/`**. The simulator seeds ~3 minutes of history, so **Zone stock** and **Minutes to empty** already show pressure — not a blank 100% screen.
 2. If a zone is under pressure, look for the **Suggested move** banner (one donor → one needy zone).
 3. In **Session tally**, try **Copy** or **Export CSV**, then **End event** to freeze totals.
 4. Switch to **`/dashboard`**. Same buffer, different job: map + event list + **Zone throughput** (worker sample).
 5. Things worth noticing as a reviewer: buffer cap, connection badge, tabular numbers that do not jump, View Transitions between routes.
+
+### Walkthrough recording
+
+GitHub README CSP blocks inline repo videos. Prefer the live demo above, or regenerate full-page PNGs locally:
+
+```bash
+CAPTURE_README=1 npx playwright test e2e/capture-readme.spec.ts --project=desktop
+```
+
+Then drop a short screen recording (60–90s) on GitHub user-attachments / Streamable / YouTube and link it here — for example:
+
+> [Watch a 90s walkthrough](https://live-event-radar.vercel.app) → follow the path above on the live app.
 
 ## Frontend architecture (short)
 
@@ -128,6 +140,14 @@ Copy `.env.example` → `.env.local` when using a live WebSocket feed.
 
 `NEXT_PUBLIC_*` is bundled in the browser — never put secrets there.
 
+Optional local feed:
+
+```bash
+npm i -D ws
+npm run mock:ws
+# then NEXT_PUBLIC_WS_URL=ws://127.0.0.1:8787 and NEXT_PUBLIC_SIMULATOR_ONLY=false
+```
+
 ## Project layout
 
 ```
@@ -145,11 +165,11 @@ If this grew beyond a portfolio demo: a small authenticated feed (WebSocket or S
 
 ## Documentation
 
-- [Engineering decisions — design trade-offs and rationale](https://ikrame-ih.github.io/live-event-radar/engineering-decisions)
+- [Decisions & challenges](https://ikrame-ih.github.io/live-event-radar/decisions) — design trade-offs, bugs hit, CSP notes
+- [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture) — data path and ring-buffer explainer
 - [Benchmarks](https://ikrame-ih.github.io/live-event-radar/benchmarks) — what the append check does (and does not) claim
-- [Technical decisions](https://ikrame-ih.github.io/live-event-radar/technical-decisions)
-- [Architecture](https://ikrame-ih.github.io/live-event-radar/architecture)
 - [Data pipeline](https://ikrame-ih.github.io/live-event-radar/pipeline)
+- [Lessons learned](https://ikrame-ih.github.io/live-event-radar/lessons-learned)
 
 ## License
 
